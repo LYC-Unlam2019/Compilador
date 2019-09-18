@@ -55,6 +55,21 @@
 		int longitud;
 	} TS_Reg;
 
+	/* Defino estructura de nodo de arbol*/
+	typedef struct sNodo{
+		tInfo info;
+		struct sNodo *izq, *der;
+	}tNodo;
+	/* Defino estructura de arbol*/
+	typedef struct tNodo* tArbol;
+	/* Defino estructura de informacion para el arbol*/
+	typedef struct {
+		int entero;
+		float flotante;
+		char *cadena;
+	}tInfo;
+
+
 	TS_Reg tabla_simbolo[TAMANIO_TABLA];
 	int fin_tabla = -1;
 
@@ -191,31 +206,62 @@ asignacion:
 	ID ASIG expresion	                                {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
+															tArbol asigPtr,exprPtr;
+															asigPtr = crearNodo(ASIG, crearHoja(ID), exprPtr);
 														};
 
 /* Expresiones aritmeticas y otras */
 
 expresion:
-	expresion_cadena				                    {printf("R 22: expresion => expresion_cadena\n");}
-	| expresion_aritmetica			                    {printf("R 23: expresion => expresion_aritmetica\n");};
+	expresion_cadena				                    {
+															printf("R 22: expresion => expresion_cadena\n");
+															tArbol exprCadPtr;
+															exprPtr = exprCadPtr;
+														}
+	| expresion_aritmetica			                    {
+															printf("R 23: expresion => expresion_aritmetica\n");
+															tArbol exprAritPtr;
+															exprPtr = exprAritPtr;
+	};
 
 expresion_cadena:
 	CTE_STRING						                    {
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
+															exprAritPtr = crearHoja(CTE_STRING);
 														};
 
 expresion_aritmetica:
-	expresion_aritmetica SUMA termino 		            {printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");}
-	| expresion_aritmetica RESTA termino 	            {printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");}
-	| expresion_aritmetica MOD termino                  {printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");}
- 	| expresion_aritmetica DIV termino                  {printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");}
-	| termino								            {printf("R 29: expresion_aritmetica => termino\n");};
+	expresion_aritmetica SUMA termino 		            {
+															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
+															tArbol = terminoPtr;
+															exprAritPtr = crearNodo(SUMA, exprAritPtr, terminoPtr);
+														}
+	| expresion_aritmetica RESTA termino 	            {
+															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
+															exprAritPtr = crearNodo(RESTA, exprAritPtr, terminoPtr);
+														}
+	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
+															exprAritPtr = crearNodo(MOD, exprAritPtr, terminoPtr);
+														}
+ 	| expresion_aritmetica DIV termino                  {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
+															exprAritPtr = crearNodo(DIV, exprAritPtr, terminoPtr);
+														}
+	| termino								            {	printf("R 29: expresion_aritmetica => termino\n");
+															exprAritPtr = terminoPtr;
+														};
 
 termino:
-	termino POR factor 			                        {printf("R 30: termino => termino POR factor\n");}
-	| termino DIVIDIDO factor 	                        {printf("R 31: termino => termino DIVIDIDO factor\n");}
-	| factor					                        {printf("R 32: termino => factor\n");};
+	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
+															tArbol factorPtr;
+															terminoPtr = crearNodo(POR, terminoPtr,factorPtr);
+														}
+	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
+															terminoPtr = crearNodo(DIVIDIDO,terminoPtr, factorPtr);
+														}
+	| factor					                        {	printf("R 32: termino => factor\n");
+															terminoPtr = factorPtr;	
+														};
 
 factor:
 	PA expresion_aritmetica PC	                        {printf("R 33: factor => PA expresion_aritmetica PC\n");}
