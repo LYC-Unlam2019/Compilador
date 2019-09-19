@@ -42,6 +42,9 @@
 	void grabarTabla(void);
 	void chequearPrintId(char *nombre);
 
+	void crearNodo();
+	void crearHoja();
+
 	int yystopparser=0;
 	FILE  *yyin;
 
@@ -77,6 +80,15 @@
 	int varADeclarar1 = 0;
 	int cantVarsADeclarar = 0;
 	int tipoDatoADeclarar;
+
+	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
+
+	tArbol 	asigPtr,		//Puntero de asignaciones
+			exprPtr,		//Puntero de expresiones
+			exprCadPtr,		//Puntero de expresiones de cadenas
+			exprAritPtr,	//Puntero de expresiones aritmeticas
+			terminoPtr,		//Puntero de terminos
+			factorPtr;		//Puntero de factores
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -206,7 +218,6 @@ asignacion:
 	ID ASIG expresion	                                {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
-															tArbol asigPtr,exprPtr;
 															asigPtr = crearNodo(ASIG, crearHoja(ID), exprPtr);
 														};
 
@@ -215,12 +226,10 @@ asignacion:
 expresion:
 	expresion_cadena				                    {
 															printf("R 22: expresion => expresion_cadena\n");
-															tArbol exprCadPtr;
 															exprPtr = exprCadPtr;
 														}
 	| expresion_aritmetica			                    {
 															printf("R 23: expresion => expresion_aritmetica\n");
-															tArbol exprAritPtr;
 															exprPtr = exprAritPtr;
 	};
 
@@ -234,7 +243,6 @@ expresion_cadena:
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															tArbol = terminoPtr;
 															exprAritPtr = crearNodo(SUMA, exprAritPtr, terminoPtr);
 														}
 	| expresion_aritmetica RESTA termino 	            {
@@ -253,7 +261,6 @@ expresion_aritmetica:
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															tArbol factorPtr;
 															terminoPtr = crearNodo(POR, terminoPtr,factorPtr);
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
@@ -264,21 +271,26 @@ termino:
 														};
 
 factor:
-	PA expresion_aritmetica PC	                        {printf("R 33: factor => PA expresion_aritmetica PC\n");}
-	| filter 											{printf("R 34: factor => FILTER\n");}
+	PA expresion_aritmetica PC	                        {	printf("R 33: factor => PA expresion_aritmetica PC\n");
+															/*Aca falta agregar esta parte al arbol!!!!!!*/
+														}
+	| filter 											{printf("R 34: factor => FILTER\n");};
 
 factor:
 	ID			                                        {
 															chequearVarEnTabla(yylval.valor_string);
 															printf("R 35: factor => ID\n");
+															factorPtr = crearHoja(ID);
 														}
 	| CTE_FLOAT	                                        {
 															printf("R 36: factor => CTE_FLOAT\n");
 															agregarCteATabla(CteFloat);
+															factorPtr = crearHoja(CTE_FLOAT);
 														}
 	| CTE_INT	                                        {
 															printf("R 37: factor => CTE_INT\n");
 															agregarCteATabla(CteInt);
+															factorPtr = crearHoja(CTE_INT);
 														};
 /* Expresiones logicas */
 
