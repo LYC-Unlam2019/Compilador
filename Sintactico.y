@@ -30,9 +30,24 @@
 	#define TAMANIO_TABLA 300
 	#define TAM_NOMBRE 32
 
-	int yylex();
-	
+	/* Defino estructura de informacion para el arbol*/
+	typedef struct {
+		int entero;
+		float flotante;
+		char *cadena;
+	}tInfo;
+
+	/* Defino estructura de nodo de arbol*/
+	typedef struct sNodo{
+		tInfo info;
+		struct sNodo *izq, *der;
+	}tNodo;
+
+	/* Defino estructura de arbol*/
+	typedef struct tNodo* tArbol;
+
 	/* Funciones necesarias */
+	int yylex();
 	int yyerror(char* mensaje);
 	void agregarVarATabla(char* nombre);
 	void agregarTiposDatosATabla(void);
@@ -42,8 +57,9 @@
 	void grabarTabla(void);
 	void chequearPrintId(char *nombre);
 
-	void crearNodo();
-	void crearHoja();
+	tArbol crearNodo(char* dato, tArbol* pIzq, tArbol* pDer);
+	tArbol crearHoja(char* info);
+	void mostrar_grafico(tArbol *pa,int n);
 
 	int yystopparser=0;
 	FILE  *yyin;
@@ -57,20 +73,6 @@
 		int valor_i;
 		int longitud;
 	} TS_Reg;
-
-	/* Defino estructura de nodo de arbol*/
-	typedef struct sNodo{
-		tInfo info;
-		struct sNodo *izq, *der;
-	}tNodo;
-	/* Defino estructura de arbol*/
-	typedef struct tNodo* tArbol;
-	/* Defino estructura de informacion para el arbol*/
-	typedef struct {
-		int entero;
-		float flotante;
-		char *cadena;
-	}tInfo;
 
 
 	TS_Reg tabla_simbolo[TAMANIO_TABLA];
@@ -88,7 +90,27 @@
 			exprCadPtr,		//Puntero de expresiones de cadenas
 			exprAritPtr,	//Puntero de expresiones aritmeticas
 			terminoPtr,		//Puntero de terminos
-			factorPtr;		//Puntero de factores
+			factorPtr,		//Puntero de factores
+			programaPtr,
+			secDecPtr,
+			bloqueDecPtr,
+			declaPtr,
+			tDatosPtr,
+			listaIdPtr,
+			tDatoPtr,
+			bloquePtr,
+			sentenciaPtr,
+			bloqueIfPtr,
+			bloqueWhPtr,
+			lecturaPtr,
+			escrituraPtr,
+			expreLogPtr,
+			filterPtr,
+			termLogPtr,
+			compBoolPtr,
+			terminoFilterPtr,
+			compFilterPtr,
+			listaExpComaPtr;
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -141,6 +163,7 @@ programa:
 	START seccion_declaracion bloque END 	            {
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
+															mostrar_grafico(&bloquePtr,10);
 														};
 
  /* Declaracion de variables */
@@ -195,10 +218,10 @@ lista_id:
 
 bloque:                                                 /* No existen bloques sin sentencias */
 	bloque sentencia	                                {printf("R 10: bloque => bloque sentencia\n");}
-	| sentencia			                                {printf("R 11: bloque => sentencia\n");};
+	| sentencia			                                {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;};
 
 sentencia:
-	asignacion			                    			{printf("R 12: sentencia => asignacion\n");}
+	asignacion			                    			{printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr;}
 	| bloque_if                                         {printf("R 13: sentencia => bloque_if\n");}
 	| bloque_while                                      {printf("R 14: sentencia => bloque_while\n");}
 	| lectura                                			{printf("R 15: sentencia => lectura\n");}
@@ -218,7 +241,7 @@ asignacion:
 	ID ASIG expresion	                                {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
-															asigPtr = crearNodo(ASIG, crearHoja(ID), exprPtr);
+															asigPtr = crearNodo("ASIG", crearHoja("ID"), &exprPtr);
 														};
 
 /* Expresiones aritmeticas y otras */
@@ -237,23 +260,23 @@ expresion_cadena:
 	CTE_STRING						                    {
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
-															exprAritPtr = crearHoja(CTE_STRING);
+															exprAritPtr = crearHoja("CTE_STRING");
 														};
 
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															exprAritPtr = crearNodo(SUMA, exprAritPtr, terminoPtr);
+															exprAritPtr = crearNodo("SUMA", &exprAritPtr, &terminoPtr);
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															exprAritPtr = crearNodo(RESTA, exprAritPtr, terminoPtr);
+															exprAritPtr = crearNodo("RESTA", &exprAritPtr, &terminoPtr);
 														}
 	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
-															exprAritPtr = crearNodo(MOD, exprAritPtr, terminoPtr);
+															exprAritPtr = crearNodo("MOD", &exprAritPtr, &terminoPtr);
 														}
  	| expresion_aritmetica DIV termino                  {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
-															exprAritPtr = crearNodo(DIV, exprAritPtr, terminoPtr);
+															exprAritPtr = crearNodo("DIV", &exprAritPtr, &terminoPtr);
 														}
 	| termino								            {	printf("R 29: expresion_aritmetica => termino\n");
 															exprAritPtr = terminoPtr;
@@ -261,10 +284,10 @@ expresion_aritmetica:
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															terminoPtr = crearNodo(POR, terminoPtr,factorPtr);
+															terminoPtr = crearNodo("POR", &terminoPtr, &factorPtr);
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															terminoPtr = crearNodo(DIVIDIDO,terminoPtr, factorPtr);
+															terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -272,25 +295,27 @@ termino:
 
 factor:
 	PA expresion_aritmetica PC	                        {	printf("R 33: factor => PA expresion_aritmetica PC\n");
-															/*Aca falta agregar esta parte al arbol!!!!!!*/
+															factorPtr = exprAritPtr;
 														}
-	| filter 											{printf("R 34: factor => FILTER\n");};
+	| filter 											{printf("R 34: factor => FILTER\n");
+														 factorPtr = filterPtr;
+														};
 
 factor:
 	ID			                                        {
 															chequearVarEnTabla(yylval.valor_string);
 															printf("R 35: factor => ID\n");
-															factorPtr = crearHoja(ID);
+															factorPtr = crearHoja("ID");
 														}
 	| CTE_FLOAT	                                        {
 															printf("R 36: factor => CTE_FLOAT\n");
 															agregarCteATabla(CteFloat);
-															factorPtr = crearHoja(CTE_FLOAT);
+															factorPtr = crearHoja("CTE_FLOAT");
 														}
 	| CTE_INT	                                        {
 															printf("R 37: factor => CTE_INT\n");
 															agregarCteATabla(CteInt);
-															factorPtr = crearHoja(CTE_INT);
+															factorPtr = crearHoja("CTE_INT");
 														};
 /* Expresiones logicas */
 
@@ -335,6 +360,7 @@ lectura:
 															printf("R 58: lectura => READ ID\n");
 														};
 
+
 escritura:
     PRINT ID                                            {
 															chequearVarEnTabla($2);
@@ -345,6 +371,8 @@ escritura:
 															printf("R 60: escritura => PRINT CTE_STRING\n");
 															agregarCteATabla(CteString);
 														};
+
+
 %%
 
 int main(int argc,char *argv[])
@@ -544,3 +572,49 @@ void chequearPrintId(char * nombre){
 		}
 	}
 }
+
+tArbol crearNodo(char* info, tArbol* pIzq, tArbol* pDer){
+	
+	tNodo nodo ;
+
+	strcpy(nodo.info.cadena , info);
+	nodo.izq = pIzq;
+	nodo.der = pDer;
+	
+	return &nodo;
+}
+
+
+tArbol crearHoja(char* info){
+	
+   tNodo nodo ;
+    
+    strcpy(nodo.info.cadena , info);
+    nodo.izq = NULL;
+    nodo.der = NULL;
+
+    return &nodo;
+}
+
+void mostrar_grafico(tArbol *pa,int n)
+{
+    int numNodos = 0;
+    int i=0;
+     if(!*pa)
+          return;
+
+        mostrar_grafico(&(*pa)->der, n+1);
+
+     for(i; i<n; i++)
+     {
+       printf("   ");
+     }
+
+
+     numNodos++;
+     printf(" %s \n",(*pa)->info.cadena);
+
+     mostrar_grafico(&(*pa)->izq, n+1);
+
+}
+
