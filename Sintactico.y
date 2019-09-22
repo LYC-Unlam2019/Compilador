@@ -44,7 +44,7 @@
 	}tNodo;
 
 	/* Defino estructura de arbol*/
-	typedef struct tNodo* tArbol;
+	typedef tNodo* tArbol;
 
 	/* Funciones necesarias */
 	int yylex();
@@ -85,32 +85,32 @@
 
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
-	tArbol 	asigPtr,		//Puntero de asignaciones
-			exprPtr,		//Puntero de expresiones
-			exprCadPtr,		//Puntero de expresiones de cadenas
-			exprAritPtr,	//Puntero de expresiones aritmeticas
-			terminoPtr,		//Puntero de terminos
-			factorPtr,		//Puntero de factores
-			programaPtr,
-			secDecPtr,
-			bloqueDecPtr,
-			declaPtr,
-			tDatosPtr,
-			listaIdPtr,
-			tDatoPtr,
-			bloquePtr,
-			sentenciaPtr,
-			bloqueIfPtr,
-			bloqueWhPtr,
-			lecturaPtr,
-			escrituraPtr,
-			expreLogPtr,
-			filterPtr,
-			termLogPtr,
-			compBoolPtr,
-			terminoFilterPtr,
-			compFilterPtr,
-			listaExpComaPtr;
+	tArbol 	asigPtr,			//Puntero de asignaciones
+			exprPtr,			//Puntero de expresiones
+			exprCadPtr,			//Puntero de expresiones de cadenas
+			exprAritPtr,		//Puntero de expresiones aritmeticas
+			terminoPtr,			//Puntero de terminos
+			factorPtr,			//Puntero de factores
+			programaPtr,		//Puntero de programa	
+			secDecPtr,			//Puntero de seccion declaracion
+			bloqueDecPtr,		//Puntero de bloque declaracion	
+			declaPtr,			//Puntero de declaracion
+			tDatosPtr,			//Puntero de t_datos
+			listaIdPtr,			//Puntero de lista de ids
+			tDatoPtr,			//Puntero de t_dato
+			bloquePtr,			//Puntero de bloque
+			sentenciaPtr,		//Puntero de sentencia	
+			bloqueIfPtr,		//Puntero de bloque If
+			bloqueWhPtr,		//Puntero de bloque de While
+			lecturaPtr,			//Puntero de lectura
+			escrituraPtr,		//Puntero de escritura
+			expreLogPtr,		//Puntero de expresion logica	
+			filterPtr,			//Puntero de filter
+			termLogPtr,			//Puntero de termino logico
+			compBoolPtr,		//Puntero de comparador Booleano	
+			terminoFilterPtr,	//Puntero de termino de filter		
+			compFilterPtr,		//Puntero de comparador de filter	
+			listaExpComaPtr;	//Puntero de lista expresion coma		
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -163,7 +163,7 @@ programa:
 	START seccion_declaracion bloque END 	            {
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
-															mostrar_grafico(&bloquePtr,10);
+															//mostrar_grafico(&bloquePtr,10);
 														};
 
  /* Declaracion de variables */
@@ -241,7 +241,7 @@ asignacion:
 	ID ASIG expresion	                                {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
-															asigPtr = crearNodo("ASIG", crearHoja("ID"), &exprPtr);
+															//asigPtr = crearNodo("ASIG", &(crearHoja("ID")), &exprPtr);
 														};
 
 /* Expresiones aritmeticas y otras */
@@ -266,17 +266,17 @@ expresion_cadena:
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															exprAritPtr = crearNodo("SUMA", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("SUMA", &exprAritPtr, &terminoPtr);
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															exprAritPtr = crearNodo("RESTA", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("RESTA", &exprAritPtr, &terminoPtr);
 														}
 	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
-															exprAritPtr = crearNodo("MOD", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("MOD", &exprAritPtr, &terminoPtr);
 														}
  	| expresion_aritmetica DIV termino                  {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
-															exprAritPtr = crearNodo("DIV", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("DIV", &exprAritPtr, &terminoPtr);
 														}
 	| termino								            {	printf("R 29: expresion_aritmetica => termino\n");
 															exprAritPtr = terminoPtr;
@@ -284,10 +284,10 @@ expresion_aritmetica:
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															terminoPtr = crearNodo("POR", &terminoPtr, &factorPtr);
+															//terminoPtr = crearNodo("POR", &terminoPtr, &factorPtr);
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
+															//terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -576,24 +576,26 @@ void chequearPrintId(char * nombre){
 tArbol crearNodo(char* info, tArbol* pIzq, tArbol* pDer){
 	
 	tNodo nodo ;
+    tArbol arbol;
 
 	strcpy(nodo.info.cadena , info);
-	nodo.izq = pIzq;
-	nodo.der = pDer;
+	nodo.izq = *pIzq;
+	nodo.der = *pDer;
 	
-	return &nodo;
+	arbol = &nodo;
+	return arbol;
 }
 
 
 tArbol crearHoja(char* info){
 	
-   tNodo nodo ;
-    
+    tNodo nodo;
+    tArbol arbol = (tNodo*)malloc(sizeof(tNodo));
     strcpy(nodo.info.cadena , info);
     nodo.izq = NULL;
     nodo.der = NULL;
-
-    return &nodo;
+	arbol = &nodo;
+    return arbol;
 }
 
 void mostrar_grafico(tArbol *pa,int n)
