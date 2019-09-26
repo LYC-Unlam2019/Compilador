@@ -1,0 +1,131 @@
+/****** PARA TENER EN CUENTA*****/
+PE: PRUEBA EJECUTADA
+--/REGLAS CON VAR ENDVAR/--		
+		PE=	[INTEGER]:[numero1]: R6, R9, R4, R3, R1
+		PE= [INTEGER, FLOAT]:[numero1, real1]: R6, R7, R5, R9,R8,R4,R3,R1
+
+
+--/REGLAS CON PRINT /READ /--
+PE= PRINT ID: R60, R16, R11
+PE= READ ID: R58, R15, R11
+
+
+--/REGLAS CON MOD/DIV/--
+		((4) MOD (3)) :	        R 37: factor => CTE_INT
+								R 32: termino => factor
+								R 29: expresion_aritmetica => termino
+								R 33: factor => PA expresion_aritmetica PC
+								R 32: termino => factor
+								R 29: expresion_aritmetica => termino
+								R 37: factor => CTE_INT
+								R 32: termino => factor
+								R 29: expresion_aritmetica => termino
+								R 33: factor => PA expresion_aritmetica PC
+								R 32: termino => factor
+								R 27: expresion_aritmetica => expresion_aritmetica MOD termino
+								R 33: factor => PA expresion_aritmetica PC
+								R 32: termino => factor
+								R 29: expresion_aritmetica => termino
+								R 17: sentencia => expresion_aritmetica
+								R 11: bloque => sentencia
+
+		1 + ((4) MOD (3)) :  	R 37: factor => CTE_INT
+								 R 32: termino => factor
+								 R 29: expresion_aritmetica => termino
+								 R 37: factor => CTE_INT
+								 R 32: termino => factor
+								 R 29: expresion_aritmetica => termino
+								 R 33: factor => PA expresion_aritmetica PC
+								 R 32: termino => factor
+								 R 29: expresion_aritmetica => termino
+								 R 37: factor => CTE_INT
+								 R 32: termino => factor
+								 R 29: expresion_aritmetica => termino
+								 R 33: factor => PA expresion_aritmetica PC
+								 R 32: termino => factor
+								 R 27: expresion_aritmetica => expresion_aritmetica MOD termino
+								 R 33: factor => PA expresion_aritmetica PC
+								 R 32: termino => factor
+								 R 25: expresion_aritmetica => expresion_aritmetica SUMA termino
+								 R 17: sentencia => expresion_aritmetica
+								 R 11: bloque => sentencia
+
+
+
+--/REGLAS CON IF/--
+
+
+PE =	IF numero1 == 6 THEN
+			PRINT numero2
+		ENDIF
+									R 35: factor => ID
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 53: comp_bool => IGUAL
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica
+									R 40: expresion_logica => termino_logico
+									R 59: escritura => PRINT ID
+									R 16: sentencia => escritura
+									R 11: bloque => sentencia
+									R 18: bloque_if => IF expresion_logica THEN bloque ENDIF
+									R 13: sentencia => bloque_if
+									R 11: bloque => sentencia
+
+PE=		FILTER(_>(4 + numero1) AND _<=6.5 , [1,2,4,6])
+								//**Guarda que viene. Este es largo**/
+									R 50: comp_bool => MAYOR
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 35: factor => ID
+									R 32: termino => factor
+									R 25: expresion_aritmetica => expresion_aritmetica SUMA termino
+									R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC
+									R 51: comp_bool => MENOR_IGUAL
+									R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT
+									R 46: comparacion_filter => termino_filter AND termino_filter
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 57: lista_exp_coma => expresion_aritmetica
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica
+									R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC
+									R 34: factor => FILTER
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 17: sentencia => expresion_aritmetica
+									R 11: bloque => sentencia
+PE = 	FILTER(_>(4) AND _<=6.5 , [1]) 
+									/**Mas chico que el anterior**/
+									R 50: comp_bool => MAYOR
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC
+									R 51: comp_bool => MENOR_IGUAL
+									R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT
+									R 46: comparacion_filter => termino_filter AND termino_filter
+									R 37: factor => CTE_INT
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 57: lista_exp_coma => expresion_aritmetica
+									R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC
+									R 34: factor => FILTER
+									R 32: termino => factor
+									R 29: expresion_aritmetica => termino
+									R 17: sentencia => expresion_aritmetica
+									R 11: bloque => sentencia
