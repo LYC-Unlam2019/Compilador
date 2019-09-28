@@ -1,0 +1,8 @@
+START
+	VAR
+		[INTEGER]:[numero1]
+	ENDVAR
+
+	numero1:=2*5
+
+END

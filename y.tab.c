@@ -1,23 +1,24 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.3.  */
 
 /* Skeleton implementation for Bison's Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+
+   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
    Free Software Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
+
+   This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,7 +29,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -46,7 +47,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.4.1"
+#define YYBISON_VERSION "2.3"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -54,141 +55,9 @@
 /* Pure parsers.  */
 #define YYPURE 0
 
-/* Push parsers.  */
-#define YYPUSH 0
-
-/* Pull parsers.  */
-#define YYPULL 1
-
 /* Using locations.  */
 #define YYLSP_NEEDED 0
 
-
-
-/* Copy the first part of user declarations.  */
-
-/* Line 189 of yacc.c  */
-#line 16 "Sintactico.y"
-
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include "y.tab.h"
-
-	/* Tipos de datos para la tabla de simbolos */
-  	#define Integer 1
-	#define Float 2
-	#define String 3
-	#define CteInt 4
-	#define CteFloat 5
-	#define CteString 6
-
-	#define TAMANIO_TABLA 300
-	#define TAM_NOMBRE 32
-
-	/* Defino estructura de informacion para el arbol*/
-	typedef struct {
-		int entero;
-		float flotante;
-		char *cadena;
-	}tInfo;
-
-	/* Defino estructura de nodo de arbol*/
-	typedef struct sNodo{
-		tInfo info;
-		struct sNodo *izq, *der;
-	}tNodo;
-
-	/* Defino estructura de arbol*/
-	typedef struct tNodo* tArbol;
-
-	/* Funciones necesarias */
-	int yylex();
-	int yyerror(char* mensaje);
-	void agregarVarATabla(char* nombre);
-	void agregarTiposDatosATabla(void);
-	void agregarCteATabla(int num);
-	void chequearVarEnTabla(char* nombre);
-	int buscarEnTabla(char * nombre);
-	void grabarTabla(void);
-	void chequearPrintId(char *nombre);
-
-	tArbol crearNodo(char* dato, tArbol* pIzq, tArbol* pDer);
-	tArbol crearHoja(char* info);
-	void mostrar_grafico(tArbol *pa,int n);
-
-	int yystopparser=0;
-	FILE  *yyin;
-
-	/* Cosas de tabla de simbolos */
-	typedef struct {
-		char nombre[TAM_NOMBRE];
-		int tipo_dato;
-		char valor_s[TAM_NOMBRE];
-		float valor_f;
-		int valor_i;
-		int longitud;
-	} TS_Reg;
-
-
-	TS_Reg tabla_simbolo[TAMANIO_TABLA];
-	int fin_tabla = -1;
-
-	/* Cosas para la declaracion de variables y la tabla de simbolos */
-	int varADeclarar1 = 0;
-	int cantVarsADeclarar = 0;
-	int tipoDatoADeclarar;
-
-	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
-
-	tArbol 	asigPtr,		//Puntero de asignaciones
-			exprPtr,		//Puntero de expresiones
-			exprCadPtr,		//Puntero de expresiones de cadenas
-			exprAritPtr,	//Puntero de expresiones aritmeticas
-			terminoPtr,		//Puntero de terminos
-			factorPtr,		//Puntero de factores
-			programaPtr,
-			secDecPtr,
-			bloqueDecPtr,
-			declaPtr,
-			tDatosPtr,
-			listaIdPtr,
-			tDatoPtr,
-			bloquePtr,
-			sentenciaPtr,
-			bloqueIfPtr,
-			bloqueWhPtr,
-			lecturaPtr,
-			escrituraPtr,
-			expreLogPtr,
-			filterPtr,
-			termLogPtr,
-			compBoolPtr,
-			terminoFilterPtr,
-			compFilterPtr,
-			listaExpComaPtr;
-
-
-/* Line 189 of yacc.c  */
-#line 174 "y.tab.c"
-
-/* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
 
 
 /* Tokens.  */
@@ -292,33 +161,152 @@
 
 
 
+/* Copy the first part of user declarations.  */
+#line 16 "Sintactico.y"
+
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include "y.tab.h"
+
+	/* Tipos de datos para la tabla de simbolos */
+  	#define Integer 1
+	#define Float 2
+	#define String 3
+	#define CteInt 4
+	#define CteFloat 5
+	#define CteString 6
+	#define SIN_MEM -4
+	#define NODO_OK -3
+	#define TAMANIO_TABLA 300
+	#define TAM_NOMBRE 32
+
+	/* Defino estructura de informacion para el arbol*/
+	typedef struct {
+		int entero;
+		float flotante;
+		char *cadena;
+	}tInfo;
+
+	/* Defino estructura de nodo de arbol*/
+	typedef struct sNodo{
+		tInfo info;
+		struct sNodo *izq, *der;
+	}tNodo;
+
+	/* Defino estructura de arbol*/
+	typedef tNodo* tArbol;
+
+	/* Funciones necesarias */
+	int yylex();
+	int yyerror(char* mensaje);
+	void agregarVarATabla(char* nombre);
+	void agregarTiposDatosATabla(void);
+	void agregarCteATabla(int num);
+	void chequearVarEnTabla(char* nombre);
+	int buscarEnTabla(char * nombre);
+	void grabarTabla(void);
+	void chequearPrintId(char *nombre);
+
+	/**FUNCIONES PARA LA ENTREGA 2 **/
+	tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer);
+	tNodo* crearHoja(int dato);
+
+	void mostrar_grafico(tArbol *pa, int n);
+
+	int yystopparser=0;
+	FILE  *yyin;
+
+	/* Cosas de tabla de simbolos */
+	typedef struct {
+		char nombre[TAM_NOMBRE];
+		int tipo_dato;
+		char valor_s[TAM_NOMBRE];
+		float valor_f;
+		int valor_i;
+		int longitud;
+	} TS_Reg;
+
+
+	TS_Reg tabla_simbolo[TAMANIO_TABLA];
+	int fin_tabla = -1;
+
+	/* Cosas para la declaracion de variables y la tabla de simbolos */
+	int varADeclarar1 = 0;
+	int cantVarsADeclarar = 0;
+	int tipoDatoADeclarar;
+
+	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
+
+	tArbol 	asigPtr,			//Puntero de asignaciones
+			exprPtr,			//Puntero de expresiones
+			exprCadPtr,			//Puntero de expresiones de cadenas
+			exprAritPtr,		//Puntero de expresiones aritmeticas
+			terminoPtr,			//Puntero de terminos
+			factorPtr,			//Puntero de factores
+			programaPtr,		//Puntero de programa	
+			secDecPtr,			//Puntero de seccion declaracion
+			bloqueDecPtr,		//Puntero de bloque declaracion	
+			declaPtr,			//Puntero de declaracion
+			tDatosPtr,			//Puntero de t_datos
+			listaIdPtr,			//Puntero de lista de ids
+			tDatoPtr,			//Puntero de t_dato
+			bloquePtr,			//Puntero de bloque
+			sentenciaPtr,		//Puntero de sentencia	
+			bloqueIfPtr,		//Puntero de bloque If
+			bloqueWhPtr,		//Puntero de bloque de While
+			lecturaPtr,			//Puntero de lectura
+			escrituraPtr,		//Puntero de escritura
+			expreLogPtr,		//Puntero de expresion logica	
+			filterPtr,			//Puntero de filter
+			termLogPtr,			//Puntero de termino logico
+			compBoolPtr,		//Puntero de comparador Booleano	
+			terminoFilterPtr,	//Puntero de termino de filter		
+			compFilterPtr,		//Puntero de comparador de filter	
+			listaExpComaPtr;	//Puntero de lista expresion coma		
+
+
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+
+/* Enabling verbose error messages.  */
+#ifdef YYERROR_VERBOSE
+# undef YYERROR_VERBOSE
+# define YYERROR_VERBOSE 1
+#else
+# define YYERROR_VERBOSE 0
+#endif
+
+/* Enabling the token table.  */
+#ifndef YYTOKEN_TABLE
+# define YYTOKEN_TABLE 0
+#endif
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
+#line 120 "Sintactico.y"
 {
-
-/* Line 214 of yacc.c  */
-#line 117 "Sintactico.y"
-
 	int valor_int;
 	float valor_float;
 	char *valor_string;
-
-
-
-/* Line 214 of yacc.c  */
-#line 310 "y.tab.c"
-} YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
+}
+/* Line 193 of yacc.c.  */
+#line 297 "y.tab.c"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
+# define YYSTYPE_IS_TRIVIAL 1
 #endif
+
 
 
 /* Copy the second part of user declarations.  */
 
 
-/* Line 264 of yacc.c  */
-#line 322 "y.tab.c"
+/* Line 216 of yacc.c.  */
+#line 310 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -368,7 +356,7 @@ typedef short int yytype_int16;
 #define YYSIZE_MAXIMUM ((YYSIZE_T) -1)
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -393,14 +381,14 @@ typedef short int yytype_int16;
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static int
-YYID (int yyi)
+YYID (int i)
 #else
 static int
-YYID (yyi)
-    int yyi;
+YYID (i)
+    int i;
 #endif
 {
-  return yyi;
+  return i;
 }
 #endif
 
@@ -481,9 +469,9 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  yytype_int16 yyss_alloc;
-  YYSTYPE yyvs_alloc;
-};
+  yytype_int16 yyss;
+  YYSTYPE yyvs;
+  };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
 # define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
@@ -517,12 +505,12 @@ union yyalloc
    elements in the stack, and YYPTR gives the new location of the
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
-# define YYSTACK_RELOCATE(Stack_alloc, Stack)				\
+# define YYSTACK_RELOCATE(Stack)					\
     do									\
       {									\
 	YYSIZE_T yynewbytes;						\
-	YYCOPY (&yyptr->Stack_alloc, Stack, yysize);			\
-	Stack = &yyptr->Stack_alloc;					\
+	YYCOPY (&yyptr->Stack, Stack, yysize);				\
+	Stack = &yyptr->Stack;						\
 	yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
 	yyptr += yynewbytes / sizeof (*yyptr);				\
       }									\
@@ -630,13 +618,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   163,   163,   172,   175,   176,   179,   185,   186,   189,
-     193,   197,   203,   208,   220,   221,   224,   225,   226,   227,
-     228,   229,   232,   235,   238,   241,   250,   254,   260,   267,
-     271,   275,   278,   281,   286,   289,   292,   297,   300,   305,
-     310,   315,   323,   324,   325,   328,   329,   332,   333,   334,
-     337,   338,   339,   342,   343,   344,   345,   346,   347,   351,
-     354,   355,   358,   365,   370
+       0,   166,   166,   175,   178,   179,   182,   188,   189,   192,
+     196,   200,   206,   211,   223,   224,   227,   228,   229,   230,
+     231,   232,   235,   238,   241,   244,   253,   257,   263,   270,
+     274,   278,   281,   284,   289,   292,   295,   300,   303,   308,
+     314,   319,   331,   332,   333,   336,   337,   340,   341,   342,
+     345,   346,   347,   350,   351,   352,   353,   354,   355,   359,
+     362,   363,   366,   373,   378
 };
 #endif
 
@@ -890,7 +878,7 @@ while (YYID (0))
    we won't break user code: when these are the locations we know.  */
 
 #ifndef YY_LOCATION_PRINT
-# if YYLTYPE_IS_TRIVIAL
+# if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
 #  define YY_LOCATION_PRINT(File, Loc)			\
      fprintf (File, "%d.%d-%d.%d",			\
 	      (Loc).first_line, (Loc).first_column,	\
@@ -1001,20 +989,17 @@ yy_symbol_print (yyoutput, yytype, yyvaluep)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
+yy_stack_print (yytype_int16 *bottom, yytype_int16 *top)
 #else
 static void
-yy_stack_print (yybottom, yytop)
-    yytype_int16 *yybottom;
-    yytype_int16 *yytop;
+yy_stack_print (bottom, top)
+    yytype_int16 *bottom;
+    yytype_int16 *top;
 #endif
 {
   YYFPRINTF (stderr, "Stack now");
-  for (; yybottom <= yytop; yybottom++)
-    {
-      int yybot = *yybottom;
-      YYFPRINTF (stderr, " %d", yybot);
-    }
+  for (; bottom <= top; ++bottom)
+    YYFPRINTF (stderr, " %d", *bottom);
   YYFPRINTF (stderr, "\n");
 }
 
@@ -1048,11 +1033,11 @@ yy_reduce_print (yyvsp, yyrule)
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
-      YYFPRINTF (stderr, "   $%d = ", yyi + 1);
+      fprintf (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
 		       &(yyvsp[(yyi + 1) - (yynrhs)])
 		       		       );
-      YYFPRINTF (stderr, "\n");
+      fprintf (stderr, "\n");
     }
 }
 
@@ -1332,8 +1317,10 @@ yydestruct (yymsg, yytype, yyvaluep)
 	break;
     }
 }
+
 
 /* Prevent warnings from -Wmissing-prototypes.  */
+
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
 int yyparse (void *YYPARSE_PARAM);
@@ -1349,10 +1336,11 @@ int yyparse ();
 #endif /* ! YYPARSE_PARAM */
 
 
-/* The lookahead symbol.  */
+
+/* The look-ahead symbol.  */
 int yychar;
 
-/* The semantic value of the lookahead symbol.  */
+/* The semantic value of the look-ahead symbol.  */
 YYSTYPE yylval;
 
 /* Number of syntax errors so far.  */
@@ -1360,9 +1348,9 @@ int yynerrs;
 
 
 
-/*-------------------------.
-| yyparse or yypush_parse.  |
-`-------------------------*/
+/*----------.
+| yyparse.  |
+`----------*/
 
 #ifdef YYPARSE_PARAM
 #if (defined __STDC__ || defined __C99__FUNC__ \
@@ -1386,39 +1374,14 @@ yyparse ()
 #endif
 #endif
 {
-
-
-    int yystate;
-    /* Number of tokens to shift before error messages enabled.  */
-    int yyerrstatus;
-
-    /* The stacks and their tools:
-       `yyss': related to states.
-       `yyvs': related to semantic values.
-
-       Refer to the stacks thru separate pointers, to allow yyoverflow
-       to reallocate them elsewhere.  */
-
-    /* The state stack.  */
-    yytype_int16 yyssa[YYINITDEPTH];
-    yytype_int16 *yyss;
-    yytype_int16 *yyssp;
-
-    /* The semantic value stack.  */
-    YYSTYPE yyvsa[YYINITDEPTH];
-    YYSTYPE *yyvs;
-    YYSTYPE *yyvsp;
-
-    YYSIZE_T yystacksize;
-
+  
+  int yystate;
   int yyn;
   int yyresult;
-  /* Lookahead token as an internal (translated) token number.  */
-  int yytoken;
-  /* The variables used to return semantic value and location from the
-     action routines.  */
-  YYSTYPE yyval;
-
+  /* Number of tokens to shift before error messages enabled.  */
+  int yyerrstatus;
+  /* Look-ahead token as an internal (translated) token number.  */
+  int yytoken = 0;
 #if YYERROR_VERBOSE
   /* Buffer for error messages, and its allocated size.  */
   char yymsgbuf[128];
@@ -1426,28 +1389,51 @@ yyparse ()
   YYSIZE_T yymsg_alloc = sizeof yymsgbuf;
 #endif
 
+  /* Three stacks and their tools:
+     `yyss': related to states,
+     `yyvs': related to semantic values,
+     `yyls': related to locations.
+
+     Refer to the stacks thru separate pointers, to allow yyoverflow
+     to reallocate them elsewhere.  */
+
+  /* The state stack.  */
+  yytype_int16 yyssa[YYINITDEPTH];
+  yytype_int16 *yyss = yyssa;
+  yytype_int16 *yyssp;
+
+  /* The semantic value stack.  */
+  YYSTYPE yyvsa[YYINITDEPTH];
+  YYSTYPE *yyvs = yyvsa;
+  YYSTYPE *yyvsp;
+
+
+
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
+
+  YYSIZE_T yystacksize = YYINITDEPTH;
+
+  /* The variables used to return semantic value and location from the
+     action routines.  */
+  YYSTYPE yyval;
+
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
-
-  yytoken = 0;
-  yyss = yyssa;
-  yyvs = yyvsa;
-  yystacksize = YYINITDEPTH;
 
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yystate = 0;
   yyerrstatus = 0;
   yynerrs = 0;
-  yychar = YYEMPTY; /* Cause a token to be read.  */
+  yychar = YYEMPTY;		/* Cause a token to be read.  */
 
   /* Initialize stack pointers.
      Waste one element of value and location stack
      so that they stay on the same level as the state stack.
      The wasted elements are never initialized.  */
+
   yyssp = yyss;
   yyvsp = yyvs;
 
@@ -1477,6 +1463,7 @@ yyparse ()
 	YYSTYPE *yyvs1 = yyvs;
 	yytype_int16 *yyss1 = yyss;
 
+
 	/* Each stack pointer address is followed by the size of the
 	   data in use in that stack, in bytes.  This used to be a
 	   conditional around just the two extra args, but that might
@@ -1484,6 +1471,7 @@ yyparse ()
 	yyoverflow (YY_("memory exhausted"),
 		    &yyss1, yysize * sizeof (*yyssp),
 		    &yyvs1, yysize * sizeof (*yyvsp),
+
 		    &yystacksize);
 
 	yyss = yyss1;
@@ -1506,8 +1494,9 @@ yyparse ()
 	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
 	if (! yyptr)
 	  goto yyexhaustedlab;
-	YYSTACK_RELOCATE (yyss_alloc, yyss);
-	YYSTACK_RELOCATE (yyvs_alloc, yyvs);
+	YYSTACK_RELOCATE (yyss);
+	YYSTACK_RELOCATE (yyvs);
+
 #  undef YYSTACK_RELOCATE
 	if (yyss1 != yyssa)
 	  YYSTACK_FREE (yyss1);
@@ -1518,6 +1507,7 @@ yyparse ()
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
 
+
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
 		  (unsigned long int) yystacksize));
 
@@ -1527,9 +1517,6 @@ yyparse ()
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
 
-  if (yystate == YYFINAL)
-    YYACCEPT;
-
   goto yybackup;
 
 /*-----------.
@@ -1538,16 +1525,16 @@ yyparse ()
 yybackup:
 
   /* Do appropriate processing given the current state.  Read a
-     lookahead token if we need one and don't already have one.  */
+     look-ahead token if we need one and don't already have one.  */
 
-  /* First try to decide what to do without reference to lookahead token.  */
+  /* First try to decide what to do without reference to look-ahead token.  */
   yyn = yypact[yystate];
   if (yyn == YYPACT_NINF)
     goto yydefault;
 
-  /* Not known => get a lookahead token if don't already have one.  */
+  /* Not known => get a look-ahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
+  /* YYCHAR is either YYEMPTY or YYEOF or a valid look-ahead symbol.  */
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
@@ -1579,16 +1566,20 @@ yybackup:
       goto yyreduce;
     }
 
+  if (yyn == YYFINAL)
+    YYACCEPT;
+
   /* Count tokens shifted since error; after three, turn off error
      status.  */
   if (yyerrstatus)
     yyerrstatus--;
 
-  /* Shift the lookahead token.  */
+  /* Shift the look-ahead token.  */
   YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
 
-  /* Discard the shifted token.  */
-  yychar = YYEMPTY;
+  /* Discard the shifted token unless it is eof.  */
+  if (yychar != YYEOF)
+    yychar = YYEMPTY;
 
   yystate = yyn;
   *++yyvsp = yylval;
@@ -1628,41 +1619,31 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-
-/* Line 1455 of yacc.c  */
-#line 163 "Sintactico.y"
+#line 166 "Sintactico.y"
     {
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
-															mostrar_grafico(&bloquePtr,10);
+															//mostrar_grafico(&bloquePtr,10);
 														}
     break;
 
   case 3:
-
-/* Line 1455 of yacc.c  */
-#line 172 "Sintactico.y"
+#line 175 "Sintactico.y"
     {printf("R 1: Seccion declaracion => VAR bloque_dec ENDVAR\n");}
     break;
 
   case 4:
-
-/* Line 1455 of yacc.c  */
-#line 175 "Sintactico.y"
+#line 178 "Sintactico.y"
     {printf("R 2: bloque_dec => bloque_dec declaracion\n");}
     break;
 
   case 5:
-
-/* Line 1455 of yacc.c  */
-#line 176 "Sintactico.y"
+#line 179 "Sintactico.y"
     {printf("R 3: bloque_dec => declaracion\n");}
     break;
 
   case 6:
-
-/* Line 1455 of yacc.c  */
-#line 179 "Sintactico.y"
+#line 182 "Sintactico.y"
     {
 															printf("R 4: declaracion => t_dato DOS_PUNTOS lista_id\n");
 															 agregarTiposDatosATabla();
@@ -1670,23 +1651,17 @@ yyreduce:
     break;
 
   case 7:
-
-/* Line 1455 of yacc.c  */
-#line 185 "Sintactico.y"
+#line 188 "Sintactico.y"
     {printf("R 5: t_datos => t_datos COMA t_dato\n");}
     break;
 
   case 8:
-
-/* Line 1455 of yacc.c  */
-#line 186 "Sintactico.y"
+#line 189 "Sintactico.y"
     {printf("R 6: t_datos => t_dato \n");}
     break;
 
   case 9:
-
-/* Line 1455 of yacc.c  */
-#line 189 "Sintactico.y"
+#line 192 "Sintactico.y"
     {
 															printf("R 7: t_dato => FLOAT\n");
 															tipoDatoADeclarar = Float;
@@ -1694,9 +1669,7 @@ yyreduce:
     break;
 
   case 10:
-
-/* Line 1455 of yacc.c  */
-#line 193 "Sintactico.y"
+#line 196 "Sintactico.y"
     {
 															printf("R 8: t_dato => INTEGER\n");
 															tipoDatoADeclarar = Integer;
@@ -1704,9 +1677,7 @@ yyreduce:
     break;
 
   case 11:
-
-/* Line 1455 of yacc.c  */
-#line 197 "Sintactico.y"
+#line 200 "Sintactico.y"
     {
 															printf("R 9: t_dato => STRING\n");
 															tipoDatoADeclarar = String;
@@ -1714,9 +1685,7 @@ yyreduce:
     break;
 
   case 12:
-
-/* Line 1455 of yacc.c  */
-#line 203 "Sintactico.y"
+#line 206 "Sintactico.y"
     {
 	                                                        printf("R 8: lista_id => lista_id COMA ID\n");
 	                                                        agregarVarATabla(yylval.valor_string);
@@ -1725,9 +1694,7 @@ yyreduce:
     break;
 
   case 13:
-
-/* Line 1455 of yacc.c  */
-#line 208 "Sintactico.y"
+#line 211 "Sintactico.y"
     {
 	                                                        printf("R 9: lista_id => ID\n");
 	                                                        agregarVarATabla(yylval.valor_string);
@@ -1737,97 +1704,71 @@ yyreduce:
     break;
 
   case 14:
-
-/* Line 1455 of yacc.c  */
-#line 220 "Sintactico.y"
+#line 223 "Sintactico.y"
     {printf("R 10: bloque => bloque sentencia\n");}
     break;
 
   case 15:
-
-/* Line 1455 of yacc.c  */
-#line 221 "Sintactico.y"
+#line 224 "Sintactico.y"
     {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;}
     break;
 
   case 16:
-
-/* Line 1455 of yacc.c  */
-#line 224 "Sintactico.y"
+#line 227 "Sintactico.y"
     {printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr;}
     break;
 
   case 17:
-
-/* Line 1455 of yacc.c  */
-#line 225 "Sintactico.y"
+#line 228 "Sintactico.y"
     {printf("R 13: sentencia => bloque_if\n");}
     break;
 
   case 18:
-
-/* Line 1455 of yacc.c  */
-#line 226 "Sintactico.y"
+#line 229 "Sintactico.y"
     {printf("R 14: sentencia => bloque_while\n");}
     break;
 
   case 19:
-
-/* Line 1455 of yacc.c  */
-#line 227 "Sintactico.y"
+#line 230 "Sintactico.y"
     {printf("R 15: sentencia => lectura\n");}
     break;
 
   case 20:
-
-/* Line 1455 of yacc.c  */
-#line 228 "Sintactico.y"
+#line 231 "Sintactico.y"
     {printf("R 16: sentencia => escritura\n");}
     break;
 
   case 21:
-
-/* Line 1455 of yacc.c  */
-#line 229 "Sintactico.y"
+#line 232 "Sintactico.y"
     {printf("R 17: sentencia => expresion_aritmetica\n");}
     break;
 
   case 22:
-
-/* Line 1455 of yacc.c  */
-#line 232 "Sintactico.y"
+#line 235 "Sintactico.y"
     {printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");}
     break;
 
   case 23:
-
-/* Line 1455 of yacc.c  */
-#line 235 "Sintactico.y"
+#line 238 "Sintactico.y"
     {printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");}
     break;
 
   case 24:
-
-/* Line 1455 of yacc.c  */
-#line 238 "Sintactico.y"
+#line 241 "Sintactico.y"
     {printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");}
     break;
 
   case 25:
-
-/* Line 1455 of yacc.c  */
-#line 241 "Sintactico.y"
+#line 244 "Sintactico.y"
     {
 															chequearVarEnTabla((yyvsp[(1) - (3)].valor_string));
 															printf("R 21: asignacion => ID ASIG expresion\n");
-															asigPtr = crearNodo("ASIG", crearHoja("ID"), &exprPtr);
+															//asigPtr = crearNodo("ASIG", &(crearHoja("ID")), &exprPtr);
 														}
     break;
 
   case 26:
-
-/* Line 1455 of yacc.c  */
-#line 250 "Sintactico.y"
+#line 253 "Sintactico.y"
     {
 															printf("R 22: expresion => expresion_cadena\n");
 															exprPtr = exprCadPtr;
@@ -1835,9 +1776,7 @@ yyreduce:
     break;
 
   case 27:
-
-/* Line 1455 of yacc.c  */
-#line 254 "Sintactico.y"
+#line 257 "Sintactico.y"
     {
 															printf("R 23: expresion => expresion_aritmetica\n");
 															exprPtr = exprAritPtr;
@@ -1845,285 +1784,220 @@ yyreduce:
     break;
 
   case 28:
-
-/* Line 1455 of yacc.c  */
-#line 260 "Sintactico.y"
+#line 263 "Sintactico.y"
     {
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
-															exprAritPtr = crearHoja("CTE_STRING");
+															//exprAritPtr = crearHoja(CteString);
 														}
     break;
 
   case 29:
-
-/* Line 1455 of yacc.c  */
-#line 267 "Sintactico.y"
+#line 270 "Sintactico.y"
     {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															exprAritPtr = crearNodo("SUMA", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("SUMA", &exprAritPtr, &terminoPtr);
 														}
     break;
 
   case 30:
-
-/* Line 1455 of yacc.c  */
-#line 271 "Sintactico.y"
+#line 274 "Sintactico.y"
     {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															exprAritPtr = crearNodo("RESTA", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("RESTA", &exprAritPtr, &terminoPtr);
 														}
     break;
 
   case 31:
-
-/* Line 1455 of yacc.c  */
-#line 275 "Sintactico.y"
+#line 278 "Sintactico.y"
     {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
-															exprAritPtr = crearNodo("MOD", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("MOD", &exprAritPtr, &terminoPtr);
 														}
     break;
 
   case 32:
-
-/* Line 1455 of yacc.c  */
-#line 278 "Sintactico.y"
+#line 281 "Sintactico.y"
     {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
-															exprAritPtr = crearNodo("DIV", &exprAritPtr, &terminoPtr);
+															//exprAritPtr = crearNodo("DIV", &exprAritPtr, &terminoPtr);
 														}
     break;
 
   case 33:
-
-/* Line 1455 of yacc.c  */
-#line 281 "Sintactico.y"
+#line 284 "Sintactico.y"
     {	printf("R 29: expresion_aritmetica => termino\n");
 															exprAritPtr = terminoPtr;
 														}
     break;
 
   case 34:
-
-/* Line 1455 of yacc.c  */
-#line 286 "Sintactico.y"
+#line 289 "Sintactico.y"
     {	printf("R 30: termino => termino POR factor\n");
-															terminoPtr = crearNodo("POR", &terminoPtr, &factorPtr);
+															//terminoPtr = crearNodo("POR", &terminoPtr, &factorPtr);
 														}
     break;
 
   case 35:
-
-/* Line 1455 of yacc.c  */
-#line 289 "Sintactico.y"
+#line 292 "Sintactico.y"
     {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
+															//terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
 														}
     break;
 
   case 36:
-
-/* Line 1455 of yacc.c  */
-#line 292 "Sintactico.y"
+#line 295 "Sintactico.y"
     {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
 														}
     break;
 
   case 37:
-
-/* Line 1455 of yacc.c  */
-#line 297 "Sintactico.y"
+#line 300 "Sintactico.y"
     {	printf("R 33: factor => PA expresion_aritmetica PC\n");
 															factorPtr = exprAritPtr;
 														}
     break;
 
   case 38:
-
-/* Line 1455 of yacc.c  */
-#line 300 "Sintactico.y"
-    {printf("R 34: factor => FILTER\n");
-														 factorPtr = filterPtr;
+#line 303 "Sintactico.y"
+    {	printf("R 34: factor => FILTER\n");
+														    factorPtr = filterPtr;
 														}
     break;
 
   case 39:
-
-/* Line 1455 of yacc.c  */
-#line 305 "Sintactico.y"
+#line 308 "Sintactico.y"
     {
 															chequearVarEnTabla(yylval.valor_string);
 															printf("R 35: factor => ID\n");
-															factorPtr = crearHoja("ID");
+															factorPtr = crearHoja(Integer);
+															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
 														}
     break;
 
   case 40:
-
-/* Line 1455 of yacc.c  */
-#line 310 "Sintactico.y"
+#line 314 "Sintactico.y"
     {
 															printf("R 36: factor => CTE_FLOAT\n");
 															agregarCteATabla(CteFloat);
-															factorPtr = crearHoja("CTE_FLOAT");
+															factorPtr = crearHoja(CteFloat);
 														}
     break;
 
   case 41:
-
-/* Line 1455 of yacc.c  */
-#line 315 "Sintactico.y"
+#line 319 "Sintactico.y"
     {
 															printf("R 37: factor => CTE_INT\n");
 															agregarCteATabla(CteInt);
-															factorPtr = crearHoja("CTE_INT");
+															factorPtr = crearHoja(CteInt);
+															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
+															printf("Puntero:\n"); 
+															printf("info: %d \n", factorPtr->info.entero);
+															printf("\n");//BORRAR ESTO
 														}
     break;
 
   case 42:
-
-/* Line 1455 of yacc.c  */
-#line 323 "Sintactico.y"
+#line 331 "Sintactico.y"
     {printf("R 38: expresion_logica => termino_logico AND termino_logico\n");}
     break;
 
   case 43:
-
-/* Line 1455 of yacc.c  */
-#line 324 "Sintactico.y"
+#line 332 "Sintactico.y"
     {printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
     break;
 
   case 44:
-
-/* Line 1455 of yacc.c  */
-#line 325 "Sintactico.y"
+#line 333 "Sintactico.y"
     {printf("R 40: expresion_logica => termino_logico\n");}
     break;
 
   case 45:
-
-/* Line 1455 of yacc.c  */
-#line 328 "Sintactico.y"
+#line 336 "Sintactico.y"
     {printf("R 41: NOT termino_logico\n");}
     break;
 
   case 46:
-
-/* Line 1455 of yacc.c  */
-#line 329 "Sintactico.y"
+#line 337 "Sintactico.y"
     {printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");}
     break;
 
   case 47:
-
-/* Line 1455 of yacc.c  */
-#line 332 "Sintactico.y"
+#line 340 "Sintactico.y"
     {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
     break;
 
   case 48:
-
-/* Line 1455 of yacc.c  */
-#line 333 "Sintactico.y"
+#line 341 "Sintactico.y"
     {printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");}
     break;
 
   case 49:
-
-/* Line 1455 of yacc.c  */
-#line 334 "Sintactico.y"
+#line 342 "Sintactico.y"
     {printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");}
     break;
 
   case 50:
-
-/* Line 1455 of yacc.c  */
-#line 337 "Sintactico.y"
+#line 345 "Sintactico.y"
     {printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");}
     break;
 
   case 51:
-
-/* Line 1455 of yacc.c  */
-#line 338 "Sintactico.y"
+#line 346 "Sintactico.y"
     {printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
     break;
 
   case 52:
-
-/* Line 1455 of yacc.c  */
-#line 339 "Sintactico.y"
+#line 347 "Sintactico.y"
     {printf("R 48: comparacion_filter => termino_filter\n");}
     break;
 
   case 53:
-
-/* Line 1455 of yacc.c  */
-#line 342 "Sintactico.y"
+#line 350 "Sintactico.y"
     {printf("R 49: comp_bool => MENOR\n");}
     break;
 
   case 54:
-
-/* Line 1455 of yacc.c  */
-#line 343 "Sintactico.y"
+#line 351 "Sintactico.y"
     {printf("R 50: comp_bool => MAYOR\n");}
     break;
 
   case 55:
-
-/* Line 1455 of yacc.c  */
-#line 344 "Sintactico.y"
+#line 352 "Sintactico.y"
     {printf("R 51: comp_bool => MENOR_IGUAL\n");}
     break;
 
   case 56:
-
-/* Line 1455 of yacc.c  */
-#line 345 "Sintactico.y"
+#line 353 "Sintactico.y"
     {printf("R 52: comp_bool => MAYOR_IGUAL\n");}
     break;
 
   case 57:
-
-/* Line 1455 of yacc.c  */
-#line 346 "Sintactico.y"
+#line 354 "Sintactico.y"
     {printf("R 53: comp_bool => IGUAL\n");}
     break;
 
   case 58:
-
-/* Line 1455 of yacc.c  */
-#line 347 "Sintactico.y"
+#line 355 "Sintactico.y"
     {printf("R 54: comp_bool => DISTINTO\n");}
     break;
 
   case 59:
-
-/* Line 1455 of yacc.c  */
-#line 351 "Sintactico.y"
+#line 359 "Sintactico.y"
     {printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");}
     break;
 
   case 60:
-
-/* Line 1455 of yacc.c  */
-#line 354 "Sintactico.y"
+#line 362 "Sintactico.y"
     {printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");}
     break;
 
   case 61:
-
-/* Line 1455 of yacc.c  */
-#line 355 "Sintactico.y"
+#line 363 "Sintactico.y"
     {printf("R 57: lista_exp_coma => expresion_aritmetica\n");}
     break;
 
   case 62:
-
-/* Line 1455 of yacc.c  */
-#line 358 "Sintactico.y"
+#line 366 "Sintactico.y"
     {
 															chequearVarEnTabla((yyvsp[(2) - (2)].valor_string));
 															printf("R 58: lectura => READ ID\n");
@@ -2131,9 +2005,7 @@ yyreduce:
     break;
 
   case 63:
-
-/* Line 1455 of yacc.c  */
-#line 365 "Sintactico.y"
+#line 373 "Sintactico.y"
     {
 															chequearVarEnTabla((yyvsp[(2) - (2)].valor_string));
 															chequearPrintId((yyvsp[(2) - (2)].valor_string));
@@ -2142,9 +2014,7 @@ yyreduce:
     break;
 
   case 64:
-
-/* Line 1455 of yacc.c  */
-#line 370 "Sintactico.y"
+#line 378 "Sintactico.y"
     {
 															printf("R 60: escritura => PRINT CTE_STRING\n");
 															agregarCteATabla(CteString);
@@ -2152,9 +2022,8 @@ yyreduce:
     break;
 
 
-
-/* Line 1455 of yacc.c  */
-#line 2158 "y.tab.c"
+/* Line 1267 of yacc.c.  */
+#line 2027 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2164,6 +2033,7 @@ yyreduce:
   YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
+
 
   /* Now `shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
@@ -2229,7 +2099,7 @@ yyerrlab:
 
   if (yyerrstatus == 3)
     {
-      /* If just tried and failed to reuse lookahead token after an
+      /* If just tried and failed to reuse look-ahead token after an
 	 error, discard it.  */
 
       if (yychar <= YYEOF)
@@ -2246,7 +2116,7 @@ yyerrlab:
 	}
     }
 
-  /* Else will try to reuse lookahead token after shifting the error
+  /* Else will try to reuse look-ahead token after shifting the error
      token.  */
   goto yyerrlab1;
 
@@ -2303,6 +2173,9 @@ yyerrlab1:
       YY_STACK_PRINT (yyss, yyssp);
     }
 
+  if (yyn == YYFINAL)
+    YYACCEPT;
+
   *++yyvsp = yylval;
 
 
@@ -2327,7 +2200,7 @@ yyabortlab:
   yyresult = 1;
   goto yyreturn;
 
-#if !defined(yyoverflow) || YYERROR_VERBOSE
+#ifndef yyoverflow
 /*-------------------------------------------------.
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
@@ -2338,7 +2211,7 @@ yyexhaustedlab:
 #endif
 
 yyreturn:
-  if (yychar != YYEMPTY)
+  if (yychar != YYEOF && yychar != YYEMPTY)
      yydestruct ("Cleanup: discarding lookahead",
 		 yytoken, &yylval);
   /* Do not reclaim the symbols of the rule which action triggered
@@ -2364,13 +2237,10 @@ yyreturn:
 }
 
 
-
-/* Line 1675 of yacc.c  */
-#line 376 "Sintactico.y"
+#line 384 "Sintactico.y"
 
 
-int main(int argc,char *argv[])
-{
+int main(int argc,char *argv[]){
   if ((yyin = fopen(argv[1], "rt")) == NULL)
   {
 	printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
@@ -2567,49 +2437,71 @@ void chequearPrintId(char * nombre){
 	}
 }
 
-tArbol crearNodo(char* info, tArbol* pIzq, tArbol* pDer){
+tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer){
 	
-	tNodo nodo ;
+    tNodo* nodoNuevo = (tNodo*)malloc(sizeof(tNodo));
+    tInfo info;
 
-	strcpy(nodo.info.cadena , info);
-	nodo.izq = pIzq;
-	nodo.der = pDer;
-	
-	return &nodo;
-}
-
-
-tArbol crearHoja(char* info){
-	
-   tNodo nodo ;
+    switch(dato){
+		case CteInt:
+			info.entero = yylval.valor_int;
+			break;
+		case Integer:
+		    info.entero = yylval.valor_int;
+			break;		
+		case CteFloat:
+			info.flotante = yylval.valor_float;
+			break;
+		case Float:
+			info.flotante = yylval.valor_float;
+			break;		
+		case CteString:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+		case String:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+	}
     
-    strcpy(nodo.info.cadena , info);
-    nodo.izq = NULL;
-    nodo.der = NULL;
-
-    return &nodo;
+    nodoNuevo->info = info;
+    nodoNuevo->izq = pIzq;
+    nodoNuevo->der = pDer;
+    return nodoNuevo;
 }
 
-void mostrar_grafico(tArbol *pa,int n)
-{
-    int numNodos = 0;
-    int i=0;
-     if(!*pa)
-          return;
+tNodo* crearHoja(int dato){	
+    tNodo* nodoNuevo = (tNodo*)malloc(sizeof(tNodo));
+    tInfo info;
 
-        mostrar_grafico(&(*pa)->der, n+1);
+    switch(dato){
+		case CteInt:
+			info.entero = yylval.valor_int;
+			break;
+		case Integer:
+		    info.entero = yylval.valor_int;
+			break;		
+		case CteFloat:
+			info.flotante = yylval.valor_float;
+			break;
+		case Float:
+			info.flotante = yylval.valor_float;
+			break;		
+		case CteString:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+		case String:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+	}
 
-     for(i; i<n; i++)
-     {
-       printf("   ");
-     }
-
-
-     numNodos++;
-     printf(" %s \n",(*pa)->info.cadena);
-
-     mostrar_grafico(&(*pa)->izq, n+1);
-
+	nodoNuevo->info = info;
+    nodoNuevo->izq = NULL;
+    nodoNuevo->der = NULL;
+    return nodoNuevo;
 }
+
+
+
+
 
 

@@ -1,9 +1,9 @@
-Terminals unused in grammar
+Terminals which are not used
 
    PUNTO_COMA
 
 
-Gramática
+Grammar
 
     0 $accept: programa $end
 
@@ -97,7 +97,7 @@ Gramática
    63          | PRINT CTE_STRING
 
 
-Terminales con las reglas donde aparecen
+Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
@@ -147,323 +147,323 @@ CTE_INT (300) 40 48
 CTE_STRING (301) 27 63
 
 
-No terminales con las reglas donde aparecen
+Nonterminals, with rules where they appear
 
 $accept (47)
-    en la izquierda: 0
+    on left: 0
 programa (48)
-    en la izquierda: 1, en la derecha: 0
+    on left: 1, on right: 0
 seccion_declaracion (49)
-    en la izquierda: 2, en la derecha: 1
+    on left: 2, on right: 1
 bloque_dec (50)
-    en la izquierda: 3 4, en la derecha: 2 3
+    on left: 3 4, on right: 2 3
 declaracion (51)
-    en la izquierda: 5, en la derecha: 3 4
+    on left: 5, on right: 3 4
 t_datos (52)
-    en la izquierda: 6 7, en la derecha: 5 6
+    on left: 6 7, on right: 5 6
 t_dato (53)
-    en la izquierda: 8 9 10, en la derecha: 6 7
+    on left: 8 9 10, on right: 6 7
 lista_id (54)
-    en la izquierda: 11 12, en la derecha: 5 11
+    on left: 11 12, on right: 5 11
 bloque (55)
-    en la izquierda: 13 14, en la derecha: 1 13 21 22 23
+    on left: 13 14, on right: 1 13 21 22 23
 sentencia (56)
-    en la izquierda: 15 16 17 18 19 20, en la derecha: 13 14
+    on left: 15 16 17 18 19 20, on right: 13 14
 bloque_if (57)
-    en la izquierda: 21 22, en la derecha: 16
+    on left: 21 22, on right: 16
 bloque_while (58)
-    en la izquierda: 23, en la derecha: 17
+    on left: 23, on right: 17
 asignacion (59)
-    en la izquierda: 24, en la derecha: 15
+    on left: 24, on right: 15
 expresion (60)
-    en la izquierda: 25 26, en la derecha: 24
+    on left: 25 26, on right: 24
 expresion_cadena (61)
-    en la izquierda: 27, en la derecha: 25
+    on left: 27, on right: 25
 expresion_aritmetica (62)
-    en la izquierda: 28 29 30 31 32, en la derecha: 20 26 28 29 30
-    31 36 45 46 59 60
+    on left: 28 29 30 31 32, on right: 20 26 28 29 30 31 36 45 46 59
+    60
 termino (63)
-    en la izquierda: 33 34 35, en la derecha: 28 29 30 31 32 33 34
+    on left: 33 34 35, on right: 28 29 30 31 32 33 34
 factor (64)
-    en la izquierda: 36 37 38 39 40, en la derecha: 33 34 35
+    on left: 36 37 38 39 40, on right: 33 34 35
 expresion_logica (65)
-    en la izquierda: 41 42 43, en la derecha: 21 22 23
+    on left: 41 42 43, on right: 21 22 23
 termino_logico (66)
-    en la izquierda: 44 45, en la derecha: 41 42 43 44
+    on left: 44 45, on right: 41 42 43 44
 termino_filter (67)
-    en la izquierda: 46 47 48, en la derecha: 49 50 51
+    on left: 46 47 48, on right: 49 50 51
 comparacion_filter (68)
-    en la izquierda: 49 50 51, en la derecha: 58
+    on left: 49 50 51, on right: 58
 comp_bool (69)
-    en la izquierda: 52 53 54 55 56 57, en la derecha: 45 46 47 48
+    on left: 52 53 54 55 56 57, on right: 45 46 47 48
 filter (70)
-    en la izquierda: 58, en la derecha: 37
+    on left: 58, on right: 37
 lista_exp_coma (71)
-    en la izquierda: 59 60, en la derecha: 58 59
+    on left: 59 60, on right: 58 59
 lectura (72)
-    en la izquierda: 61, en la derecha: 18
+    on left: 61, on right: 18
 escritura (73)
-    en la izquierda: 62 63, en la derecha: 19
+    on left: 62 63, on right: 19
 
 
-estado 0
+state 0
 
     0 $accept: . programa $end
 
-    START  desplazar e ir al estado 1
+    START  shift, and go to state 1
 
-    programa  ir al estado 2
+    programa  go to state 2
 
 
-estado 1
+state 1
 
     1 programa: START . seccion_declaracion bloque END
 
-    VAR  desplazar e ir al estado 3
+    VAR  shift, and go to state 3
 
-    seccion_declaracion  ir al estado 4
+    seccion_declaracion  go to state 4
 
 
-estado 2
+state 2
 
     0 $accept: programa . $end
 
-    $end  desplazar e ir al estado 5
+    $end  shift, and go to state 5
 
 
-estado 3
+state 3
 
     2 seccion_declaracion: VAR . bloque_dec ENDVAR
 
-    CA  desplazar e ir al estado 6
+    CA  shift, and go to state 6
 
-    bloque_dec   ir al estado 7
-    declaracion  ir al estado 8
+    bloque_dec   go to state 7
+    declaracion  go to state 8
 
 
-estado 4
+state 4
 
     1 programa: START seccion_declaracion . bloque END
 
-    REPEAT     desplazar e ir al estado 9
-    IF         desplazar e ir al estado 10
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    REPEAT     shift, and go to state 9
+    IF         shift, and go to state 10
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    bloque                ir al estado 18
-    sentencia             ir al estado 19
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    bloque                go to state 18
+    sentencia             go to state 19
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 5
+state 5
 
     0 $accept: programa $end .
 
-    $default  aceptar
+    $default  accept
 
 
-estado 6
+state 6
 
     5 declaracion: CA . t_datos CC DOS_PUNTOS CA lista_id CC
 
-    INTEGER  desplazar e ir al estado 29
-    FLOAT    desplazar e ir al estado 30
-    STRING   desplazar e ir al estado 31
+    INTEGER  shift, and go to state 29
+    FLOAT    shift, and go to state 30
+    STRING   shift, and go to state 31
 
-    t_datos  ir al estado 32
-    t_dato   ir al estado 33
+    t_datos  go to state 32
+    t_dato   go to state 33
 
 
-estado 7
+state 7
 
     2 seccion_declaracion: VAR bloque_dec . ENDVAR
     3 bloque_dec: bloque_dec . declaracion
 
-    ENDVAR  desplazar e ir al estado 34
-    CA      desplazar e ir al estado 6
+    ENDVAR  shift, and go to state 34
+    CA      shift, and go to state 6
 
-    declaracion  ir al estado 35
+    declaracion  go to state 35
 
 
-estado 8
+state 8
 
     4 bloque_dec: declaracion .
 
-    $default  reduce usando la regla 4 (bloque_dec)
+    $default  reduce using rule 4 (bloque_dec)
 
 
-estado 9
+state 9
 
    23 bloque_while: REPEAT . expresion_logica bloque ENDREPEAT
 
-    NOT        desplazar e ir al estado 36
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    NOT        shift, and go to state 36
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 38
-    termino               ir al estado 24
-    factor                ir al estado 25
-    expresion_logica      ir al estado 39
-    termino_logico        ir al estado 40
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 38
+    termino               go to state 24
+    factor                go to state 25
+    expresion_logica      go to state 39
+    termino_logico        go to state 40
+    filter                go to state 26
 
 
-estado 10
+state 10
 
    21 bloque_if: IF . expresion_logica THEN bloque ENDIF
    22          | IF . expresion_logica THEN bloque ELSE bloque ENDIF
 
-    NOT        desplazar e ir al estado 36
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    NOT        shift, and go to state 36
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 38
-    termino               ir al estado 24
-    factor                ir al estado 25
-    expresion_logica      ir al estado 41
-    termino_logico        ir al estado 40
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 38
+    termino               go to state 24
+    factor                go to state 25
+    expresion_logica      go to state 41
+    termino_logico        go to state 40
+    filter                go to state 26
 
 
-estado 11
+state 11
 
    36 factor: PA . expresion_aritmetica PC
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 42
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 42
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
 
 
-estado 12
+state 12
 
    61 lectura: READ . ID
 
-    ID  desplazar e ir al estado 43
+    ID  shift, and go to state 43
 
 
-estado 13
+state 13
 
    62 escritura: PRINT . ID
    63          | PRINT . CTE_STRING
 
-    ID          desplazar e ir al estado 44
-    CTE_STRING  desplazar e ir al estado 45
+    ID          shift, and go to state 44
+    CTE_STRING  shift, and go to state 45
 
 
-estado 14
+state 14
 
    58 filter: FILTER . PA comparacion_filter COMA CA lista_exp_coma CC PC
 
-    PA  desplazar e ir al estado 46
+    PA  shift, and go to state 46
 
 
-estado 15
+state 15
 
    24 asignacion: ID . ASIG expresion
    38 factor: ID .
 
-    ASIG  desplazar e ir al estado 47
+    ASIG  shift, and go to state 47
 
-    $default  reduce usando la regla 38 (factor)
+    $default  reduce using rule 38 (factor)
 
 
-estado 16
+state 16
 
    39 factor: CTE_FLOAT .
 
-    $default  reduce usando la regla 39 (factor)
+    $default  reduce using rule 39 (factor)
 
 
-estado 17
+state 17
 
    40 factor: CTE_INT .
 
-    $default  reduce usando la regla 40 (factor)
+    $default  reduce using rule 40 (factor)
 
 
-estado 18
+state 18
 
     1 programa: START seccion_declaracion bloque . END
    13 bloque: bloque . sentencia
 
-    END        desplazar e ir al estado 48
-    REPEAT     desplazar e ir al estado 9
-    IF         desplazar e ir al estado 10
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    END        shift, and go to state 48
+    REPEAT     shift, and go to state 9
+    IF         shift, and go to state 10
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    sentencia             ir al estado 49
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    sentencia             go to state 49
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 19
+state 19
 
    14 bloque: sentencia .
 
-    $default  reduce usando la regla 14 (bloque)
+    $default  reduce using rule 14 (bloque)
 
 
-estado 20
+state 20
 
    16 sentencia: bloque_if .
 
-    $default  reduce usando la regla 16 (sentencia)
+    $default  reduce using rule 16 (sentencia)
 
 
-estado 21
+state 21
 
    17 sentencia: bloque_while .
 
-    $default  reduce usando la regla 17 (sentencia)
+    $default  reduce using rule 17 (sentencia)
 
 
-estado 22
+state 22
 
    15 sentencia: asignacion .
 
-    $default  reduce usando la regla 15 (sentencia)
+    $default  reduce using rule 15 (sentencia)
 
 
-estado 23
+state 23
 
    20 sentencia: expresion_aritmetica .
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
@@ -471,131 +471,131 @@ estado 23
    30                     | expresion_aritmetica . MOD termino
    31                     | expresion_aritmetica . DIV termino
 
-    SUMA   desplazar e ir al estado 50
-    RESTA  desplazar e ir al estado 51
-    DIV    desplazar e ir al estado 52
-    MOD    desplazar e ir al estado 53
+    SUMA   shift, and go to state 50
+    RESTA  shift, and go to state 51
+    DIV    shift, and go to state 52
+    MOD    shift, and go to state 53
 
-    $default  reduce usando la regla 20 (sentencia)
+    $default  reduce using rule 20 (sentencia)
 
 
-estado 24
+state 24
 
    32 expresion_aritmetica: termino .
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       desplazar e ir al estado 54
-    DIVIDIDO  desplazar e ir al estado 55
+    POR       shift, and go to state 54
+    DIVIDIDO  shift, and go to state 55
 
-    $default  reduce usando la regla 32 (expresion_aritmetica)
+    $default  reduce using rule 32 (expresion_aritmetica)
 
 
-estado 25
+state 25
 
    35 termino: factor .
 
-    $default  reduce usando la regla 35 (termino)
+    $default  reduce using rule 35 (termino)
 
 
-estado 26
+state 26
 
    37 factor: filter .
 
-    $default  reduce usando la regla 37 (factor)
+    $default  reduce using rule 37 (factor)
 
 
-estado 27
+state 27
 
    18 sentencia: lectura .
 
-    $default  reduce usando la regla 18 (sentencia)
+    $default  reduce using rule 18 (sentencia)
 
 
-estado 28
+state 28
 
    19 sentencia: escritura .
 
-    $default  reduce usando la regla 19 (sentencia)
+    $default  reduce using rule 19 (sentencia)
 
 
-estado 29
+state 29
 
     9 t_dato: INTEGER .
 
-    $default  reduce usando la regla 9 (t_dato)
+    $default  reduce using rule 9 (t_dato)
 
 
-estado 30
+state 30
 
     8 t_dato: FLOAT .
 
-    $default  reduce usando la regla 8 (t_dato)
+    $default  reduce using rule 8 (t_dato)
 
 
-estado 31
+state 31
 
    10 t_dato: STRING .
 
-    $default  reduce usando la regla 10 (t_dato)
+    $default  reduce using rule 10 (t_dato)
 
 
-estado 32
+state 32
 
     5 declaracion: CA t_datos . CC DOS_PUNTOS CA lista_id CC
     6 t_datos: t_datos . COMA t_dato
 
-    CC    desplazar e ir al estado 56
-    COMA  desplazar e ir al estado 57
+    CC    shift, and go to state 56
+    COMA  shift, and go to state 57
 
 
-estado 33
+state 33
 
     7 t_datos: t_dato .
 
-    $default  reduce usando la regla 7 (t_datos)
+    $default  reduce using rule 7 (t_datos)
 
 
-estado 34
+state 34
 
     2 seccion_declaracion: VAR bloque_dec ENDVAR .
 
-    $default  reduce usando la regla 2 (seccion_declaracion)
+    $default  reduce using rule 2 (seccion_declaracion)
 
 
-estado 35
+state 35
 
     3 bloque_dec: bloque_dec declaracion .
 
-    $default  reduce usando la regla 3 (bloque_dec)
+    $default  reduce using rule 3 (bloque_dec)
 
 
-estado 36
+state 36
 
    44 termino_logico: NOT . termino_logico
 
-    NOT        desplazar e ir al estado 36
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    NOT        shift, and go to state 36
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 38
-    termino               ir al estado 24
-    factor                ir al estado 25
-    termino_logico        ir al estado 58
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 38
+    termino               go to state 24
+    factor                go to state 25
+    termino_logico        go to state 58
+    filter                go to state 26
 
 
-estado 37
+state 37
 
    38 factor: ID .
 
-    $default  reduce usando la regla 38 (factor)
+    $default  reduce using rule 38 (factor)
 
 
-estado 38
+state 38
 
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
    29                     | expresion_aritmetica . RESTA termino
@@ -603,68 +603,68 @@ estado 38
    31                     | expresion_aritmetica . DIV termino
    45 termino_logico: expresion_aritmetica . comp_bool expresion_aritmetica
 
-    SUMA         desplazar e ir al estado 50
-    RESTA        desplazar e ir al estado 51
-    MENOR        desplazar e ir al estado 59
-    MAYOR        desplazar e ir al estado 60
-    MENOR_IGUAL  desplazar e ir al estado 61
-    MAYOR_IGUAL  desplazar e ir al estado 62
-    IGUAL        desplazar e ir al estado 63
-    DISTINTO     desplazar e ir al estado 64
-    DIV          desplazar e ir al estado 52
-    MOD          desplazar e ir al estado 53
+    SUMA         shift, and go to state 50
+    RESTA        shift, and go to state 51
+    MENOR        shift, and go to state 59
+    MAYOR        shift, and go to state 60
+    MENOR_IGUAL  shift, and go to state 61
+    MAYOR_IGUAL  shift, and go to state 62
+    IGUAL        shift, and go to state 63
+    DISTINTO     shift, and go to state 64
+    DIV          shift, and go to state 52
+    MOD          shift, and go to state 53
 
-    comp_bool  ir al estado 65
+    comp_bool  go to state 65
 
 
-estado 39
+state 39
 
    23 bloque_while: REPEAT expresion_logica . bloque ENDREPEAT
 
-    REPEAT     desplazar e ir al estado 9
-    IF         desplazar e ir al estado 10
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    REPEAT     shift, and go to state 9
+    IF         shift, and go to state 10
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    bloque                ir al estado 66
-    sentencia             ir al estado 19
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    bloque                go to state 66
+    sentencia             go to state 19
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 40
+state 40
 
    41 expresion_logica: termino_logico . AND termino_logico
    42                 | termino_logico . OR termino_logico
    43                 | termino_logico .
 
-    AND  desplazar e ir al estado 67
-    OR   desplazar e ir al estado 68
+    AND  shift, and go to state 67
+    OR   shift, and go to state 68
 
-    $default  reduce usando la regla 43 (expresion_logica)
+    $default  reduce using rule 43 (expresion_logica)
 
 
-estado 41
+state 41
 
    21 bloque_if: IF expresion_logica . THEN bloque ENDIF
    22          | IF expresion_logica . THEN bloque ELSE bloque ENDIF
 
-    THEN  desplazar e ir al estado 69
+    THEN  shift, and go to state 69
 
 
-estado 42
+state 42
 
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
    29                     | expresion_aritmetica . RESTA termino
@@ -672,404 +672,404 @@ estado 42
    31                     | expresion_aritmetica . DIV termino
    36 factor: PA expresion_aritmetica . PC
 
-    SUMA   desplazar e ir al estado 50
-    RESTA  desplazar e ir al estado 51
-    PC     desplazar e ir al estado 70
-    DIV    desplazar e ir al estado 52
-    MOD    desplazar e ir al estado 53
+    SUMA   shift, and go to state 50
+    RESTA  shift, and go to state 51
+    PC     shift, and go to state 70
+    DIV    shift, and go to state 52
+    MOD    shift, and go to state 53
 
 
-estado 43
+state 43
 
    61 lectura: READ ID .
 
-    $default  reduce usando la regla 61 (lectura)
+    $default  reduce using rule 61 (lectura)
 
 
-estado 44
+state 44
 
    62 escritura: PRINT ID .
 
-    $default  reduce usando la regla 62 (escritura)
+    $default  reduce using rule 62 (escritura)
 
 
-estado 45
+state 45
 
    63 escritura: PRINT CTE_STRING .
 
-    $default  reduce usando la regla 63 (escritura)
+    $default  reduce using rule 63 (escritura)
 
 
-estado 46
+state 46
 
    58 filter: FILTER PA . comparacion_filter COMA CA lista_exp_coma CC PC
 
-    GUION_BAJO  desplazar e ir al estado 71
+    GUION_BAJO  shift, and go to state 71
 
-    termino_filter      ir al estado 72
-    comparacion_filter  ir al estado 73
+    termino_filter      go to state 72
+    comparacion_filter  go to state 73
 
 
-estado 47
+state 47
 
    24 asignacion: ID ASIG . expresion
 
-    PA          desplazar e ir al estado 11
-    FILTER      desplazar e ir al estado 14
-    ID          desplazar e ir al estado 37
-    CTE_FLOAT   desplazar e ir al estado 16
-    CTE_INT     desplazar e ir al estado 17
-    CTE_STRING  desplazar e ir al estado 74
+    PA          shift, and go to state 11
+    FILTER      shift, and go to state 14
+    ID          shift, and go to state 37
+    CTE_FLOAT   shift, and go to state 16
+    CTE_INT     shift, and go to state 17
+    CTE_STRING  shift, and go to state 74
 
-    expresion             ir al estado 75
-    expresion_cadena      ir al estado 76
-    expresion_aritmetica  ir al estado 77
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
+    expresion             go to state 75
+    expresion_cadena      go to state 76
+    expresion_aritmetica  go to state 77
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
 
 
-estado 48
+state 48
 
     1 programa: START seccion_declaracion bloque END .
 
-    $default  reduce usando la regla 1 (programa)
+    $default  reduce using rule 1 (programa)
 
 
-estado 49
+state 49
 
    13 bloque: bloque sentencia .
 
-    $default  reduce usando la regla 13 (bloque)
+    $default  reduce using rule 13 (bloque)
 
 
-estado 50
+state 50
 
    28 expresion_aritmetica: expresion_aritmetica SUMA . termino
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    termino  ir al estado 78
-    factor   ir al estado 25
-    filter   ir al estado 26
+    termino  go to state 78
+    factor   go to state 25
+    filter   go to state 26
 
 
-estado 51
+state 51
 
    29 expresion_aritmetica: expresion_aritmetica RESTA . termino
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    termino  ir al estado 79
-    factor   ir al estado 25
-    filter   ir al estado 26
+    termino  go to state 79
+    factor   go to state 25
+    filter   go to state 26
 
 
-estado 52
+state 52
 
    31 expresion_aritmetica: expresion_aritmetica DIV . termino
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    termino  ir al estado 80
-    factor   ir al estado 25
-    filter   ir al estado 26
+    termino  go to state 80
+    factor   go to state 25
+    filter   go to state 26
 
 
-estado 53
+state 53
 
    30 expresion_aritmetica: expresion_aritmetica MOD . termino
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    termino  ir al estado 81
-    factor   ir al estado 25
-    filter   ir al estado 26
+    termino  go to state 81
+    factor   go to state 25
+    filter   go to state 26
 
 
-estado 54
+state 54
 
    33 termino: termino POR . factor
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    factor  ir al estado 82
-    filter  ir al estado 26
+    factor  go to state 82
+    filter  go to state 26
 
 
-estado 55
+state 55
 
    34 termino: termino DIVIDIDO . factor
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    factor  ir al estado 83
-    filter  ir al estado 26
+    factor  go to state 83
+    filter  go to state 26
 
 
-estado 56
+state 56
 
     5 declaracion: CA t_datos CC . DOS_PUNTOS CA lista_id CC
 
-    DOS_PUNTOS  desplazar e ir al estado 84
+    DOS_PUNTOS  shift, and go to state 84
 
 
-estado 57
+state 57
 
     6 t_datos: t_datos COMA . t_dato
 
-    INTEGER  desplazar e ir al estado 29
-    FLOAT    desplazar e ir al estado 30
-    STRING   desplazar e ir al estado 31
+    INTEGER  shift, and go to state 29
+    FLOAT    shift, and go to state 30
+    STRING   shift, and go to state 31
 
-    t_dato  ir al estado 85
+    t_dato  go to state 85
 
 
-estado 58
+state 58
 
    44 termino_logico: NOT termino_logico .
 
-    $default  reduce usando la regla 44 (termino_logico)
+    $default  reduce using rule 44 (termino_logico)
 
 
-estado 59
+state 59
 
    52 comp_bool: MENOR .
 
-    $default  reduce usando la regla 52 (comp_bool)
+    $default  reduce using rule 52 (comp_bool)
 
 
-estado 60
+state 60
 
    53 comp_bool: MAYOR .
 
-    $default  reduce usando la regla 53 (comp_bool)
+    $default  reduce using rule 53 (comp_bool)
 
 
-estado 61
+state 61
 
    54 comp_bool: MENOR_IGUAL .
 
-    $default  reduce usando la regla 54 (comp_bool)
+    $default  reduce using rule 54 (comp_bool)
 
 
-estado 62
+state 62
 
    55 comp_bool: MAYOR_IGUAL .
 
-    $default  reduce usando la regla 55 (comp_bool)
+    $default  reduce using rule 55 (comp_bool)
 
 
-estado 63
+state 63
 
    56 comp_bool: IGUAL .
 
-    $default  reduce usando la regla 56 (comp_bool)
+    $default  reduce using rule 56 (comp_bool)
 
 
-estado 64
+state 64
 
    57 comp_bool: DISTINTO .
 
-    $default  reduce usando la regla 57 (comp_bool)
+    $default  reduce using rule 57 (comp_bool)
 
 
-estado 65
+state 65
 
    45 termino_logico: expresion_aritmetica comp_bool . expresion_aritmetica
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 86
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 86
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
 
 
-estado 66
+state 66
 
    13 bloque: bloque . sentencia
    23 bloque_while: REPEAT expresion_logica bloque . ENDREPEAT
 
-    REPEAT     desplazar e ir al estado 9
-    ENDREPEAT  desplazar e ir al estado 87
-    IF         desplazar e ir al estado 10
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    REPEAT     shift, and go to state 9
+    ENDREPEAT  shift, and go to state 87
+    IF         shift, and go to state 10
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    sentencia             ir al estado 49
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    sentencia             go to state 49
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 67
+state 67
 
    41 expresion_logica: termino_logico AND . termino_logico
 
-    NOT        desplazar e ir al estado 36
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    NOT        shift, and go to state 36
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 38
-    termino               ir al estado 24
-    factor                ir al estado 25
-    termino_logico        ir al estado 88
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 38
+    termino               go to state 24
+    factor                go to state 25
+    termino_logico        go to state 88
+    filter                go to state 26
 
 
-estado 68
+state 68
 
    42 expresion_logica: termino_logico OR . termino_logico
 
-    NOT        desplazar e ir al estado 36
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    NOT        shift, and go to state 36
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 38
-    termino               ir al estado 24
-    factor                ir al estado 25
-    termino_logico        ir al estado 89
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 38
+    termino               go to state 24
+    factor                go to state 25
+    termino_logico        go to state 89
+    filter                go to state 26
 
 
-estado 69
+state 69
 
    21 bloque_if: IF expresion_logica THEN . bloque ENDIF
    22          | IF expresion_logica THEN . bloque ELSE bloque ENDIF
 
-    REPEAT     desplazar e ir al estado 9
-    IF         desplazar e ir al estado 10
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    REPEAT     shift, and go to state 9
+    IF         shift, and go to state 10
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    bloque                ir al estado 90
-    sentencia             ir al estado 19
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    bloque                go to state 90
+    sentencia             go to state 19
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 70
+state 70
 
    36 factor: PA expresion_aritmetica PC .
 
-    $default  reduce usando la regla 36 (factor)
+    $default  reduce using rule 36 (factor)
 
 
-estado 71
+state 71
 
    46 termino_filter: GUION_BAJO . comp_bool PA expresion_aritmetica PC
    47               | GUION_BAJO . comp_bool CTE_FLOAT
    48               | GUION_BAJO . comp_bool CTE_INT
 
-    MENOR        desplazar e ir al estado 59
-    MAYOR        desplazar e ir al estado 60
-    MENOR_IGUAL  desplazar e ir al estado 61
-    MAYOR_IGUAL  desplazar e ir al estado 62
-    IGUAL        desplazar e ir al estado 63
-    DISTINTO     desplazar e ir al estado 64
+    MENOR        shift, and go to state 59
+    MAYOR        shift, and go to state 60
+    MENOR_IGUAL  shift, and go to state 61
+    MAYOR_IGUAL  shift, and go to state 62
+    IGUAL        shift, and go to state 63
+    DISTINTO     shift, and go to state 64
 
-    comp_bool  ir al estado 91
+    comp_bool  go to state 91
 
 
-estado 72
+state 72
 
    49 comparacion_filter: termino_filter . AND termino_filter
    50                   | termino_filter . OR termino_filter
    51                   | termino_filter .
 
-    AND  desplazar e ir al estado 92
-    OR   desplazar e ir al estado 93
+    AND  shift, and go to state 92
+    OR   shift, and go to state 93
 
-    $default  reduce usando la regla 51 (comparacion_filter)
+    $default  reduce using rule 51 (comparacion_filter)
 
 
-estado 73
+state 73
 
    58 filter: FILTER PA comparacion_filter . COMA CA lista_exp_coma CC PC
 
-    COMA  desplazar e ir al estado 94
+    COMA  shift, and go to state 94
 
 
-estado 74
+state 74
 
    27 expresion_cadena: CTE_STRING .
 
-    $default  reduce usando la regla 27 (expresion_cadena)
+    $default  reduce using rule 27 (expresion_cadena)
 
 
-estado 75
+state 75
 
    24 asignacion: ID ASIG expresion .
 
-    $default  reduce usando la regla 24 (asignacion)
+    $default  reduce using rule 24 (asignacion)
 
 
-estado 76
+state 76
 
    25 expresion: expresion_cadena .
 
-    $default  reduce usando la regla 25 (expresion)
+    $default  reduce using rule 25 (expresion)
 
 
-estado 77
+state 77
 
    26 expresion: expresion_aritmetica .
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
@@ -1077,91 +1077,91 @@ estado 77
    30                     | expresion_aritmetica . MOD termino
    31                     | expresion_aritmetica . DIV termino
 
-    SUMA   desplazar e ir al estado 50
-    RESTA  desplazar e ir al estado 51
-    DIV    desplazar e ir al estado 52
-    MOD    desplazar e ir al estado 53
+    SUMA   shift, and go to state 50
+    RESTA  shift, and go to state 51
+    DIV    shift, and go to state 52
+    MOD    shift, and go to state 53
 
-    $default  reduce usando la regla 26 (expresion)
+    $default  reduce using rule 26 (expresion)
 
 
-estado 78
+state 78
 
    28 expresion_aritmetica: expresion_aritmetica SUMA termino .
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       desplazar e ir al estado 54
-    DIVIDIDO  desplazar e ir al estado 55
+    POR       shift, and go to state 54
+    DIVIDIDO  shift, and go to state 55
 
-    $default  reduce usando la regla 28 (expresion_aritmetica)
+    $default  reduce using rule 28 (expresion_aritmetica)
 
 
-estado 79
+state 79
 
    29 expresion_aritmetica: expresion_aritmetica RESTA termino .
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       desplazar e ir al estado 54
-    DIVIDIDO  desplazar e ir al estado 55
+    POR       shift, and go to state 54
+    DIVIDIDO  shift, and go to state 55
 
-    $default  reduce usando la regla 29 (expresion_aritmetica)
+    $default  reduce using rule 29 (expresion_aritmetica)
 
 
-estado 80
+state 80
 
    31 expresion_aritmetica: expresion_aritmetica DIV termino .
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       desplazar e ir al estado 54
-    DIVIDIDO  desplazar e ir al estado 55
+    POR       shift, and go to state 54
+    DIVIDIDO  shift, and go to state 55
 
-    $default  reduce usando la regla 31 (expresion_aritmetica)
+    $default  reduce using rule 31 (expresion_aritmetica)
 
 
-estado 81
+state 81
 
    30 expresion_aritmetica: expresion_aritmetica MOD termino .
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       desplazar e ir al estado 54
-    DIVIDIDO  desplazar e ir al estado 55
+    POR       shift, and go to state 54
+    DIVIDIDO  shift, and go to state 55
 
-    $default  reduce usando la regla 30 (expresion_aritmetica)
+    $default  reduce using rule 30 (expresion_aritmetica)
 
 
-estado 82
+state 82
 
    33 termino: termino POR factor .
 
-    $default  reduce usando la regla 33 (termino)
+    $default  reduce using rule 33 (termino)
 
 
-estado 83
+state 83
 
    34 termino: termino DIVIDIDO factor .
 
-    $default  reduce usando la regla 34 (termino)
+    $default  reduce using rule 34 (termino)
 
 
-estado 84
+state 84
 
     5 declaracion: CA t_datos CC DOS_PUNTOS . CA lista_id CC
 
-    CA  desplazar e ir al estado 95
+    CA  shift, and go to state 95
 
 
-estado 85
+state 85
 
     6 t_datos: t_datos COMA t_dato .
 
-    $default  reduce usando la regla 6 (t_datos)
+    $default  reduce using rule 6 (t_datos)
 
 
-estado 86
+state 86
 
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
    29                     | expresion_aritmetica . RESTA termino
@@ -1169,250 +1169,250 @@ estado 86
    31                     | expresion_aritmetica . DIV termino
    45 termino_logico: expresion_aritmetica comp_bool expresion_aritmetica .
 
-    SUMA   desplazar e ir al estado 50
-    RESTA  desplazar e ir al estado 51
-    DIV    desplazar e ir al estado 52
-    MOD    desplazar e ir al estado 53
+    SUMA   shift, and go to state 50
+    RESTA  shift, and go to state 51
+    DIV    shift, and go to state 52
+    MOD    shift, and go to state 53
 
-    $default  reduce usando la regla 45 (termino_logico)
+    $default  reduce using rule 45 (termino_logico)
 
 
-estado 87
+state 87
 
    23 bloque_while: REPEAT expresion_logica bloque ENDREPEAT .
 
-    $default  reduce usando la regla 23 (bloque_while)
+    $default  reduce using rule 23 (bloque_while)
 
 
-estado 88
+state 88
 
    41 expresion_logica: termino_logico AND termino_logico .
 
-    $default  reduce usando la regla 41 (expresion_logica)
+    $default  reduce using rule 41 (expresion_logica)
 
 
-estado 89
+state 89
 
    42 expresion_logica: termino_logico OR termino_logico .
 
-    $default  reduce usando la regla 42 (expresion_logica)
+    $default  reduce using rule 42 (expresion_logica)
 
 
-estado 90
+state 90
 
    13 bloque: bloque . sentencia
    21 bloque_if: IF expresion_logica THEN bloque . ENDIF
    22          | IF expresion_logica THEN bloque . ELSE bloque ENDIF
 
-    REPEAT     desplazar e ir al estado 9
-    IF         desplazar e ir al estado 10
-    ELSE       desplazar e ir al estado 96
-    ENDIF      desplazar e ir al estado 97
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    REPEAT     shift, and go to state 9
+    IF         shift, and go to state 10
+    ELSE       shift, and go to state 96
+    ENDIF      shift, and go to state 97
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    sentencia             ir al estado 49
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    sentencia             go to state 49
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 91
+state 91
 
    46 termino_filter: GUION_BAJO comp_bool . PA expresion_aritmetica PC
    47               | GUION_BAJO comp_bool . CTE_FLOAT
    48               | GUION_BAJO comp_bool . CTE_INT
 
-    PA         desplazar e ir al estado 98
-    CTE_FLOAT  desplazar e ir al estado 99
-    CTE_INT    desplazar e ir al estado 100
+    PA         shift, and go to state 98
+    CTE_FLOAT  shift, and go to state 99
+    CTE_INT    shift, and go to state 100
 
 
-estado 92
+state 92
 
    49 comparacion_filter: termino_filter AND . termino_filter
 
-    GUION_BAJO  desplazar e ir al estado 71
+    GUION_BAJO  shift, and go to state 71
 
-    termino_filter  ir al estado 101
+    termino_filter  go to state 101
 
 
-estado 93
+state 93
 
    50 comparacion_filter: termino_filter OR . termino_filter
 
-    GUION_BAJO  desplazar e ir al estado 71
+    GUION_BAJO  shift, and go to state 71
 
-    termino_filter  ir al estado 102
+    termino_filter  go to state 102
 
 
-estado 94
+state 94
 
    58 filter: FILTER PA comparacion_filter COMA . CA lista_exp_coma CC PC
 
-    CA  desplazar e ir al estado 103
+    CA  shift, and go to state 103
 
 
-estado 95
+state 95
 
     5 declaracion: CA t_datos CC DOS_PUNTOS CA . lista_id CC
 
-    ID  desplazar e ir al estado 104
+    ID  shift, and go to state 104
 
-    lista_id  ir al estado 105
+    lista_id  go to state 105
 
 
-estado 96
+state 96
 
    22 bloque_if: IF expresion_logica THEN bloque ELSE . bloque ENDIF
 
-    REPEAT     desplazar e ir al estado 9
-    IF         desplazar e ir al estado 10
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    REPEAT     shift, and go to state 9
+    IF         shift, and go to state 10
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    bloque                ir al estado 106
-    sentencia             ir al estado 19
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    bloque                go to state 106
+    sentencia             go to state 19
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 97
+state 97
 
    21 bloque_if: IF expresion_logica THEN bloque ENDIF .
 
-    $default  reduce usando la regla 21 (bloque_if)
+    $default  reduce using rule 21 (bloque_if)
 
 
-estado 98
+state 98
 
    46 termino_filter: GUION_BAJO comp_bool PA . expresion_aritmetica PC
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 107
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 107
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
 
 
-estado 99
+state 99
 
    47 termino_filter: GUION_BAJO comp_bool CTE_FLOAT .
 
-    $default  reduce usando la regla 47 (termino_filter)
+    $default  reduce using rule 47 (termino_filter)
 
 
-estado 100
+state 100
 
    48 termino_filter: GUION_BAJO comp_bool CTE_INT .
 
-    $default  reduce usando la regla 48 (termino_filter)
+    $default  reduce using rule 48 (termino_filter)
 
 
-estado 101
+state 101
 
    49 comparacion_filter: termino_filter AND termino_filter .
 
-    $default  reduce usando la regla 49 (comparacion_filter)
+    $default  reduce using rule 49 (comparacion_filter)
 
 
-estado 102
+state 102
 
    50 comparacion_filter: termino_filter OR termino_filter .
 
-    $default  reduce usando la regla 50 (comparacion_filter)
+    $default  reduce using rule 50 (comparacion_filter)
 
 
-estado 103
+state 103
 
    58 filter: FILTER PA comparacion_filter COMA CA . lista_exp_coma CC PC
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 108
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lista_exp_coma        ir al estado 109
+    expresion_aritmetica  go to state 108
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lista_exp_coma        go to state 109
 
 
-estado 104
+state 104
 
    12 lista_id: ID .
 
-    $default  reduce usando la regla 12 (lista_id)
+    $default  reduce using rule 12 (lista_id)
 
 
-estado 105
+state 105
 
     5 declaracion: CA t_datos CC DOS_PUNTOS CA lista_id . CC
    11 lista_id: lista_id . COMA ID
 
-    CC    desplazar e ir al estado 110
-    COMA  desplazar e ir al estado 111
+    CC    shift, and go to state 110
+    COMA  shift, and go to state 111
 
 
-estado 106
+state 106
 
    13 bloque: bloque . sentencia
    22 bloque_if: IF expresion_logica THEN bloque ELSE bloque . ENDIF
 
-    REPEAT     desplazar e ir al estado 9
-    IF         desplazar e ir al estado 10
-    ENDIF      desplazar e ir al estado 112
-    PA         desplazar e ir al estado 11
-    READ       desplazar e ir al estado 12
-    PRINT      desplazar e ir al estado 13
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 15
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    REPEAT     shift, and go to state 9
+    IF         shift, and go to state 10
+    ENDIF      shift, and go to state 112
+    PA         shift, and go to state 11
+    READ       shift, and go to state 12
+    PRINT      shift, and go to state 13
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 15
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    sentencia             ir al estado 49
-    bloque_if             ir al estado 20
-    bloque_while          ir al estado 21
-    asignacion            ir al estado 22
-    expresion_aritmetica  ir al estado 23
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
-    lectura               ir al estado 27
-    escritura             ir al estado 28
+    sentencia             go to state 49
+    bloque_if             go to state 20
+    bloque_while          go to state 21
+    asignacion            go to state 22
+    expresion_aritmetica  go to state 23
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
+    lectura               go to state 27
+    escritura             go to state 28
 
 
-estado 107
+state 107
 
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
    29                     | expresion_aritmetica . RESTA termino
@@ -1420,14 +1420,14 @@ estado 107
    31                     | expresion_aritmetica . DIV termino
    46 termino_filter: GUION_BAJO comp_bool PA expresion_aritmetica . PC
 
-    SUMA   desplazar e ir al estado 50
-    RESTA  desplazar e ir al estado 51
-    PC     desplazar e ir al estado 113
-    DIV    desplazar e ir al estado 52
-    MOD    desplazar e ir al estado 53
+    SUMA   shift, and go to state 50
+    RESTA  shift, and go to state 51
+    PC     shift, and go to state 113
+    DIV    shift, and go to state 52
+    MOD    shift, and go to state 53
 
 
-estado 108
+state 108
 
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
    29                     | expresion_aritmetica . RESTA termino
@@ -1435,89 +1435,89 @@ estado 108
    31                     | expresion_aritmetica . DIV termino
    60 lista_exp_coma: expresion_aritmetica .
 
-    SUMA   desplazar e ir al estado 50
-    RESTA  desplazar e ir al estado 51
-    DIV    desplazar e ir al estado 52
-    MOD    desplazar e ir al estado 53
+    SUMA   shift, and go to state 50
+    RESTA  shift, and go to state 51
+    DIV    shift, and go to state 52
+    MOD    shift, and go to state 53
 
-    $default  reduce usando la regla 60 (lista_exp_coma)
+    $default  reduce using rule 60 (lista_exp_coma)
 
 
-estado 109
+state 109
 
    58 filter: FILTER PA comparacion_filter COMA CA lista_exp_coma . CC PC
    59 lista_exp_coma: lista_exp_coma . COMA expresion_aritmetica
 
-    CC    desplazar e ir al estado 114
-    COMA  desplazar e ir al estado 115
+    CC    shift, and go to state 114
+    COMA  shift, and go to state 115
 
 
-estado 110
+state 110
 
     5 declaracion: CA t_datos CC DOS_PUNTOS CA lista_id CC .
 
-    $default  reduce usando la regla 5 (declaracion)
+    $default  reduce using rule 5 (declaracion)
 
 
-estado 111
+state 111
 
    11 lista_id: lista_id COMA . ID
 
-    ID  desplazar e ir al estado 116
+    ID  shift, and go to state 116
 
 
-estado 112
+state 112
 
    22 bloque_if: IF expresion_logica THEN bloque ELSE bloque ENDIF .
 
-    $default  reduce usando la regla 22 (bloque_if)
+    $default  reduce using rule 22 (bloque_if)
 
 
-estado 113
+state 113
 
    46 termino_filter: GUION_BAJO comp_bool PA expresion_aritmetica PC .
 
-    $default  reduce usando la regla 46 (termino_filter)
+    $default  reduce using rule 46 (termino_filter)
 
 
-estado 114
+state 114
 
    58 filter: FILTER PA comparacion_filter COMA CA lista_exp_coma CC . PC
 
-    PC  desplazar e ir al estado 117
+    PC  shift, and go to state 117
 
 
-estado 115
+state 115
 
    59 lista_exp_coma: lista_exp_coma COMA . expresion_aritmetica
 
-    PA         desplazar e ir al estado 11
-    FILTER     desplazar e ir al estado 14
-    ID         desplazar e ir al estado 37
-    CTE_FLOAT  desplazar e ir al estado 16
-    CTE_INT    desplazar e ir al estado 17
+    PA         shift, and go to state 11
+    FILTER     shift, and go to state 14
+    ID         shift, and go to state 37
+    CTE_FLOAT  shift, and go to state 16
+    CTE_INT    shift, and go to state 17
 
-    expresion_aritmetica  ir al estado 118
-    termino               ir al estado 24
-    factor                ir al estado 25
-    filter                ir al estado 26
+    expresion_aritmetica  go to state 118
+    termino               go to state 24
+    factor                go to state 25
+    filter                go to state 26
 
 
-estado 116
+state 116
 
    11 lista_id: lista_id COMA ID .
 
-    $default  reduce usando la regla 11 (lista_id)
+    $default  reduce using rule 11 (lista_id)
 
 
-estado 117
+state 117
 
    58 filter: FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC .
 
-    $default  reduce usando la regla 58 (filter)
+    $default  reduce using rule 58 (filter)
 
 
-estado 118
+state 118
 
    28 expresion_aritmetica: expresion_aritmetica . SUMA termino
    29                     | expresion_aritmetica . RESTA termino
@@ -1525,9 +1525,9 @@ estado 118
    31                     | expresion_aritmetica . DIV termino
    59 lista_exp_coma: lista_exp_coma COMA expresion_aritmetica .
 
-    SUMA   desplazar e ir al estado 50
-    RESTA  desplazar e ir al estado 51
-    DIV    desplazar e ir al estado 52
-    MOD    desplazar e ir al estado 53
+    SUMA   shift, and go to state 50
+    RESTA  shift, and go to state 51
+    DIV    shift, and go to state 52
+    MOD    shift, and go to state 53
 
-    $default  reduce usando la regla 59 (lista_exp_coma)
+    $default  reduce using rule 59 (lista_exp_coma)

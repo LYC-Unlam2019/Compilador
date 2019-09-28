@@ -26,7 +26,8 @@
 	#define CteInt 4
 	#define CteFloat 5
 	#define CteString 6
-
+	#define SIN_MEM -4
+	#define NODO_OK -3
 	#define TAMANIO_TABLA 300
 	#define TAM_NOMBRE 32
 
@@ -57,9 +58,11 @@
 	void grabarTabla(void);
 	void chequearPrintId(char *nombre);
 
-	tArbol crearNodo(char* dato, tArbol* pIzq, tArbol* pDer);
-	tArbol crearHoja(char* info);
-	void mostrar_grafico(tArbol *pa,int n);
+	/**FUNCIONES PARA LA ENTREGA 2 **/
+	tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer);
+	tNodo* crearHoja(int dato);
+
+	void mostrar_grafico(tArbol *pa, int n);
 
 	int yystopparser=0;
 	FILE  *yyin;
@@ -260,7 +263,7 @@ expresion_cadena:
 	CTE_STRING						                    {
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
-															exprAritPtr = crearHoja("CTE_STRING");
+															//exprAritPtr = crearHoja(CteString);
 														};
 
 expresion_aritmetica:
@@ -297,25 +300,30 @@ factor:
 	PA expresion_aritmetica PC	                        {	printf("R 33: factor => PA expresion_aritmetica PC\n");
 															factorPtr = exprAritPtr;
 														}
-	| filter 											{printf("R 34: factor => FILTER\n");
-														 factorPtr = filterPtr;
+	| filter 											{	printf("R 34: factor => FILTER\n");
+														    factorPtr = filterPtr;
 														};
 
 factor:
 	ID			                                        {
 															chequearVarEnTabla(yylval.valor_string);
 															printf("R 35: factor => ID\n");
-															factorPtr = crearHoja("ID");
+															factorPtr = crearHoja(Integer);
+															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
 														}
 	| CTE_FLOAT	                                        {
 															printf("R 36: factor => CTE_FLOAT\n");
 															agregarCteATabla(CteFloat);
-															factorPtr = crearHoja("CTE_FLOAT");
+															factorPtr = crearHoja(CteFloat);
 														}
 	| CTE_INT	                                        {
 															printf("R 37: factor => CTE_INT\n");
 															agregarCteATabla(CteInt);
-															factorPtr = crearHoja("CTE_INT");
+															factorPtr = crearHoja(CteInt);
+															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
+															printf("Puntero:\n"); 
+															printf("info: %d \n", factorPtr->info.entero);
+															printf("\n");//BORRAR ESTO
 														};
 /* Expresiones logicas */
 
@@ -375,8 +383,7 @@ escritura:
 
 %%
 
-int main(int argc,char *argv[])
-{
+int main(int argc,char *argv[]){
   if ((yyin = fopen(argv[1], "rt")) == NULL)
   {
 	printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
@@ -573,50 +580,70 @@ void chequearPrintId(char * nombre){
 	}
 }
 
-tArbol crearNodo(char* info, tArbol* pIzq, tArbol* pDer){
+tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer){
 	
-	tNodo nodo ;
-    tArbol arbol;
+    tNodo* nodoNuevo = (tNodo*)malloc(sizeof(tNodo));
+    tInfo info;
 
-	strcpy(nodo.info.cadena , info);
-	nodo.izq = *pIzq;
-	nodo.der = *pDer;
-	
-	arbol = &nodo;
-	return arbol;
+    switch(dato){
+		case CteInt:
+			info.entero = yylval.valor_int;
+			break;
+		case Integer:
+		    info.entero = yylval.valor_int;
+			break;		
+		case CteFloat:
+			info.flotante = yylval.valor_float;
+			break;
+		case Float:
+			info.flotante = yylval.valor_float;
+			break;		
+		case CteString:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+		case String:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+	}
+    
+    nodoNuevo->info = info;
+    nodoNuevo->izq = pIzq;
+    nodoNuevo->der = pDer;
+    return nodoNuevo;
+}
+
+tNodo* crearHoja(int dato){	
+    tNodo* nodoNuevo = (tNodo*)malloc(sizeof(tNodo));
+    tInfo info;
+
+    switch(dato){
+		case CteInt:
+			info.entero = yylval.valor_int;
+			break;
+		case Integer:
+		    info.entero = yylval.valor_int;
+			break;		
+		case CteFloat:
+			info.flotante = yylval.valor_float;
+			break;
+		case Float:
+			info.flotante = yylval.valor_float;
+			break;		
+		case CteString:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+		case String:
+			strcpy(info.cadena , yylval.valor_string);
+			break;
+	}
+
+	nodoNuevo->info = info;
+    nodoNuevo->izq = NULL;
+    nodoNuevo->der = NULL;
+    return nodoNuevo;
 }
 
 
-tArbol crearHoja(char* info){
-	
-    tNodo nodo;
-    tArbol arbol = (tNodo*)malloc(sizeof(tNodo));
-    strcpy(nodo.info.cadena , info);
-    nodo.izq = NULL;
-    nodo.der = NULL;
-	arbol = &nodo;
-    return arbol;
-}
-
-void mostrar_grafico(tArbol *pa,int n)
-{
-    int numNodos = 0;
-    int i=0;
-     if(!*pa)
-          return;
-
-        mostrar_grafico(&(*pa)->der, n+1);
-
-     for(i; i<n; i++)
-     {
-       printf("   ");
-     }
 
 
-     numNodos++;
-     printf(" %s \n",(*pa)->info.cadena);
-
-     mostrar_grafico(&(*pa)->izq, n+1);
-
-}
 
