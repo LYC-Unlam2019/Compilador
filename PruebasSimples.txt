@@ -1,8 +1,9 @@
 START
 	VAR
 		[INTEGER]:[numero1]
+		[STRING]:[numero2]
 	ENDVAR
 
-	numero1:=2*5
+	numero2:="hola"
 
 END

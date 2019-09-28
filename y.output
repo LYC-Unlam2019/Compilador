@@ -120,8 +120,8 @@ NOT (273) 44
 ASIG (274) 24
 SUMA (275) 28
 RESTA (276) 29
-POR (277) 33
-DIVIDIDO (278) 34
+DIVIDIDO (277) 34
+POR (278) 33
 MENOR (279) 52
 MAYOR (280) 53
 MENOR_IGUAL (281) 54
@@ -485,8 +485,8 @@ state 24
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       shift, and go to state 54
-    DIVIDIDO  shift, and go to state 55
+    DIVIDIDO  shift, and go to state 54
+    POR       shift, and go to state 55
 
     $default  reduce using rule 32 (expresion_aritmetica)
 
@@ -805,7 +805,7 @@ state 53
 
 state 54
 
-   33 termino: termino POR . factor
+   34 termino: termino DIVIDIDO . factor
 
     PA         shift, and go to state 11
     FILTER     shift, and go to state 14
@@ -819,7 +819,7 @@ state 54
 
 state 55
 
-   34 termino: termino DIVIDIDO . factor
+   33 termino: termino POR . factor
 
     PA         shift, and go to state 11
     FILTER     shift, and go to state 14
@@ -1091,8 +1091,8 @@ state 78
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       shift, and go to state 54
-    DIVIDIDO  shift, and go to state 55
+    DIVIDIDO  shift, and go to state 54
+    POR       shift, and go to state 55
 
     $default  reduce using rule 28 (expresion_aritmetica)
 
@@ -1103,8 +1103,8 @@ state 79
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       shift, and go to state 54
-    DIVIDIDO  shift, and go to state 55
+    DIVIDIDO  shift, and go to state 54
+    POR       shift, and go to state 55
 
     $default  reduce using rule 29 (expresion_aritmetica)
 
@@ -1115,8 +1115,8 @@ state 80
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       shift, and go to state 54
-    DIVIDIDO  shift, and go to state 55
+    DIVIDIDO  shift, and go to state 54
+    POR       shift, and go to state 55
 
     $default  reduce using rule 31 (expresion_aritmetica)
 
@@ -1127,24 +1127,24 @@ state 81
    33 termino: termino . POR factor
    34        | termino . DIVIDIDO factor
 
-    POR       shift, and go to state 54
-    DIVIDIDO  shift, and go to state 55
+    DIVIDIDO  shift, and go to state 54
+    POR       shift, and go to state 55
 
     $default  reduce using rule 30 (expresion_aritmetica)
 
 
 state 82
 
-   33 termino: termino POR factor .
+   34 termino: termino DIVIDIDO factor .
 
-    $default  reduce using rule 33 (termino)
+    $default  reduce using rule 34 (termino)
 
 
 state 83
 
-   34 termino: termino DIVIDIDO factor .
+   33 termino: termino POR factor .
 
-    $default  reduce using rule 34 (termino)
+    $default  reduce using rule 33 (termino)
 
 
 state 84

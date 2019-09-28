@@ -58,8 +58,8 @@
      ASIG = 274,
      SUMA = 275,
      RESTA = 276,
-     POR = 277,
-     DIVIDIDO = 278,
+     DIVIDIDO = 277,
+     POR = 278,
      MENOR = 279,
      MAYOR = 280,
      MENOR_IGUAL = 281,
@@ -105,8 +105,8 @@
 #define ASIG 274
 #define SUMA 275
 #define RESTA 276
-#define POR 277
-#define DIVIDIDO 278
+#define DIVIDIDO 277
+#define POR 278
 #define MENOR 279
 #define MAYOR 280
 #define MENOR_IGUAL 281

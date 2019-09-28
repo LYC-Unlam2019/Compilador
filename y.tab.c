@@ -85,8 +85,8 @@
      ASIG = 274,
      SUMA = 275,
      RESTA = 276,
-     POR = 277,
-     DIVIDIDO = 278,
+     DIVIDIDO = 277,
+     POR = 278,
      MENOR = 279,
      MAYOR = 280,
      MENOR_IGUAL = 281,
@@ -132,8 +132,8 @@
 #define ASIG 274
 #define SUMA 275
 #define RESTA 276
-#define POR 277
-#define DIVIDIDO 278
+#define DIVIDIDO 277
+#define POR 278
 #define MENOR 279
 #define MAYOR 280
 #define MENOR_IGUAL 281
@@ -185,7 +185,7 @@
 	typedef struct {
 		int entero;
 		float flotante;
-		char *cadena;
+		char cadena[40];
 	}tInfo;
 
 	/* Defino estructura de nodo de arbol*/
@@ -209,7 +209,7 @@
 	void chequearPrintId(char *nombre);
 
 	/**FUNCIONES PARA LA ENTREGA 2 **/
-	tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer);
+	tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer);
 	tNodo* crearHoja(int dato);
 
 	void mostrar_grafico(tArbol *pa, int n);
@@ -262,7 +262,7 @@
 			termLogPtr,			//Puntero de termino logico
 			compBoolPtr,		//Puntero de comparador Booleano	
 			terminoFilterPtr,	//Puntero de termino de filter		
-			compFilterPtr,		//Puntero de comparador de filter	
+			compFilterPtr,   	//Puntero de comparador de filter	
 			listaExpComaPtr;	//Puntero de lista expresion coma		
 
 
@@ -602,8 +602,8 @@ static const yytype_int8 yyrhs[] =
       14,    55,    15,    -1,    10,    65,    55,    11,    -1,    43,
       19,    60,    -1,    61,    -1,    62,    -1,    46,    -1,    62,
       20,    63,    -1,    62,    21,    63,    -1,    62,    42,    63,
-      -1,    62,    41,    63,    -1,    63,    -1,    63,    22,    64,
-      -1,    63,    23,    64,    -1,    64,    -1,    30,    62,    31,
+      -1,    62,    41,    63,    -1,    63,    -1,    63,    23,    64,
+      -1,    63,    22,    64,    -1,    64,    -1,    30,    62,    31,
       -1,    70,    -1,    43,    -1,    44,    -1,    45,    -1,    66,
       16,    66,    -1,    66,    17,    66,    -1,    66,    -1,    18,
       66,    -1,    62,    69,    62,    -1,    37,    69,    30,    62,
@@ -618,13 +618,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   166,   166,   175,   178,   179,   182,   188,   189,   192,
-     196,   200,   206,   211,   223,   224,   227,   228,   229,   230,
-     231,   232,   235,   238,   241,   244,   253,   257,   263,   270,
-     274,   278,   281,   284,   289,   292,   295,   300,   303,   308,
-     314,   319,   331,   332,   333,   336,   337,   340,   341,   342,
-     345,   346,   347,   350,   351,   352,   353,   354,   355,   359,
-     362,   363,   366,   373,   378
+       0,   167,   167,   176,   179,   180,   183,   189,   190,   193,
+     197,   201,   207,   212,   224,   225,   228,   229,   230,   231,
+     232,   233,   236,   239,   242,   245,   255,   259,   265,   273,
+     277,   281,   284,   287,   292,   296,   299,   304,   307,   312,
+     318,   323,   335,   336,   337,   340,   341,   344,   345,   346,
+     349,   350,   351,   354,   355,   356,   357,   358,   359,   363,
+     366,   367,   370,   377,   382
 };
 #endif
 
@@ -635,8 +635,8 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "START", "END", "VAR", "ENDVAR",
   "INTEGER", "FLOAT", "STRING", "REPEAT", "ENDREPEAT", "IF", "THEN",
-  "ELSE", "ENDIF", "AND", "OR", "NOT", "ASIG", "SUMA", "RESTA", "POR",
-  "DIVIDIDO", "MENOR", "MAYOR", "MENOR_IGUAL", "MAYOR_IGUAL", "IGUAL",
+  "ELSE", "ENDIF", "AND", "OR", "NOT", "ASIG", "SUMA", "RESTA", "DIVIDIDO",
+  "POR", "MENOR", "MAYOR", "MENOR_IGUAL", "MAYOR_IGUAL", "IGUAL",
   "DISTINTO", "PA", "PC", "CA", "CC", "COMA", "PUNTO_COMA", "DOS_PUNTOS",
   "GUION_BAJO", "READ", "PRINT", "FILTER", "DIV", "MOD", "ID", "CTE_FLOAT",
   "CTE_INT", "CTE_STRING", "$accept", "programa", "seccion_declaracion",
@@ -699,7 +699,7 @@ static const yytype_uint8 yydefact[] =
        0,     0,     0,     0,     0,     0,     0,     0,    45,    53,
       54,    55,    56,    57,    58,     0,     0,     0,     0,     0,
       37,     0,    52,     0,    28,    25,    26,    27,    29,    30,
-      32,    31,    34,    35,     0,     7,    46,    24,    42,    43,
+      32,    31,    35,    34,     0,     7,    46,    24,    42,    43,
        0,     0,     0,     0,     0,     0,     0,    22,     0,    48,
       49,    50,    51,     0,    13,     0,     0,     0,    61,     0,
        6,     0,    23,    47,     0,     0,    12,    59,    60
@@ -1619,7 +1619,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 166 "Sintactico.y"
+#line 167 "Sintactico.y"
     {
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
@@ -1628,22 +1628,22 @@ yyreduce:
     break;
 
   case 3:
-#line 175 "Sintactico.y"
+#line 176 "Sintactico.y"
     {printf("R 1: Seccion declaracion => VAR bloque_dec ENDVAR\n");}
     break;
 
   case 4:
-#line 178 "Sintactico.y"
+#line 179 "Sintactico.y"
     {printf("R 2: bloque_dec => bloque_dec declaracion\n");}
     break;
 
   case 5:
-#line 179 "Sintactico.y"
+#line 180 "Sintactico.y"
     {printf("R 3: bloque_dec => declaracion\n");}
     break;
 
   case 6:
-#line 182 "Sintactico.y"
+#line 183 "Sintactico.y"
     {
 															printf("R 4: declaracion => t_dato DOS_PUNTOS lista_id\n");
 															 agregarTiposDatosATabla();
@@ -1651,17 +1651,17 @@ yyreduce:
     break;
 
   case 7:
-#line 188 "Sintactico.y"
+#line 189 "Sintactico.y"
     {printf("R 5: t_datos => t_datos COMA t_dato\n");}
     break;
 
   case 8:
-#line 189 "Sintactico.y"
+#line 190 "Sintactico.y"
     {printf("R 6: t_datos => t_dato \n");}
     break;
 
   case 9:
-#line 192 "Sintactico.y"
+#line 193 "Sintactico.y"
     {
 															printf("R 7: t_dato => FLOAT\n");
 															tipoDatoADeclarar = Float;
@@ -1669,7 +1669,7 @@ yyreduce:
     break;
 
   case 10:
-#line 196 "Sintactico.y"
+#line 197 "Sintactico.y"
     {
 															printf("R 8: t_dato => INTEGER\n");
 															tipoDatoADeclarar = Integer;
@@ -1677,7 +1677,7 @@ yyreduce:
     break;
 
   case 11:
-#line 200 "Sintactico.y"
+#line 201 "Sintactico.y"
     {
 															printf("R 9: t_dato => STRING\n");
 															tipoDatoADeclarar = String;
@@ -1685,7 +1685,7 @@ yyreduce:
     break;
 
   case 12:
-#line 206 "Sintactico.y"
+#line 207 "Sintactico.y"
     {
 	                                                        printf("R 8: lista_id => lista_id COMA ID\n");
 	                                                        agregarVarATabla(yylval.valor_string);
@@ -1694,7 +1694,7 @@ yyreduce:
     break;
 
   case 13:
-#line 211 "Sintactico.y"
+#line 212 "Sintactico.y"
     {
 	                                                        printf("R 9: lista_id => ID\n");
 	                                                        agregarVarATabla(yylval.valor_string);
@@ -1704,71 +1704,72 @@ yyreduce:
     break;
 
   case 14:
-#line 223 "Sintactico.y"
+#line 224 "Sintactico.y"
     {printf("R 10: bloque => bloque sentencia\n");}
     break;
 
   case 15:
-#line 224 "Sintactico.y"
+#line 225 "Sintactico.y"
     {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;}
     break;
 
   case 16:
-#line 227 "Sintactico.y"
+#line 228 "Sintactico.y"
     {printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr;}
     break;
 
   case 17:
-#line 228 "Sintactico.y"
+#line 229 "Sintactico.y"
     {printf("R 13: sentencia => bloque_if\n");}
     break;
 
   case 18:
-#line 229 "Sintactico.y"
+#line 230 "Sintactico.y"
     {printf("R 14: sentencia => bloque_while\n");}
     break;
 
   case 19:
-#line 230 "Sintactico.y"
+#line 231 "Sintactico.y"
     {printf("R 15: sentencia => lectura\n");}
     break;
 
   case 20:
-#line 231 "Sintactico.y"
+#line 232 "Sintactico.y"
     {printf("R 16: sentencia => escritura\n");}
     break;
 
   case 21:
-#line 232 "Sintactico.y"
+#line 233 "Sintactico.y"
     {printf("R 17: sentencia => expresion_aritmetica\n");}
     break;
 
   case 22:
-#line 235 "Sintactico.y"
+#line 236 "Sintactico.y"
     {printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");}
     break;
 
   case 23:
-#line 238 "Sintactico.y"
+#line 239 "Sintactico.y"
     {printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");}
     break;
 
   case 24:
-#line 241 "Sintactico.y"
+#line 242 "Sintactico.y"
     {printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");}
     break;
 
   case 25:
-#line 244 "Sintactico.y"
+#line 245 "Sintactico.y"
     {
 															chequearVarEnTabla((yyvsp[(1) - (3)].valor_string));
 															printf("R 21: asignacion => ID ASIG expresion\n");
-															//asigPtr = crearNodo("ASIG", &(crearHoja("ID")), &exprPtr);
+															//asigPtr = crearNodo(":=", crearHoja(String), exprPtr);
+															//mostrar_grafico(&asigPtr, 5);
 														}
     break;
 
   case 26:
-#line 253 "Sintactico.y"
+#line 255 "Sintactico.y"
     {
 															printf("R 22: expresion => expresion_cadena\n");
 															exprPtr = exprCadPtr;
@@ -1776,7 +1777,7 @@ yyreduce:
     break;
 
   case 27:
-#line 257 "Sintactico.y"
+#line 259 "Sintactico.y"
     {
 															printf("R 23: expresion => expresion_aritmetica\n");
 															exprPtr = exprAritPtr;
@@ -1784,24 +1785,25 @@ yyreduce:
     break;
 
   case 28:
-#line 263 "Sintactico.y"
+#line 265 "Sintactico.y"
     {
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
-															//exprAritPtr = crearHoja(CteString);
+															exprAritPtr = crearHoja(CteString);
+															mostrar_grafico(&exprAritPtr, 5);
 														}
     break;
 
   case 29:
-#line 270 "Sintactico.y"
+#line 273 "Sintactico.y"
     {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															//exprAritPtr = crearNodo("SUMA", &exprAritPtr, &terminoPtr);
+															exprAritPtr = crearNodo("+", terminoPtr, factorPtr);
 														}
     break;
 
   case 30:
-#line 274 "Sintactico.y"
+#line 277 "Sintactico.y"
     {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
 															//exprAritPtr = crearNodo("RESTA", &exprAritPtr, &terminoPtr);
@@ -1809,63 +1811,64 @@ yyreduce:
     break;
 
   case 31:
-#line 278 "Sintactico.y"
+#line 281 "Sintactico.y"
     {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
 															//exprAritPtr = crearNodo("MOD", &exprAritPtr, &terminoPtr);
 														}
     break;
 
   case 32:
-#line 281 "Sintactico.y"
+#line 284 "Sintactico.y"
     {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
 															//exprAritPtr = crearNodo("DIV", &exprAritPtr, &terminoPtr);
 														}
     break;
 
   case 33:
-#line 284 "Sintactico.y"
+#line 287 "Sintactico.y"
     {	printf("R 29: expresion_aritmetica => termino\n");
 															exprAritPtr = terminoPtr;
 														}
     break;
 
   case 34:
-#line 289 "Sintactico.y"
+#line 292 "Sintactico.y"
     {	printf("R 30: termino => termino POR factor\n");
-															//terminoPtr = crearNodo("POR", &terminoPtr, &factorPtr);
+															terminoPtr = crearNodo("*", terminoPtr, factorPtr);
+
 														}
     break;
 
   case 35:
-#line 292 "Sintactico.y"
+#line 296 "Sintactico.y"
     {	printf("R 31: termino => termino DIVIDIDO factor\n");
 															//terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
 														}
     break;
 
   case 36:
-#line 295 "Sintactico.y"
+#line 299 "Sintactico.y"
     {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
 														}
     break;
 
   case 37:
-#line 300 "Sintactico.y"
+#line 304 "Sintactico.y"
     {	printf("R 33: factor => PA expresion_aritmetica PC\n");
 															factorPtr = exprAritPtr;
 														}
     break;
 
   case 38:
-#line 303 "Sintactico.y"
+#line 307 "Sintactico.y"
     {	printf("R 34: factor => FILTER\n");
 														    factorPtr = filterPtr;
 														}
     break;
 
   case 39:
-#line 308 "Sintactico.y"
+#line 312 "Sintactico.y"
     {
 															chequearVarEnTabla(yylval.valor_string);
 															printf("R 35: factor => ID\n");
@@ -1875,7 +1878,7 @@ yyreduce:
     break;
 
   case 40:
-#line 314 "Sintactico.y"
+#line 318 "Sintactico.y"
     {
 															printf("R 36: factor => CTE_FLOAT\n");
 															agregarCteATabla(CteFloat);
@@ -1884,120 +1887,120 @@ yyreduce:
     break;
 
   case 41:
-#line 319 "Sintactico.y"
+#line 323 "Sintactico.y"
     {
 															printf("R 37: factor => CTE_INT\n");
 															agregarCteATabla(CteInt);
 															factorPtr = crearHoja(CteInt);
 															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
-															printf("Puntero:\n"); 
+															printf("Puntero:\n");
 															printf("info: %d \n", factorPtr->info.entero);
 															printf("\n");//BORRAR ESTO
 														}
     break;
 
   case 42:
-#line 331 "Sintactico.y"
+#line 335 "Sintactico.y"
     {printf("R 38: expresion_logica => termino_logico AND termino_logico\n");}
     break;
 
   case 43:
-#line 332 "Sintactico.y"
+#line 336 "Sintactico.y"
     {printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
     break;
 
   case 44:
-#line 333 "Sintactico.y"
+#line 337 "Sintactico.y"
     {printf("R 40: expresion_logica => termino_logico\n");}
     break;
 
   case 45:
-#line 336 "Sintactico.y"
+#line 340 "Sintactico.y"
     {printf("R 41: NOT termino_logico\n");}
     break;
 
   case 46:
-#line 337 "Sintactico.y"
+#line 341 "Sintactico.y"
     {printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");}
     break;
 
   case 47:
-#line 340 "Sintactico.y"
+#line 344 "Sintactico.y"
     {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
     break;
 
   case 48:
-#line 341 "Sintactico.y"
+#line 345 "Sintactico.y"
     {printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");}
     break;
 
   case 49:
-#line 342 "Sintactico.y"
+#line 346 "Sintactico.y"
     {printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");}
     break;
 
   case 50:
-#line 345 "Sintactico.y"
+#line 349 "Sintactico.y"
     {printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");}
     break;
 
   case 51:
-#line 346 "Sintactico.y"
+#line 350 "Sintactico.y"
     {printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
     break;
 
   case 52:
-#line 347 "Sintactico.y"
+#line 351 "Sintactico.y"
     {printf("R 48: comparacion_filter => termino_filter\n");}
     break;
 
   case 53:
-#line 350 "Sintactico.y"
+#line 354 "Sintactico.y"
     {printf("R 49: comp_bool => MENOR\n");}
     break;
 
   case 54:
-#line 351 "Sintactico.y"
+#line 355 "Sintactico.y"
     {printf("R 50: comp_bool => MAYOR\n");}
     break;
 
   case 55:
-#line 352 "Sintactico.y"
+#line 356 "Sintactico.y"
     {printf("R 51: comp_bool => MENOR_IGUAL\n");}
     break;
 
   case 56:
-#line 353 "Sintactico.y"
+#line 357 "Sintactico.y"
     {printf("R 52: comp_bool => MAYOR_IGUAL\n");}
     break;
 
   case 57:
-#line 354 "Sintactico.y"
+#line 358 "Sintactico.y"
     {printf("R 53: comp_bool => IGUAL\n");}
     break;
 
   case 58:
-#line 355 "Sintactico.y"
+#line 359 "Sintactico.y"
     {printf("R 54: comp_bool => DISTINTO\n");}
     break;
 
   case 59:
-#line 359 "Sintactico.y"
+#line 363 "Sintactico.y"
     {printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");}
     break;
 
   case 60:
-#line 362 "Sintactico.y"
+#line 366 "Sintactico.y"
     {printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");}
     break;
 
   case 61:
-#line 363 "Sintactico.y"
+#line 367 "Sintactico.y"
     {printf("R 57: lista_exp_coma => expresion_aritmetica\n");}
     break;
 
   case 62:
-#line 366 "Sintactico.y"
+#line 370 "Sintactico.y"
     {
 															chequearVarEnTabla((yyvsp[(2) - (2)].valor_string));
 															printf("R 58: lectura => READ ID\n");
@@ -2005,7 +2008,7 @@ yyreduce:
     break;
 
   case 63:
-#line 373 "Sintactico.y"
+#line 377 "Sintactico.y"
     {
 															chequearVarEnTabla((yyvsp[(2) - (2)].valor_string));
 															chequearPrintId((yyvsp[(2) - (2)].valor_string));
@@ -2014,7 +2017,7 @@ yyreduce:
     break;
 
   case 64:
-#line 378 "Sintactico.y"
+#line 382 "Sintactico.y"
     {
 															printf("R 60: escritura => PRINT CTE_STRING\n");
 															agregarCteATabla(CteString);
@@ -2023,7 +2026,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2027 "y.tab.c"
+#line 2030 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2237,7 +2240,7 @@ yyreturn:
 }
 
 
-#line 384 "Sintactico.y"
+#line 388 "Sintactico.y"
 
 
 int main(int argc,char *argv[]){
@@ -2437,36 +2440,32 @@ void chequearPrintId(char * nombre){
 	}
 }
 
-tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer){
-	
-    tNodo* nodoNuevo = (tNodo*)malloc(sizeof(tNodo));
-    tInfo info;
-
-    switch(dato){
-		case CteInt:
-			info.entero = yylval.valor_int;
-			break;
-		case Integer:
-		    info.entero = yylval.valor_int;
-			break;		
-		case CteFloat:
-			info.flotante = yylval.valor_float;
-			break;
-		case Float:
-			info.flotante = yylval.valor_float;
-			break;		
-		case CteString:
-			strcpy(info.cadena , yylval.valor_string);
-			break;
-		case String:
-			strcpy(info.cadena , yylval.valor_string);
-			break;
-	}
+tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
+	printf("info nodo izquierdo: %d \n", pIzq->info.entero);
+    printf("info nodo derecho: %d \n", pDer->info.entero);
     
-    nodoNuevo->info = info;
-    nodoNuevo->izq = pIzq;
-    nodoNuevo->der = pDer;
-    return nodoNuevo;
+    tNodo* nodo = malloc(sizeof(tNodo));   
+    
+    if (nodo != NULL){
+ 		printf("se asigno memoria correctamente\n");    	
+    }
+
+    tInfo info;  
+
+    strcpy(info.cadena, dato);
+    info.entero = 0;
+    info.flotante = 0.0;
+
+    nodo->info = info;
+//	printf("asignacion a info, valor: %s \n", info.cadena); 
+
+    nodo->izq = pIzq;
+//	printf("asignacion izq\n"); 
+
+    nodo->der = pDer;
+//	printf("asignacion der\n"); 
+
+    return nodo;
 }
 
 tNodo* crearHoja(int dato){	
@@ -2486,7 +2485,7 @@ tNodo* crearHoja(int dato){
 		case Float:
 			info.flotante = yylval.valor_float;
 			break;		
-		case CteString:
+		case CteString:			
 			strcpy(info.cadena , yylval.valor_string);
 			break;
 		case String:
@@ -2500,7 +2499,30 @@ tNodo* crearHoja(int dato){
     return nodoNuevo;
 }
 
+void mostrar_grafico(tArbol *pa,int n)
+{
+    int numNodos = 0;
+    int i=0;
+     if(!*pa)
+          return;
 
+        mostrar_grafico(&(*pa)->der, n+1);
+
+     for(i; i<n; i++)
+     {
+       printf("   ");
+     }
+
+
+     numNodos++;
+
+     printf(" %s \n",(*pa)->info.cadena);
+     printf(" %f \n",(*pa)->info.flotante);
+     printf(" %d \n",(*pa)->info.entero);
+
+     mostrar_grafico(&(*pa)->izq, n+1);
+
+}
 
 
 

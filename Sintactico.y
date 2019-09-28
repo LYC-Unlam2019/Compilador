@@ -35,7 +35,7 @@
 	typedef struct {
 		int entero;
 		float flotante;
-		char *cadena;
+		char cadena[40];
 	}tInfo;
 
 	/* Defino estructura de nodo de arbol*/
@@ -59,7 +59,7 @@
 	void chequearPrintId(char *nombre);
 
 	/**FUNCIONES PARA LA ENTREGA 2 **/
-	tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer);
+	tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer);
 	tNodo* crearHoja(int dato);
 
 	void mostrar_grafico(tArbol *pa, int n);
@@ -112,7 +112,7 @@
 			termLogPtr,			//Puntero de termino logico
 			compBoolPtr,		//Puntero de comparador Booleano	
 			terminoFilterPtr,	//Puntero de termino de filter		
-			compFilterPtr,		//Puntero de comparador de filter	
+			compFilterPtr,   	//Puntero de comparador de filter	
 			listaExpComaPtr;	//Puntero de lista expresion coma		
 %}
 
@@ -136,7 +136,8 @@
 
 %token ASIG
 %token SUMA RESTA
-%token POR DIVIDIDO
+%token DIVIDIDO
+%token POR
 
 %token MENOR  MAYOR MENOR_IGUAL MAYOR_IGUAL
 %token IGUAL DISTINTO
@@ -244,7 +245,8 @@ asignacion:
 	ID ASIG expresion	                                {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
-															//asigPtr = crearNodo("ASIG", &(crearHoja("ID")), &exprPtr);
+															asigPtr = crearNodo(":=", crearHoja(String), exprPtr);
+															mostrar_grafico(&asigPtr, 5);
 														};
 
 /* Expresiones aritmeticas y otras */
@@ -263,13 +265,13 @@ expresion_cadena:
 	CTE_STRING						                    {
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
-															//exprAritPtr = crearHoja(CteString);
+															exprAritPtr = crearHoja(CteString);
 														};
 
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															//exprAritPtr = crearNodo("SUMA", &exprAritPtr, &terminoPtr);
+															exprAritPtr = crearNodo("+", terminoPtr, factorPtr);
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
@@ -287,7 +289,8 @@ expresion_aritmetica:
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															//terminoPtr = crearNodo("POR", &terminoPtr, &factorPtr);
+															terminoPtr = crearNodo("*", terminoPtr, factorPtr);
+
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
 															//terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
@@ -321,7 +324,7 @@ factor:
 															agregarCteATabla(CteInt);
 															factorPtr = crearHoja(CteInt);
 															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
-															printf("Puntero:\n"); 
+															printf("Puntero:\n");
 															printf("info: %d \n", factorPtr->info.entero);
 															printf("\n");//BORRAR ESTO
 														};
@@ -580,36 +583,30 @@ void chequearPrintId(char * nombre){
 	}
 }
 
-tNodo* crearNodo(int dato, tNodo *pIzq, tNodo *pDer){
-	
-    tNodo* nodoNuevo = (tNodo*)malloc(sizeof(tNodo));
-    tInfo info;
-
-    switch(dato){
-		case CteInt:
-			info.entero = yylval.valor_int;
-			break;
-		case Integer:
-		    info.entero = yylval.valor_int;
-			break;		
-		case CteFloat:
-			info.flotante = yylval.valor_float;
-			break;
-		case Float:
-			info.flotante = yylval.valor_float;
-			break;		
-		case CteString:
-			strcpy(info.cadena , yylval.valor_string);
-			break;
-		case String:
-			strcpy(info.cadena , yylval.valor_string);
-			break;
-	}
+tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
+	printf("info nodo izquierdo: %d \n", pIzq->info.entero);
+    printf("info nodo derecho: %d \n", pDer->info.entero);
     
-    nodoNuevo->info = info;
-    nodoNuevo->izq = pIzq;
-    nodoNuevo->der = pDer;
-    return nodoNuevo;
+    tNodo* nodo = malloc(sizeof(tNodo));   
+    
+    if (nodo != NULL){
+ 		printf("se asigno memoria correctamente\n");    	
+    }
+
+    tInfo info;  
+
+    strcpy(info.cadena, dato);
+    
+    nodo->info = info;
+//	printf("asignacion a info, valor: %s \n", info.cadena); 
+
+    nodo->izq = pIzq;
+//	printf("asignacion izq\n"); 
+
+    nodo->der = pDer;
+//	printf("asignacion der\n"); 
+
+    return nodo;
 }
 
 tNodo* crearHoja(int dato){	
@@ -629,7 +626,7 @@ tNodo* crearHoja(int dato){
 		case Float:
 			info.flotante = yylval.valor_float;
 			break;		
-		case CteString:
+		case CteString:			
 			strcpy(info.cadena , yylval.valor_string);
 			break;
 		case String:
@@ -643,7 +640,30 @@ tNodo* crearHoja(int dato){
     return nodoNuevo;
 }
 
+void mostrar_grafico(tArbol *pa,int n)
+{
+    int numNodos = 0;
+    int i=0;
+     if(!*pa)
+          return;
 
+        mostrar_grafico(&(*pa)->der, n+1);
+
+     for(i; i<n; i++)
+     {
+       printf("   ");
+     }
+
+
+     numNodos++;
+
+     printf(" %s \n",(*pa)->info.cadena);
+     printf(" %f \n",(*pa)->info.flotante);
+     printf(" %d \n",(*pa)->info.entero);
+
+     mostrar_grafico(&(*pa)->izq, n+1);
+
+}
 
 
 
