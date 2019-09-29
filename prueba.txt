@@ -13,5 +13,4 @@ START
 	real1 := 0.23
 	PRINT real1
 
-
 END

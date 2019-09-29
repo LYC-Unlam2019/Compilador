@@ -242,13 +242,16 @@ sentencia:
 	| expresion_aritmetica                   			{printf("R 17: sentencia => expresion_aritmetica\n");sentenciaPtr = exprAritPtr;};
 
 bloque_if:
-    IF expresion_logica THEN bloque ENDIF               {printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");};
+    IF expresion_logica THEN bloque ENDIF               {
+    													 bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr);
+    													 printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");
+    													};
 
 bloque_if:
     IF expresion_logica THEN bloque ELSE bloque ENDIF   {printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");};
 
 bloque_while:
-    REPEAT expresion_logica bloque ENDREPEAT              {printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");};
+    REPEAT expresion_logica bloque ENDREPEAT            {printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");};
 
 asignacion:
 	ID ASIG expresion	                                {
@@ -309,7 +312,7 @@ termino:
 
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															//terminoPtr = crearNodo("DIVIDIDO",&terminoPtr, &factorPtr);
+															terminoPtr = crearNodo("/",terminoPtr, factorPtr);
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -347,9 +350,12 @@ factor:
 /* Expresiones logicas */
 
 expresion_logica:
-    termino_logico AND termino_logico                 {printf("R 38: expresion_logica => termino_logico AND termino_logico\n");}
-    | termino_logico OR termino_logico                {printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
-    | termino_logico                                    {printf("R 40: expresion_logica => termino_logico\n");}
+    termino_logico AND termino_logico                 {  
+    												   printf("R 38: expresion_logica => termino_logico AND termino_logico\n");}
+    | termino_logico OR termino_logico                {
+    												   printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
+    | termino_logico                                  { expreLogPtr = termLogPtr;
+    												   printf("R 40: expresion_logica => termino_logico\n");}
 
 termino_logico:
     NOT termino_logico                              		{printf("R 41: NOT termino_logico\n");}
@@ -366,12 +372,37 @@ comparacion_filter:
     | termino_filter		  							{printf("R 48: comparacion_filter => termino_filter\n");}
 
 comp_bool:
-    MENOR                                               {printf("R 49: comp_bool => MENOR\n");}
-    |MAYOR                                              {printf("R 50: comp_bool => MAYOR\n");}
-    |MENOR_IGUAL                                        {printf("R 51: comp_bool => MENOR_IGUAL\n");}
-    |MAYOR_IGUAL                                        {printf("R 52: comp_bool => MAYOR_IGUAL\n");}
-    |IGUAL                                              {printf("R 53: comp_bool => IGUAL\n");}
-    |DISTINTO                                           {printf("R 54: comp_bool => DISTINTO\n");};
+    MENOR                                               {
+    													 rellenarInfo(String, &infoArbol);
+    													 compBoolPtr = crearHoja(&infoArbol);				
+    												     printf("R 49: comp_bool => MENOR\n");
+    												 	}
+    |MAYOR                                              {
+    													 rellenarInfo(String, &infoArbol);
+    													 compBoolPtr = crearHoja(&infoArbol);
+    													 printf("R 50: comp_bool => MAYOR\n");
+    													}
+    |MENOR_IGUAL                                        {
+    													 rellenarInfo(String, &infoArbol);
+    													 compBoolPtr = crearHoja(&infoArbol);
+    													 printf("R 51: comp_bool => MENOR_IGUAL\n");
+    													}
+    |MAYOR_IGUAL                                        {
+    													 rellenarInfo(String, &infoArbol);
+    													 compBoolPtr = crearHoja(&infoArbol);		
+    													 printf("R 52: comp_bool => MAYOR_IGUAL\n");
+
+    													}
+    |IGUAL                                              {
+    													 rellenarInfo(String, &infoArbol);
+    													 compBoolPtr = crearHoja(&infoArbol);
+    													 printf("R 53: comp_bool => IGUAL\n");
+    													}
+    |DISTINTO                                           {
+    													 rellenarInfo(String, &infoArbol);
+    													 compBoolPtr = crearHoja(&infoArbol);
+    													 printf("R 54: comp_bool => DISTINTO\n");
+    													};
 	
 
 filter:
