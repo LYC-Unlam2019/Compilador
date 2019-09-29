@@ -169,7 +169,8 @@ programa:
 	START seccion_declaracion bloque END 	            {
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
-															//mostrar_grafico(&bloquePtr,10);
+
+															
 														};
 
  /* Declaracion de variables */
@@ -227,12 +228,12 @@ bloque:                                                 /* No existen bloques si
 	| sentencia			                                {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;};
 
 sentencia:
-	asignacion			                    			{printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr;}
-	| bloque_if                                         {printf("R 13: sentencia => bloque_if\n");}
-	| bloque_while                                      {printf("R 14: sentencia => bloque_while\n");}
-	| lectura                                			{printf("R 15: sentencia => lectura\n");}
-	| escritura                              			{printf("R 16: sentencia => escritura\n");}
-	| expresion_aritmetica                   			{printf("R 17: sentencia => expresion_aritmetica\n");};
+	asignacion			                    			{printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr; printf("RAIZ: %s\n",sentenciaPtr->info.cadena );}
+	| bloque_if                                         {printf("R 13: sentencia => bloque_if\n"); sentenciaPtr = bloqueIfPtr;}
+	| bloque_while                                      {printf("R 14: sentencia => bloque_while\n"); sentenciaPtr = bloqueWhPtr;}
+	| lectura                                			{printf("R 15: sentencia => lectura\n");sentenciaPtr = lecturaPtr;}
+	| escritura                              			{printf("R 16: sentencia => escritura\n");sentenciaPtr = escrituraPtr;mostrar_grafico(&escrituraPtr,15);}
+	| expresion_aritmetica                   			{printf("R 17: sentencia => expresion_aritmetica\n");sentenciaPtr = exprAritPtr;};
 
 bloque_if:
     IF expresion_logica THEN bloque ENDIF               {printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");};
@@ -252,8 +253,7 @@ asignacion:
 															infoArbol.entero = 0 ;
 															strcpy(infoArbol.cadena,$1);
 															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr);
-															mostrar_grafico(&asigPtr, 4);
-															
+															mostrar_grafico(&asigPtr,15);
 														};
 
 /* Expresiones aritmeticas y otras */
@@ -265,7 +265,8 @@ expresion:
 														}
 	| expresion_aritmetica			                    {
 															printf("R 23: expresion => expresion_aritmetica\n");
-															exprPtr = exprAritPtr;};
+															exprPtr = exprAritPtr;
+														};
 
 expresion_cadena:
 	CTE_STRING						                    {
@@ -273,7 +274,7 @@ expresion_cadena:
 														 	exprCadPtr = crearHoja(&infoArbol);
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
-															//exprAritPtr = crearHoja(CteString);
+						
 														};
 
 expresion_aritmetica:
@@ -385,6 +386,8 @@ escritura:
     PRINT ID                                            {
 															chequearVarEnTabla($2);
 															chequearPrintId($2);
+															rellenarInfo(String,&infoArbol);
+															escrituraPtr = crearNodo("PRINT", escrituraPtr, crearHoja(&infoArbol));
 															printf("R 59: escritura => PRINT ID\n");
 														}
     | PRINT CTE_STRING                                  {
@@ -622,7 +625,7 @@ tNodo* crearHoja(const tInfo* info){
 
 void rellenarInfo(int tipoDato, tInfo* info){
 
-switch(tipoDato){
+	switch(tipoDato){
 		case CteInt:
 			printf("LELE");
 		    info->tipoDato = CteInt;
