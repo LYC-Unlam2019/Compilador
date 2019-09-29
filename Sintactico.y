@@ -224,15 +224,21 @@ lista_id:
  /* Seccion de codigo */
 
 bloque:                                                 /* No existen bloques sin sentencias */
-	bloque sentencia	                                {printf("R 10: bloque => bloque sentencia\n");}
+	bloque sentencia	                                {   
+															printf("R 10: bloque => bloque sentencia\n");
+														 	bloquePtr = crearNodo("SALTA",bloquePtr, sentenciaPtr);
+														 	mostrar_grafico(&bloquePtr,15);
+														 	printf("RAIZ: %s\n",bloquePtr->info.cadena );	
+														}
+	
 	| sentencia			                                {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;};
 
 sentencia:
-	asignacion			                    			{printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr; printf("RAIZ: %s\n",sentenciaPtr->info.cadena );}
+	asignacion			                    			{printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr; }
 	| bloque_if                                         {printf("R 13: sentencia => bloque_if\n"); sentenciaPtr = bloqueIfPtr;}
 	| bloque_while                                      {printf("R 14: sentencia => bloque_while\n"); sentenciaPtr = bloqueWhPtr;}
 	| lectura                                			{printf("R 15: sentencia => lectura\n");sentenciaPtr = lecturaPtr;}
-	| escritura                              			{printf("R 16: sentencia => escritura\n");sentenciaPtr = escrituraPtr;mostrar_grafico(&escrituraPtr,15);}
+	| escritura                              			{printf("R 16: sentencia => escritura\n");sentenciaPtr = escrituraPtr;}
 	| expresion_aritmetica                   			{printf("R 17: sentencia => expresion_aritmetica\n");sentenciaPtr = exprAritPtr;};
 
 bloque_if:
@@ -253,7 +259,7 @@ asignacion:
 															infoArbol.entero = 0 ;
 															strcpy(infoArbol.cadena,$1);
 															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr);
-															mostrar_grafico(&asigPtr,15);
+														
 														};
 
 /* Expresiones aritmeticas y otras */
