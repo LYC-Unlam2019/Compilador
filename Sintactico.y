@@ -137,7 +137,7 @@
 %token AND OR NOT
 
 %token ASIG
-%token SUMA RESTA
+%token <valor_string> SUMA RESTA
 %token DIVIDIDO
 %token POR
 
@@ -270,6 +270,8 @@ expresion:
 
 expresion_cadena:
 	CTE_STRING						                    {
+															rellenarInfo(CteString,&infoArbol);
+														 	exprCadPtr = crearHoja(&infoArbol);
 															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
 															//exprAritPtr = crearHoja(CteString);
@@ -278,7 +280,7 @@ expresion_cadena:
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															exprAritPtr = crearNodo("+", terminoPtr, factorPtr);
+															exprAritPtr = crearNodo($2, terminoPtr, factorPtr);
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
@@ -606,15 +608,13 @@ tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
     tInfo info;  
 
     strcpy(info.cadena, dato);
-    
+    info.tipoDato = String;
     nodo->info = info;
-//	printf("asignacion a info, valor: %s \n", info.cadena); 
+
 
     nodo->izq = pIzq;
-//	printf("asignacion izq\n"); 
 
     nodo->der = pDer;
-//	printf("asignacion der\n"); 
 
     return nodo;
 }
@@ -681,6 +681,7 @@ switch(tipoDato){
 void mostrar_grafico(tArbol *pa,int n)
 {
     int numNodos = 0;
+    float aux = 0.0;
     int i=0;
      if(!*pa)
           return;
@@ -695,11 +696,14 @@ void mostrar_grafico(tArbol *pa,int n)
 
      numNodos++;
 
-     if((*pa)->info.cadena)
+     if((*pa)->info.tipoDato == String || (*pa)->info.tipoDato == CteString)
      printf(" %s \n",(*pa)->info.cadena);
-
-     printf(" %f \n",(*pa)->info.flotante);
-     printf(" %d \n",(*pa)->info.entero);
+	 
+	 if((*pa)->info.tipoDato == Integer || (*pa)->info.tipoDato == CteInt)
+ 	 	printf(" %d  \n",(*pa)->info.entero); 
+ 	 
+ 	 if((*pa)->info.tipoDato == Float || (*pa)->info.tipoDato == CteFloat)
+     	printf(" %f \n",(*pa)->info.flotante);
 
      mostrar_grafico(&(*pa)->izq, n+1);
 
