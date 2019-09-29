@@ -47,7 +47,7 @@
 
 	/* Defino estructura de arbol*/
 	typedef tNodo* tArbol;
-
+    tInfo infoArbol;
 	/* Funciones necesarias */
 	int yylex();
 	int yyerror(char* mensaje);
@@ -62,7 +62,7 @@
 	/**FUNCIONES PARA LA ENTREGA 2 **/
 	tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer);
 	tNodo* crearHoja(const tInfo* info);
-
+	void rellenarInfo(int tipoDato, tInfo* info);
 	void mostrar_grafico(tArbol *pa, int n);
 
 	int yystopparser=0;
@@ -86,7 +86,7 @@
 	int varADeclarar1 = 0;
 	int cantVarsADeclarar = 0;
 	int tipoDatoADeclarar;
-	tInfo info;
+	
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -247,10 +247,11 @@ asignacion:
 	ID ASIG expresion	                                {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
-															info.tipoDato = String;
-															info.entero = 0 ;
-															strcpy(info.cadena,$1);
-															asigPtr = crearNodo(":=", crearHoja(&info), exprPtr);
+															/*Aca no uso rellenar porque tomo el valor $1)*/
+															infoArbol.tipoDato = String;
+															infoArbol.entero = 0 ;
+															strcpy(infoArbol.cadena,$1);
+															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr);
 															mostrar_grafico(&asigPtr, 4);
 															
 														};
@@ -318,32 +319,22 @@ factor:
 	ID			                                        {
 															chequearVarEnTabla(yylval.valor_string);
 															printf("R 35: factor => ID\n");
-															info.tipoDato = String;
-															info.flotante = 0.0;
-															strcpy(info.cadena,yylval.valor_string);
-															info.entero = 0;
-															factorPtr = crearHoja(&info);
-															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
+															rellenarInfo(String,&infoArbol);
+															factorPtr = crearHoja(&infoArbol);
 														}
 	| CTE_FLOAT	                                        {
-															printf("R 36: factor => CTE_FLOAT\n");
-
-															info.tipoDato = CteFloat;
-															info.flotante = yylval.valor_float;
-															strcpy(info.cadena,"");
-															info.entero = 0;
+															rellenarInfo(CteFloat,&infoArbol);
 															agregarCteATabla(CteFloat);
-															factorPtr = crearHoja(&info);
+															factorPtr = crearHoja(&infoArbol);
+															printf("R 36: factor => CTE_FLOAT\n");
 														}
 	| CTE_INT	                                        {
 															printf("R 37: factor => CTE_INT\n");
 															
-															info.tipoDato = CteInt;
-															info.entero = yylval.valor_int;
-															strcpy(info.cadena,"");
-															info.flotante = 0.0;
+															rellenarInfo(CteInt,&infoArbol);
+															printf("RELLENADO\n");
 															agregarCteATabla(CteInt);
-															factorPtr = crearHoja(&info);
+															factorPtr = crearHoja(&infoArbol);
 															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
 															printf("Puntero:\n");
 															printf("info: %d \n", factorPtr->info.entero);
@@ -637,6 +628,56 @@ tNodo* crearHoja(const tInfo* info){
     return nodoNuevo;
 }
 
+void rellenarInfo(int tipoDato, tInfo* info){
+
+switch(tipoDato){
+		case CteInt:
+			printf("LELE");
+		    info->tipoDato = CteInt;
+			info->entero = yylval.valor_int;
+			strcpy(info->cadena,"");
+			info->flotante = 0.0;
+		break;
+
+		case CteFloat:
+			info->tipoDato = CteFloat;
+			info->flotante = yylval.valor_float;
+			strcpy(info->cadena,"");
+			info->entero = 0;
+		break;
+
+		case CteString:
+			info->tipoDato = CteString;
+			info->flotante = 0.0;
+			strcpy(info->cadena,yylval.valor_string);
+			info->entero = 0;
+		break;
+
+		case  Integer :
+		    info->tipoDato = CteInt;
+			info->entero = yylval.valor_int;
+			strcpy(info->cadena,"");
+			info->flotante = 0.0;
+			
+		break;
+
+		case Float:	
+			info->tipoDato = CteFloat;
+			info->flotante = yylval.valor_float;
+			strcpy(info->cadena,"");
+			info->entero = 0;
+		break;
+
+		case String:
+			info->tipoDato = String;
+			info->flotante = 0.0;
+			strcpy(info->cadena,yylval.valor_string);
+			info->entero = 0;		
+		break;
+
+
+	}
+}
 void mostrar_grafico(tArbol *pa,int n)
 {
     int numNodos = 0;
