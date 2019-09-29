@@ -265,8 +265,7 @@ expresion:
 														}
 	| expresion_aritmetica			                    {
 															printf("R 23: expresion => expresion_aritmetica\n");
-															exprPtr = exprAritPtr;
-	};
+															exprPtr = exprAritPtr;};
 
 expresion_cadena:
 	CTE_STRING						                    {
@@ -280,7 +279,7 @@ expresion_cadena:
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															exprAritPtr = crearNodo($2, terminoPtr, factorPtr);
+															exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
@@ -333,14 +332,10 @@ factor:
 	| CTE_INT	                                        {
 															printf("R 37: factor => CTE_INT\n");
 															
-															rellenarInfo(CteInt,&infoArbol);
-															printf("RELLENADO\n");
+															rellenarInfo(CteInt,&infoArbol);	
 															agregarCteATabla(CteInt);
 															factorPtr = crearHoja(&infoArbol);
-															printf("SE CREO UNA HOJA CORRECTAMENTE EN EL ARBOL\n"); //BORRAR ESTO
-															printf("Puntero:\n");
-															printf("info: %d \n", factorPtr->info.entero);
-															printf("\n");//BORRAR ESTO
+
 														};
 /* Expresiones logicas */
 
@@ -610,10 +605,7 @@ tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
     strcpy(info.cadena, dato);
     info.tipoDato = String;
     nodo->info = info;
-
-
     nodo->izq = pIzq;
-
     nodo->der = pDer;
 
     return nodo;

@@ -9,7 +9,7 @@ START
 
 	--/Prueba --/doble/-- comentario/--	
 	--/Ejemplo de asignaciones/--
-	numero1 := 2 * 6
+	numero1 := 2 * 6 + 5
 	
 
 
