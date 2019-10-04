@@ -79,14 +79,15 @@
 	} TS_Reg;
 
 
-	TS_Reg tabla_simbolo[TAMANIO_TABLA];
-	int fin_tabla = -1;
+	
 
 	/* Cosas para la declaracion de variables y la tabla de simbolos */
-	int varADeclarar1 = 0;
+	int varADeclarar1 = 1;
 	int cantVarsADeclarar = 0;
-	int tipoDatoADeclarar;
-	
+	int tipoDatoADeclarar[TAMANIO_TABLA];
+	int indiceDatoADeclarar = 0;
+    TS_Reg tabla_simbolo[TAMANIO_TABLA];
+	int indice_tabla = -1;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -186,6 +187,8 @@ declaracion:
 	CA t_datos CC DOS_PUNTOS CA lista_id CC				{
 															printf("R 4: declaracion => t_dato DOS_PUNTOS lista_id\n");
 															 agregarTiposDatosATabla();
+															 printf("%d\n",indiceDatoADeclarar );
+															 indiceDatoADeclarar = 0;
 														};
 
 t_datos:
@@ -195,15 +198,16 @@ t_datos:
 t_dato:
 	FLOAT		                                        {
 															printf("R 7: t_dato => FLOAT\n");
-															tipoDatoADeclarar = Float;
+															tipoDatoADeclarar[indiceDatoADeclarar++] = Float;
 														}
-	| INTEGER		                                        {
+	| INTEGER		                                    {
 															printf("R 8: t_dato => INTEGER\n");
-															tipoDatoADeclarar = Integer;
+															tipoDatoADeclarar[indiceDatoADeclarar++] = Integer;
+															printf("%d\n",tipoDatoADeclarar[indiceDatoADeclarar-1] );
 														}
 	| STRING	                                        {
 															printf("R 9: t_dato => STRING\n");
-															tipoDatoADeclarar = String;
+															tipoDatoADeclarar[indiceDatoADeclarar++] = String;
 														};
 
 lista_id:
@@ -215,7 +219,7 @@ lista_id:
 	| ID				                                {
 	                                                        printf("R 9: lista_id => ID\n");
 	                                                        agregarVarATabla(yylval.valor_string);
-															varADeclarar1 = fin_tabla; /* Guardo posicion de primer variable de esta lista de declaracion. */
+															varADeclarar1 = indice_tabla; /* Guardo posicion de primer variable de esta lista de declaracion. */
 															cantVarsADeclarar = 1;
                                                         };
 
@@ -461,7 +465,7 @@ int yyerror(char* mensaje)
 /* Devuleve la posicion en la que se encuentra el elemento buscado, -1 si no encontr� el elemento */
 int buscarEnTabla(char * nombre){
    int i=0;
-   while(i<=fin_tabla){
+   while(i<=indice_tabla){
 	   if(strcmp(tabla_simbolo[i].nombre,nombre) == 0){
 		   return i;
 	   }
@@ -473,7 +477,7 @@ int buscarEnTabla(char * nombre){
  /** Agrega un nuevo nombre de variable a la tabla **/
  void agregarVarATabla(char* nombre){
 	 //Si se llena, error
-	 if(fin_tabla >= TAMANIO_TABLA - 1){
+	 if(indice_tabla >= TAMANIO_TABLA - 1){
 		 printf("Error: No hay mas espacio en la tabla de simbolos.\n");
 		 system("Pause");
 		 exit(2);
@@ -481,8 +485,8 @@ int buscarEnTabla(char * nombre){
 	 //Si no hay otra variable con el mismo nombre...
 	 if(buscarEnTabla(nombre) == -1){
 		 //Agregar a tabla
-		 fin_tabla++;
-		 strcpy(tabla_simbolo[fin_tabla].nombre, nombre);
+		 indice_tabla ++;
+		 strcpy(tabla_simbolo[indice_tabla].nombre, nombre);
 	 }
 	 else 
 	 {
@@ -496,13 +500,13 @@ int buscarEnTabla(char * nombre){
 void agregarTiposDatosATabla(){
 	int i;
 	for(i = 0; i < cantVarsADeclarar; i++){
-		tabla_simbolo[varADeclarar1 + i].tipo_dato = tipoDatoADeclarar;
+		tabla_simbolo[varADeclarar1 + i].tipo_dato = tipoDatoADeclarar[i];
 	}
 }
 
 /** Guarda la tabla de simbolos en un archivo de texto */
 void grabarTabla(){
-	if(fin_tabla == -1)
+	if(indice_tabla == -1)
 		yyerror("No se encontro la tabla de simbolos");
 
 	FILE* arch = fopen("ts.txt", "w+");
@@ -515,7 +519,7 @@ void grabarTabla(){
 
 	fprintf(arch, "%-30s|%-30s|%-30s|%-30s\n","NOMBRE","TIPO","VALOR","LONGITUD");
 	fprintf(arch, ".........................................................................................................\n");
-	for(i = 0; i <= fin_tabla; i++){
+	for(i = 0; i <= indice_tabla; i++){
 		fprintf(arch, "%-30s", &(tabla_simbolo[i].nombre) );
 
 		switch (tabla_simbolo[i].tipo_dato){
@@ -549,7 +553,7 @@ void grabarTabla(){
 void agregarCteATabla(int num){
 	char nombre[30];
 
-	if(fin_tabla >= TAMANIO_TABLA - 1){
+	if(indice_tabla >= TAMANIO_TABLA - 1){
 		printf("Error: No hay mas espacio en la tabla de simbolos.\n");
 		system("Pause");
 		exit(2);
@@ -561,12 +565,12 @@ void agregarCteATabla(int num){
 			//Si no hay otra variable con el mismo nombre...
 			if(buscarEnTabla(nombre) == -1){
 			//Agregar nombre a tabla
-				fin_tabla++;
-				strcpy(tabla_simbolo[fin_tabla].nombre, nombre);
+				indice_tabla++;
+				strcpy(tabla_simbolo[indice_tabla].nombre, nombre);
 			//Agregar tipo de dato
-				tabla_simbolo[fin_tabla].tipo_dato = CteInt;
+				tabla_simbolo[indice_tabla].tipo_dato = CteInt;
 			//Agregar valor a la tabla
-				tabla_simbolo[fin_tabla].valor_i = yylval.valor_int;
+				tabla_simbolo[indice_tabla].valor_i = yylval.valor_int;
 			}
 		break;
 
@@ -575,33 +579,33 @@ void agregarCteATabla(int num){
 			//Si no hay otra variable con el mismo nombre...
 			if(buscarEnTabla(nombre) == -1){
 			//Agregar nombre a tabla
-				fin_tabla ++;
-				strcpy(tabla_simbolo[fin_tabla].nombre, nombre);
+				indice_tabla ++;
+				strcpy(tabla_simbolo[indice_tabla].nombre, nombre);
 			//Agregar tipo de dato
-				tabla_simbolo[fin_tabla].tipo_dato = CteFloat;
+				tabla_simbolo[indice_tabla].tipo_dato = CteFloat;
 			//Agregar valor a la tabla
-				tabla_simbolo[fin_tabla].valor_f = yylval.valor_float;
+				tabla_simbolo[indice_tabla].valor_f = yylval.valor_float;
 			}
 		break;
 
 		case CteString:
 			if(buscarEnTabla(yylval.valor_string) == -1){
 			//Agregar nombre a tabla
-				fin_tabla ++;
-				strcpy(tabla_simbolo[fin_tabla].nombre, yylval.valor_string);
+				indice_tabla ++;
+				strcpy(tabla_simbolo[indice_tabla].nombre, yylval.valor_string);
 
 				//Agregar tipo de dato
-				tabla_simbolo[fin_tabla].tipo_dato = CteString;
+				tabla_simbolo[indice_tabla].tipo_dato = CteString;
 
 				//Agregar valor a la tabla
 				int length = strlen(yylval.valor_string);
 				char auxiliar[length];
 				strcpy(auxiliar,yylval.valor_string);
 				auxiliar[strlen(auxiliar)-1] = '\0';
-				strcpy(tabla_simbolo[fin_tabla].valor_s, auxiliar+1); 
+				strcpy(tabla_simbolo[indice_tabla].valor_s, auxiliar+1); 
 
 				//Agregar longitud
-				tabla_simbolo[fin_tabla].longitud = length - 2;
+				tabla_simbolo[indice_tabla].longitud = length - 2;
 			}
 		break;
 

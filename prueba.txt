@@ -1,6 +1,7 @@
 START
 	VAR
-		[INTEGER, FLOAT, FLOAT]:[numero1, real1, cadena1]
+		[INTEGER,STRING,FLOAT]:[numero1,numero2,numero3]
+		[FLOAT]:[pepe]
 
 	ENDVAR
 
@@ -10,7 +11,7 @@ START
 	--/Prueba --/doble/-- comentario/--	
 	--/Ejemplo de asignaciones/--
 	numero1 := 2 * 6 + 5
-	real1 := 0.23
-	PRINT real1
+	pepe := 0.23
+	
 
 END
