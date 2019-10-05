@@ -177,7 +177,13 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 							}
 							cota_error("El contenido de una cadena excede el limite permitido.");
 						  }
-{COMENTARIO}							
+{COMENTARIO}		  	  {	
+							char *comentarios;
+							comentarios = (strstr(yytext,"/--"));											
+							if (strlen(comentarios) > 7){
+								cota_error("Solo se permite un nivel de comentarios anidados.");								
+							}
+						  }							
 %%
 
 void cota_error(char* mensaje)

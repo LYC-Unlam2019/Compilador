@@ -4,6 +4,10 @@ START
 		[STRING]:[numero2]
 	ENDVAR
 
+	--/ COMENTARIO --/ COMENTARIO2 /-- /--
+
+	--/ COMENTARIO --/ COMENTARIO2 /-- --/ COMENTARIO3 /-- /--
+
 	numero2:="hola"
 
 END
