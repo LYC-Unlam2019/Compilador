@@ -11,7 +11,7 @@ START
 	--/Prueba --/doble/-- comentario/--	
 	--/Ejemplo de asignaciones/--
 	numero1 := 2 * 6 + 5
-	pepe := 0.23
+	pepe := 0.877777777777777777777777777777777777777777777777777777777777777
 	
 
 END
