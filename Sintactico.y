@@ -115,7 +115,8 @@
 			compBoolPtr,		//Puntero de comparador Booleano	
 			terminoFilterPtr,	//Puntero de termino de filter		
 			compFilterPtr,   	//Puntero de comparador de filter	
-			listaExpComaPtr;	//Puntero de lista expresion coma		
+			listaExpComaPtr,	//Puntero de lista expresion coma
+			elseBloquePtr;		//Puntero para el bloque del else		
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -171,7 +172,7 @@ programa:
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
 
-															
+															mostrar_grafico(&bloquePtr,5);
 														};
 
  /* Declaracion de variables */
@@ -231,7 +232,6 @@ bloque:                                                 /* No existen bloques si
 	bloque sentencia	                                {   
 															printf("R 10: bloque => bloque sentencia\n");
 														 	bloquePtr = crearNodo("SALTA",bloquePtr, sentenciaPtr);
-														 	mostrar_grafico(&bloquePtr,15);
 														 	printf("RAIZ: %s\n",bloquePtr->info.cadena );	
 														}
 	
@@ -252,7 +252,18 @@ bloque_if:
     													};
 
 bloque_if:
-    IF expresion_logica THEN bloque ELSE bloque ENDIF   {printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");};
+    IF expresion_logica THEN bloque ELSE else_bloque ENDIF   {
+    													 
+    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,crearNodo("ELSE",bloquePtr,elseBloquePtr));
+    															printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
+															};
+
+else_bloque : 												
+	bloque 													{
+															    printf("R 19 ELSE: else_bloque => ELSE bloque\n");
+  																	elseBloquePtr = bloquePtr;
+															};
+
 
 bloque_while:
     REPEAT expresion_logica bloque ENDREPEAT            {printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");};

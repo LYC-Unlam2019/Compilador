@@ -33,8 +33,7 @@ CHAR 			[a-zA-Z]
 
 ENTERO 			{DIGITO}+
 CONSTANTE_ENTERA 	-?{ENTERO}
-
-CONSTANTE_REAL 	{DIGITO}*[.]{DIGITO}+
+CONSTANTE_REAL 	-?[0-9]{1,10}\.[0-9]*
 
 ID 	{CHAR}({CHAR}|{DIGITO}|_)*
 
@@ -152,11 +151,15 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 			              }    
                         
 {CONSTANTE_REAL}  		  {
-		                    if(atof(yytext)>=-3.40282347e+38F && atof(yytext)<=3.40282347e+38F){
+							char* p = strchr(yytext,'.');
+		                    printf("%s\n", p?p:"No" );
+		                    //LO ACOTE A SEIS DIGITOS 
+		                    if(atof(yytext)<=-3.40282347e+38F || atof(yytext)>=3.40282347e+38F || (p && strlen(p) > 6 )){
+									cota_error("El valor de un flotante excede el limite permitido.");
+		                 	}
 		                    	yylval.valor_float = atof(yytext);
-		                    	return CTE_FLOAT;
-		                    }
-							cota_error("El valor de un flotante excede el limite permitido.");
+		                    	return CTE_FLOAT;                    
+		        
 		                  }  
 
 {CONSTANTE_ENTERA}        {
@@ -164,7 +167,7 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 		                      	yylval.valor_int = atoi(yytext);
 		                      	return CTE_INT;
 		                      }
-							  cota_error("El valor de un entero excede el limite permitido.");
+							  cota_error("El valor del entero excede el limite permitido.");
 		                  } 
 
 {CONSTANTE_STRING}		  {	
