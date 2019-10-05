@@ -231,7 +231,7 @@ lista_id:
 bloque:                                                 /* No existen bloques sin sentencias */
 	bloque sentencia	                                {   
 															printf("R 10: bloque => bloque sentencia\n");
-														 	bloquePtr = crearNodo("SALTA",bloquePtr, sentenciaPtr);
+														 	bloquePtr = crearNodo("RAIZ", sentenciaPtr, NULL);
 														 	printf("RAIZ: %s\n",bloquePtr->info.cadena );	
 														}
 	
@@ -254,9 +254,9 @@ bloque_if:
 bloque_if:
     IF expresion_logica THEN bloque ELSE else_bloque ENDIF   {
     													 
-    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,crearNodo("ELSE",bloquePtr,elseBloquePtr));
+    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,crearNodo("CUERPO",bloquePtr,elseBloquePtr));
     															printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
-															};
+															}
 
 else_bloque : 												
 	bloque 													{
@@ -374,7 +374,9 @@ expresion_logica:
 
 termino_logico:
     NOT termino_logico                              		{printf("R 41: NOT termino_logico\n");}
-    | expresion_aritmetica comp_bool expresion_aritmetica 	{printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");}
+    | expresion_aritmetica comp_bool expresion_aritmetica 	{printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");
+															compBoolPtr->der = exprAritPtr;
+															termLogPtr = compBoolPtr;}
 
 termino_filter:
     GUION_BAJO comp_bool PA expresion_aritmetica PC         {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
@@ -415,7 +417,8 @@ comp_bool:
     													}
     |DISTINTO                                           {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);
+    													 //compBoolPtr = crearHoja(&infoArbol);
+														 compBoolPtr = crearNodo("!=", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 54: comp_bool => DISTINTO\n");
     													};
 	
