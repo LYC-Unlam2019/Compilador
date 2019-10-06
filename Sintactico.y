@@ -116,7 +116,8 @@
 			terminoFilterPtr,	//Puntero de termino de filter		
 			compFilterPtr,   	//Puntero de comparador de filter	
 			listaExpComaPtr,	//Puntero de lista expresion coma
-			elseBloquePtr;		//Puntero para el bloque del else		
+			elseBloquePtr,		//Puntero para el bloque del else
+			auxPtr;		
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -171,8 +172,8 @@ programa:
 	START seccion_declaracion bloque END 	            {
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
-
-															mostrar_grafico(&bloquePtr,3);
+														
+															mostrar_grafico(&bloquePtr,5);
 														};
 
  /* Declaracion de variables */
@@ -231,10 +232,24 @@ lista_id:
 bloque:                                                 /* No existen bloques sin sentencias */
 	bloque sentencia	                                {   
 															printf("R 10: bloque => bloque sentencia\n");
-														 	bloquePtr = crearNodo("RAIZ", bloquePtr, sentenciaPtr);	
+															if(bloquePtr != NULL){
+																auxPtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																bloquePtr = auxPtr;
+															} else {
+																auxPtr = crearNodo("CUERPO", programaPtr, sentenciaPtr);
+																bloquePtr = auxPtr;
+															}
 														}
 	
-	| sentencia			                                {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;};
+	| sentencia			                                {
+															printf("R 11: bloque => sentencia\n"); 
+															if(bloquePtr != NULL) {
+																auxPtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																bloquePtr = auxPtr;
+															} else {
+																bloquePtr = sentenciaPtr;
+															}
+														};
 
 sentencia:
 	asignacion			                    			{printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr; }
@@ -253,22 +268,25 @@ bloque_if:
 bloque_if:
     IF expresion_logica THEN bloque ELSE else_bloque ENDIF   {
     													 
-    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,crearNodo("CUERPO",bloquePtr,elseBloquePtr));
+    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
     															printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
 															}
 
 else_bloque : 												
 	bloque 													{
 															    printf("R 19 ELSE: else_bloque => ELSE bloque\n");
-  																	elseBloquePtr = bloquePtr;
+																elseBloquePtr = bloquePtr;
+																bloquePtr = NULL;
+																
 															};
 
 
 bloque_while:
     REPEAT expresion_logica bloque ENDREPEAT            {
-    													 printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");
-    													 bloqueWhPtr = crearNodo("REPEAT",expreLogPtr,bloquePtr);
-    													};
+															printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");
+															bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);	
+															bloquePtr = NULL;
+														};
 
 asignacion:
 	ID ASIG expresion	                                {
@@ -377,6 +395,8 @@ expresion_logica:
     												   expreLogPtr = crearNodo("OR",expreLogPtr,termLogPtr);
     												  }
     | termino_logico                                  { expreLogPtr = termLogPtr;
+														programaPtr = bloquePtr;
+														bloquePtr = NULL;
     												   printf("R 40: expresion_logica => termino_logico\n");}
 
 termino_logico:
@@ -388,12 +408,20 @@ termino_logico:
 termino_filter:
     GUION_BAJO comp_bool PA expresion_aritmetica PC         {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
     | GUION_BAJO comp_bool CTE_FLOAT			  			{printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");}
-    | GUION_BAJO comp_bool CTE_INT			  				{printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");};
+    | GUION_BAJO comp_bool CTE_INT			  				{
+																printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");
+																rellenarInfo(CteInt,&infoArbol);
+																compBoolPtr->der = crearHoja(&infoArbol);
+																compFilterPtr = compBoolPtr;
+															};
 
 comparacion_filter:
     termino_filter AND termino_filter		  			{printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");}
     | termino_filter OR termino_filter   				{printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
-    | termino_filter		  							{printf("R 48: comparacion_filter => termino_filter\n");}
+    | termino_filter		  							{
+															printf("R 48: comparacion_filter => termino_filter\n");
+															terminoFilterPtr = compFilterPtr;
+														}
 
 comp_bool:
     MENOR                                               {
@@ -413,7 +441,7 @@ comp_bool:
     													}
     |MAYOR_IGUAL                                        {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearNodo(">=", exprAritPtr, crearHoja(&infoArbol));		
+    													 compBoolPtr = crearNodo(">=", exprAritPtr, crearHoja(&infoArbol));	
     													 printf("R 52: comp_bool => MAYOR_IGUAL\n");
 
     													}
@@ -431,11 +459,26 @@ comp_bool:
 	
 
 filter:
-	FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC {printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");}
+	FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC {
+																printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");
+																filterPtr = crearNodo("FILTER", bloquePtr, NULL);
+																bloquePtr = NULL;
+																};
 
 lista_exp_coma:
-    lista_exp_coma COMA expresion_aritmetica            {printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");}
-    | expresion_aritmetica                              {printf("R 57: lista_exp_coma => expresion_aritmetica\n");};
+    lista_exp_coma COMA expresion_aritmetica            {
+															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
+															auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, crearHoja(&(terminoFilterPtr->der)->info)));
+															bloquePtr = auxPtr;
+														}
+    | expresion_aritmetica                              {
+															printf("R 57: lista_exp_coma => expresion_aritmetica\n");
+															compBoolPtr->izq = exprAritPtr;
+															if(bloquePtr != NULL){
+																programaPtr = bloquePtr;
+															}
+															bloquePtr = terminoFilterPtr;
+														};
 
 lectura:
     READ ID												{
@@ -740,10 +783,9 @@ void mostrar_grafico(tArbol *pa,int n)
     int numNodos = 0;
     float aux = 0.0;
     int i=0;
-     if(!*pa)
-          return;
-
-        mostrar_grafico(&(*pa)->der, n+1);
+     if(!*pa){ return; }
+          
+	mostrar_grafico(&(*pa)->der, n+1);
 
      for(i; i<n; i++)
      {
