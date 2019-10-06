@@ -373,7 +373,9 @@ expresion_logica:
     												   expreLogPtr = crearNodo("AND",expreLogPtr,termLogPtr);	
     												  }
     | termino_logico OR termino_logico                {
-    												   printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
+    												   printf("R 39: expresion_logica => termino_logico OR termino_logico\n");
+    												   expreLogPtr = crearNodo("OR",expreLogPtr,termLogPtr);
+    												  }
     | termino_logico                                  { expreLogPtr = termLogPtr;
     												   printf("R 40: expresion_logica => termino_logico\n");}
 
@@ -440,7 +442,7 @@ lectura:
 															chequearVarEnTabla($2);
 															printf("R 58: lectura => READ ID\n");
 															rellenarInfo(String,&infoArbol);
-															escrituraPtr = crearNodo("READ", NULL, crearHoja(&infoArbol));
+															lecturaPtr = crearNodo("READ", NULL, crearHoja(&infoArbol));
 														};
 
 

@@ -14,4 +14,6 @@ _6                            |CTE_INT                       |6                 
 _99999.992188                 |CTE_FLOAT                     |99999.992188                  |--                            
 _99.000000                    |CTE_FLOAT                     |99.000000                     |--                            
 _9999                         |CTE_INT                       |9999                          |--                            
+"@sdADaSjfla%dfg"             |CTE_STRING                    |@sdADaSjfla%dfg               |15                            
+"asldkfhsjf"                  |CTE_STRING                    |asldkfhsjf                    |10                            
 "hola mundo"                  |CTE_STRING                    |hola mundo                    |10                            

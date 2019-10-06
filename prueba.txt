@@ -18,7 +18,8 @@ START
 	real2:=99.
 	real3:=.9999
 
-
+	cadena1:="@sdADaSjfla%dfg"
+	cadena2:="asldkfhsjf"
 
 	--/Ejemplo de READ y PRINT/--
 	READ numero3
