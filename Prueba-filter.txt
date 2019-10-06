@@ -1,0 +1,8 @@
+START
+	VAR
+		[INTEGER]:[numero1]
+	ENDVAR
+
+	numero1 := FILTER( _>5, [1,2,3])
+	
+END

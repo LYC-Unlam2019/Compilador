@@ -403,12 +403,20 @@ termino_logico:
 termino_filter:
     GUION_BAJO comp_bool PA expresion_aritmetica PC         {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
     | GUION_BAJO comp_bool CTE_FLOAT			  			{printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");}
-    | GUION_BAJO comp_bool CTE_INT			  				{printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");};
+    | GUION_BAJO comp_bool CTE_INT			  				{
+																printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");
+																rellenarInfo(CteInt,&infoArbol);
+																compBoolPtr->der = crearHoja(&infoArbol);
+																compFilterPtr = compBoolPtr;
+															};
 
 comparacion_filter:
     termino_filter AND termino_filter		  			{printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");}
     | termino_filter OR termino_filter   				{printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
-    | termino_filter		  							{printf("R 48: comparacion_filter => termino_filter\n");}
+    | termino_filter		  							{
+															printf("R 48: comparacion_filter => termino_filter\n");
+															terminoFilterPtr = compFilterPtr;
+														}
 
 comp_bool:
     MENOR                                               {
@@ -446,11 +454,26 @@ comp_bool:
 	
 
 filter:
-	FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC {printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");}
+	FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC {
+																printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");
+																filterPtr = crearNodo("FILTER", bloquePtr, NULL);
+																bloquePtr = NULL;
+																};
 
 lista_exp_coma:
-    lista_exp_coma COMA expresion_aritmetica            {printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");}
-    | expresion_aritmetica                              {printf("R 57: lista_exp_coma => expresion_aritmetica\n");};
+    lista_exp_coma COMA expresion_aritmetica            {
+															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
+															auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, crearHoja(&(terminoFilterPtr->der)->info)));
+															bloquePtr = auxPtr;
+														}
+    | expresion_aritmetica                              {
+															printf("R 57: lista_exp_coma => expresion_aritmetica\n");
+															compBoolPtr->izq = exprAritPtr;
+															if(bloquePtr != NULL){
+																programaPtr = bloquePtr;
+															}
+															bloquePtr = terminoFilterPtr;
+														};
 
 lectura:
     READ ID												{
