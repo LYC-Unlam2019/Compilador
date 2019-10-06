@@ -5,14 +5,17 @@ START
 		[INTEGER]:[numero3]
 	ENDVAR
 
-	numero1 := 3
-	numero2 := 4
-	numero3 := 7
+
+	numero1 := 1
+	numero2 := 2
+	numero3 := 3
 
 	IF numero1 != numero2 THEN
 		numero1 := numero3
+		numero2 := numero3
 	ELSE
 	   	numero2 := numero3
+		numero1 := 3
 	ENDIF
 
 END

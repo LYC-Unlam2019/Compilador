@@ -1,0 +1,16 @@
+START
+	VAR
+		[INTEGER]:[numero1]
+		[INTEGER]:[numero2]
+	ENDVAR
+
+	
+	REPEAT numero1 < numero2
+		numero1 := numero1
+		numero1 := numero2
+		numero1 := numero2
+		numero1 := numero2
+		numero1 := numero2
+	ENDREPEAT
+	
+END

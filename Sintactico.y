@@ -116,7 +116,8 @@
 			terminoFilterPtr,	//Puntero de termino de filter		
 			compFilterPtr,   	//Puntero de comparador de filter	
 			listaExpComaPtr,	//Puntero de lista expresion coma
-			elseBloquePtr;		//Puntero para el bloque del else		
+			elseBloquePtr,		//Puntero para el bloque del else
+			auxPtr;		
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -171,7 +172,7 @@ programa:
 	START seccion_declaracion bloque END 	            {
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
-
+														
 															mostrar_grafico(&bloquePtr,5);
 														};
 
@@ -231,11 +232,24 @@ lista_id:
 bloque:                                                 /* No existen bloques sin sentencias */
 	bloque sentencia	                                {   
 															printf("R 10: bloque => bloque sentencia\n");
-														 	bloquePtr = crearNodo("RAIZ", sentenciaPtr, NULL);
-														 	printf("RAIZ: %s\n",bloquePtr->info.cadena );	
+															if(bloquePtr != NULL){
+																auxPtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																bloquePtr = auxPtr;
+															} else {
+																auxPtr = crearNodo("CUERPO", programaPtr, sentenciaPtr);
+																bloquePtr = auxPtr;
+															}
 														}
 	
-	| sentencia			                                {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;};
+	| sentencia			                                {
+															printf("R 11: bloque => sentencia\n"); 
+															if(bloquePtr != NULL) {
+																auxPtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																bloquePtr = auxPtr;
+															} else {
+																bloquePtr = sentenciaPtr;
+															}
+														};
 
 sentencia:
 	asignacion			                    			{printf("R 12: sentencia => asignacion\n"); sentenciaPtr = asigPtr; }
@@ -254,19 +268,25 @@ bloque_if:
 bloque_if:
     IF expresion_logica THEN bloque ELSE else_bloque ENDIF   {
     													 
-    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,crearNodo("CUERPO",bloquePtr,elseBloquePtr));
+    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
     															printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
 															}
 
 else_bloque : 												
 	bloque 													{
 															    printf("R 19 ELSE: else_bloque => ELSE bloque\n");
-  																	elseBloquePtr = bloquePtr;
+																elseBloquePtr = bloquePtr;
+																bloquePtr = NULL;
+																
 															};
 
 
 bloque_while:
-    REPEAT expresion_logica bloque ENDREPEAT            {printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");};
+    REPEAT expresion_logica bloque ENDREPEAT            {
+															printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");
+															bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);	
+															bloquePtr = NULL;
+														};
 
 asignacion:
 	ID ASIG expresion	                                {
@@ -370,6 +390,8 @@ expresion_logica:
     | termino_logico OR termino_logico                {
     												   printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
     | termino_logico                                  { expreLogPtr = termLogPtr;
+														programaPtr = bloquePtr;
+														bloquePtr = NULL;
     												   printf("R 40: expresion_logica => termino_logico\n");}
 
 termino_logico:
@@ -391,28 +413,28 @@ comparacion_filter:
 comp_bool:
     MENOR                                               {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);				
+    													 compBoolPtr = crearNodo("<", exprAritPtr, crearHoja(&infoArbol));				
     												     printf("R 49: comp_bool => MENOR\n");
     												 	}
     |MAYOR                                              {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);
+    													 compBoolPtr = crearNodo(">", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 50: comp_bool => MAYOR\n");
     													}
     |MENOR_IGUAL                                        {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);
+    													 compBoolPtr = crearNodo("<=", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 51: comp_bool => MENOR_IGUAL\n");
     													}
     |MAYOR_IGUAL                                        {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);		
+    													 compBoolPtr = crearNodo(">=", exprAritPtr, crearHoja(&infoArbol));	
     													 printf("R 52: comp_bool => MAYOR_IGUAL\n");
 
     													}
     |IGUAL                                              {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);
+    													 compBoolPtr = crearNodo("==", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 53: comp_bool => IGUAL\n");
     													}
     |DISTINTO                                           {
@@ -733,10 +755,9 @@ void mostrar_grafico(tArbol *pa,int n)
     int numNodos = 0;
     float aux = 0.0;
     int i=0;
-     if(!*pa)
-          return;
-
-        mostrar_grafico(&(*pa)->der, n+1);
+     if(!*pa){ return; }
+          
+	mostrar_grafico(&(*pa)->der, n+1);
 
      for(i; i<n; i++)
      {
