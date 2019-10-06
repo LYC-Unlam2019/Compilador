@@ -9,7 +9,7 @@ START
 	--/FALTA: Declaraciones segun el enunciado; Asignacion de tipos distintos debe dar error; Print de variable solo numerica y comentarios anidados/--
 
 
-	--/Prueba --/doble/-- comentario/--	
+	--/Prueba  comentario/--	
 	--/Ejemplo de asignaciones/--
 	numero1:=2
 	numero2:=6
@@ -18,21 +18,7 @@ START
 	real2:=99.
 	real3:=.9999
 
-	
-	
-	--/Ejemplo de IF con condicion multiple, anidado con REPEAT y otro IF, sin else, de condicion simple/--
-	IF numero1 != numero2 AND numero1 == numero3 THEN
-		REPEAT numero1 < numero2
-			numero1:=numero1 + 1
-		ENDREPEAT
-	ELSE
-		IF numero1 == 6 THEN
-			PRINT numero2
-		ENDIF
-	ENDIF
 
-	cadena1:="@sdADaSjfla%dfg"
-	cadena2:="asldkfhsjf"
 
 	--/Ejemplo de READ y PRINT/--
 	READ numero3

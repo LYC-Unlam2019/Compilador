@@ -1,8 +1,17 @@
 NOMBRE                        |TIPO                          |VALOR                         |LONGITUD                      
 .........................................................................................................
 numero1                       |INTEGER                       |--                            |--                            
+real1                         |FLOAT                         |--                            |--                            
+cadena1                       |STRING                        |--                            |--                            
 numero2                       |INTEGER                       |--                            |--                            
+real2                         |FLOAT                         |--                            |--                            
+real3                         |FLOAT                         |--                            |--                            
 numero3                       |INTEGER                       |--                            |--                            
-_3                            |CTE_INT                       |3                             |--                            
-_4                            |CTE_INT                       |4                             |--                            
-_7                            |CTE_INT                       |7                             |--                            
+numero4                       |INTEGER                       |--                            |--                            
+cadena2                       |STRING                        |--                            |--                            
+_2                            |CTE_INT                       |2                             |--                            
+_6                            |CTE_INT                       |6                             |--                            
+_99999.992188                 |CTE_FLOAT                     |99999.992188                  |--                            
+_99.000000                    |CTE_FLOAT                     |99.000000                     |--                            
+_9999                         |CTE_INT                       |9999                          |--                            
+"hola mundo"                  |CTE_STRING                    |hola mundo                    |10                            

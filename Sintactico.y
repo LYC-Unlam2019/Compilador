@@ -172,7 +172,7 @@ programa:
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
 
-															mostrar_grafico(&bloquePtr,5);
+															mostrar_grafico(&bloquePtr,3);
 														};
 
  /* Declaracion de variables */
@@ -231,8 +231,7 @@ lista_id:
 bloque:                                                 /* No existen bloques sin sentencias */
 	bloque sentencia	                                {   
 															printf("R 10: bloque => bloque sentencia\n");
-														 	bloquePtr = crearNodo("RAIZ", sentenciaPtr, NULL);
-														 	printf("RAIZ: %s\n",bloquePtr->info.cadena );	
+														 	bloquePtr = crearNodo("RAIZ", bloquePtr, sentenciaPtr);	
 														}
 	
 	| sentencia			                                {printf("R 11: bloque => sentencia\n"); bloquePtr = sentenciaPtr;};
@@ -266,7 +265,10 @@ else_bloque :
 
 
 bloque_while:
-    REPEAT expresion_logica bloque ENDREPEAT            {printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");};
+    REPEAT expresion_logica bloque ENDREPEAT            {
+    													 printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");
+    													 bloqueWhPtr = crearNodo("REPEAT",expreLogPtr,bloquePtr);
+    													};
 
 asignacion:
 	ID ASIG expresion	                                {
@@ -365,8 +367,11 @@ factor:
 /* Expresiones logicas */
 
 expresion_logica:
-    termino_logico AND termino_logico                 {  
-    												   printf("R 38: expresion_logica => termino_logico AND termino_logico\n");}
+    termino_logico AND termino_logico                 
+    												  {  
+    												   printf("R 38: expresion_logica => termino_logico AND termino_logico\n");
+    												   expreLogPtr = crearNodo("AND",expreLogPtr,termLogPtr);	
+    												  }
     | termino_logico OR termino_logico                {
     												   printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
     | termino_logico                                  { expreLogPtr = termLogPtr;
@@ -391,28 +396,28 @@ comparacion_filter:
 comp_bool:
     MENOR                                               {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);				
+    													 compBoolPtr = crearNodo("<", exprAritPtr, crearHoja(&infoArbol));				
     												     printf("R 49: comp_bool => MENOR\n");
     												 	}
     |MAYOR                                              {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);
+    													 compBoolPtr = crearNodo(">", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 50: comp_bool => MAYOR\n");
     													}
     |MENOR_IGUAL                                        {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);
+    													 compBoolPtr = crearNodo("<=", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 51: comp_bool => MENOR_IGUAL\n");
     													}
     |MAYOR_IGUAL                                        {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);		
+    													 compBoolPtr = crearNodo(">=", exprAritPtr, crearHoja(&infoArbol));		
     													 printf("R 52: comp_bool => MAYOR_IGUAL\n");
 
     													}
     |IGUAL                                              {
     													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearHoja(&infoArbol);
+    													 compBoolPtr = crearNodo("==", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 53: comp_bool => IGUAL\n");
     													}
     |DISTINTO                                           {
@@ -434,6 +439,8 @@ lectura:
     READ ID												{
 															chequearVarEnTabla($2);
 															printf("R 58: lectura => READ ID\n");
+															rellenarInfo(String,&infoArbol);
+															escrituraPtr = crearNodo("READ", NULL, crearHoja(&infoArbol));
 														};
 
 
@@ -442,12 +449,15 @@ escritura:
 															chequearVarEnTabla($2);
 															chequearPrintId($2);
 															rellenarInfo(String,&infoArbol);
-															escrituraPtr = crearNodo("PRINT", escrituraPtr, crearHoja(&infoArbol));
+															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol));
 															printf("R 59: escritura => PRINT ID\n");
 														}
     | PRINT CTE_STRING                                  {
 															printf("R 60: escritura => PRINT CTE_STRING\n");
 															agregarCteATabla(CteString);
+															rellenarInfo(CteString,&infoArbol);
+															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol));
+
 														};
 
 
@@ -653,11 +663,6 @@ void chequearPrintId(char * nombre){
 tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
     
     tNodo* nodo = malloc(sizeof(tNodo));   
-    
-    if (nodo != NULL){
- 		printf("se asigno memoria correctamente\n");    	
-    }
-
     tInfo info;  
 
     strcpy(info.cadena, dato);
