@@ -1,0 +1,11 @@
+START
+	VAR
+		[INTEGER]:[numero1]
+		[INTEGER]:[numero2]
+		[INTEGER]:[numero3]
+	ENDVAR
+	
+	--/Mod: da el resto | Div: da el cociente /--	
+	
+	numero2 := (25 DIV 4) MOD 4
+END

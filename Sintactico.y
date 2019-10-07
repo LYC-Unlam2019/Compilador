@@ -331,7 +331,7 @@ expresion_aritmetica:
 															exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
 														}
 	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
-															exprAritPtr = crearNodo("MOD", exprAritPtr, terminoPtr);
+															exprAritPtr = crearNodo("-", exprAritPtr, crearNodo("*", crearNodo("/", exprAritPtr, terminoPtr), terminoPtr));
 														}
  	| expresion_aritmetica DIV termino                  {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
 															exprAritPtr = crearNodo("/", exprAritPtr, terminoPtr);
