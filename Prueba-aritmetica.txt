@@ -3,6 +3,6 @@ START
 		[INTEGER, INTEGER, INTEGER, INTEGER, INTEGER]:[x, a, b, c, d]
 	ENDVAR
 
-	x := (a+b*c)+(a MOD d)-(b/c+a)+8*a
+	x := (a+b*c)+(a MOD d)-(b DIV c+a)+8*a
 	
 END
