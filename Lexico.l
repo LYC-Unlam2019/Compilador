@@ -179,10 +179,14 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 						  }
 {COMENTARIO}			  {	
 							char *comentarios;
-							comentarios = (strstr(yytext,"/--"));											
-							if (strlen(comentarios) > 7){
-								cota_error("Solo se permite un nivel de comentarios anidados.");								
-							}
+							char *segundoNivelDeComentarios;
+							comentarios = (strstr(yytext,"/--"));
+							segundoNivelDeComentarios = strstr(comentarios+3,"/--");
+							if(segundoNivelDeComentarios != NULL){
+								if ( strstr(segundoNivelDeComentarios+3,"/--") != NULL){
+									cota_error("Solo se permite un nivel de comentarios anidados.");								
+								}
+							}	
 						  }							
 %%
 

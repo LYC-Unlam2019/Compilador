@@ -1,0 +1,17 @@
+START
+	VAR
+		[INTEGER]:[num1]
+        [INTEGER]:[num2]
+	ENDVAR
+
+    --/num2 := FILTER( _>3, [1,2,3])/--
+	--/num1 := FILTER( _>(5*2), [1,2,3])/--
+    --/num2 := FILTER( _>3, [1+4,2,3])/--
+    --/num2 := FILTER( _>(3+num1), [1,2,3])/--
+    --/num2 := FILTER( _>(3+num1), [1,2+num2,3*num1])/--
+    --/num2 := FILTER( _>(3+num1), [1,2,num1])/--
+    --/num2 := FILTER( _>(3+num1), [1,2.3,num1])/--
+    --/num2 := FILTER( _>3.8, [1,2,num1])/--
+    num2 := FILTER( _>(3.*num1), [1,2,num1])
+
+END

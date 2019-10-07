@@ -119,6 +119,7 @@
 			listaExpComaPtr,	//Puntero de lista expresion coma
 			elseBloquePtr,		//Puntero para el bloque del else
 			thenBloquePtr,		//Puntero para el bloque del then
+			expreLogAuxPtr,
 			auxAritPtr,
 			auxPtr;		
 %}
@@ -435,6 +436,9 @@ factor:
 expresion_logica:
     termino_logico AND termino_logico                 {  
     												   		printf("R 38: expresion_logica => termino_logico AND termino_logico\n");
+															   if(expreLogPtr != NULL && expreLogAuxPtr == NULL){
+																   expreLogAuxPtr = expreLogPtr;
+															   }
 															expreLogPtr = crearNodo("AND", termLogPtr, compBoolPtr);
 															programaPtr = bloquePtr;
 															bloquePtr = NULL;
@@ -442,6 +446,9 @@ expresion_logica:
 													  }
     | termino_logico OR termino_logico                {
     												  	 	printf("R 39: expresion_logica => termino_logico OR termino_logico\n");
+															   if(expreLogPtr != NULL && expreLogAuxPtr == NULL){
+																   expreLogAuxPtr = expreLogPtr;
+															   }
 															expreLogPtr = crearNodo("OR", termLogPtr, compBoolPtr);
 															programaPtr = bloquePtr;
 															bloquePtr = NULL;
@@ -449,6 +456,9 @@ expresion_logica:
 													  }
     | termino_logico                                  { 
 															printf("R 40: expresion_logica => termino_logico\n");
+															if(expreLogPtr != NULL && expreLogAuxPtr == NULL){
+																   expreLogAuxPtr = expreLogPtr;
+															   }
 															expreLogPtr = termLogPtr;
 															programaPtr = bloquePtr;
 															bloquePtr = NULL;
