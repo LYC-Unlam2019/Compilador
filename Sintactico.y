@@ -511,6 +511,8 @@ lectura:
     READ ID												{
 															chequearVarEnTabla($2);
 															printf("R 58: lectura => READ ID\n");
+															rellenarInfo(String,&infoArbol);
+															lecturaPtr = crearNodo("READ", NULL, crearHoja(&infoArbol));
 														};
 
 
@@ -519,12 +521,15 @@ escritura:
 															chequearVarEnTabla($2);
 															chequearPrintId($2);
 															rellenarInfo(String,&infoArbol);
-															escrituraPtr = crearNodo("PRINT", escrituraPtr, crearHoja(&infoArbol));
+															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol));
 															printf("R 59: escritura => PRINT ID\n");
 														}
     | PRINT CTE_STRING                                  {
 															printf("R 60: escritura => PRINT CTE_STRING\n");
 															agregarCteATabla(CteString);
+															rellenarInfo(CteString,&infoArbol);
+															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol));
+
 														};
 
 
@@ -730,11 +735,6 @@ void chequearPrintId(char * nombre){
 tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
     
     tNodo* nodo = malloc(sizeof(tNodo));   
-    
-    if (nodo != NULL){
- 		printf("se asigno memoria correctamente\n");    	
-    }
-
     tInfo info;  
 
     strcpy(info.cadena, dato);
