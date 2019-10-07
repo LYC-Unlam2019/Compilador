@@ -380,6 +380,7 @@ factor:
 															rellenarInfo(CteInt,&infoArbol);	
 															agregarCteATabla(CteInt);
 															factorPtr = crearHoja(&infoArbol);
+															printf("entro al cte int");
 
 														};
 /* Expresiones logicas */
@@ -406,8 +407,17 @@ termino_logico:
 															termLogPtr = compBoolPtr;}
 
 termino_filter:
-    GUION_BAJO comp_bool PA expresion_aritmetica PC         {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
-    | GUION_BAJO comp_bool CTE_FLOAT			  			{printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");}
+    GUION_BAJO comp_bool PA expresion_aritmetica PC         {
+																printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");
+																compBoolPtr->der = exprAritPtr;
+																compFilterPtr = compBoolPtr;
+															}
+    | GUION_BAJO comp_bool CTE_FLOAT			  			{
+																printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");
+																rellenarInfo(CteFloat,&infoArbol);
+																compBoolPtr->der = crearHoja(&infoArbol);
+																compFilterPtr = compBoolPtr;
+															}
     | GUION_BAJO comp_bool CTE_INT			  				{
 																printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");
 																rellenarInfo(CteInt,&infoArbol);
@@ -416,8 +426,14 @@ termino_filter:
 															};
 
 comparacion_filter:
-    termino_filter AND termino_filter		  			{printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");}
-    | termino_filter OR termino_filter   				{printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
+    termino_filter SUMA termino_filter		  			{
+															printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");
+															//compFilterPtr = crearNodo("AND",terminoFilterPtr,compBoolPtr);
+														}
+    | termino_filter OR termino_filter   				{
+															printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");
+															//compFilterPtr = crearNodo("OR",terminoFilterPtr,compBoolPtr);
+														}
     | termino_filter		  							{
 															printf("R 48: comparacion_filter => termino_filter\n");
 															terminoFilterPtr = compFilterPtr;
@@ -468,7 +484,7 @@ filter:
 lista_exp_coma:
     lista_exp_coma COMA expresion_aritmetica            {
 															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
-															auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, crearHoja(&(terminoFilterPtr->der)->info)));
+															auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, /*crearHoja(&(terminoFilterPtr->der)->info)*/terminoFilterPtr->der));
 															bloquePtr = auxPtr;
 														}
     | expresion_aritmetica                              {
@@ -732,7 +748,6 @@ void rellenarInfo(int tipoDato, tInfo* info){
 
 	switch(tipoDato){
 		case CteInt:
-			printf("LELE");
 		    info->tipoDato = CteInt;
 			info->entero = yylval.valor_int;
 			strcpy(info->cadena,"");
