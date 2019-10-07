@@ -118,6 +118,7 @@
 			compFilterPtr,   	//Puntero de comparador de filter	
 			listaExpComaPtr,	//Puntero de lista expresion coma
 			elseBloquePtr,		//Puntero para el bloque del else
+			thenBloquePtr,		//Puntero para el bloque del then
 			auxAritPtr,
 			auxPtr;		
 %}
@@ -268,16 +269,22 @@ bloque_if:
     													};
 
 bloque_if:
-    IF expresion_logica THEN bloque ELSE else_bloque ENDIF   {
+    IF expresion_logica THEN bloque ELSE { 
+											printf("R 19.1: bloque_if  => ELSE condition\n"); 
+											thenBloquePtr = bloquePtr;
+											bloquePtr = NULL;
+											elseBloquePtr = crearNodo("ELSE",thenBloquePtr, NULL);
+			
+										} else_bloque ENDIF   {
     													 
     													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
     															printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
-															}
+															};
 
-else_bloque : 												
+else_bloque: 												
 	bloque 													{
 															    printf("R 19 ELSE: else_bloque => ELSE bloque\n");
-																elseBloquePtr = bloquePtr;
+																elseBloquePtr->der = bloquePtr;
 																bloquePtr = NULL;
 																
 															};
