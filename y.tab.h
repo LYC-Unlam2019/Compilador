@@ -139,7 +139,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 124 "Sintactico.y"
+#line 125 "Sintactico.y"
 
 
 	int valor_int;

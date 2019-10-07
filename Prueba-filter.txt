@@ -3,6 +3,6 @@ START
 		[INTEGER]:[numero1]
 	ENDVAR
 
-	numero1 := FILTER( _>5, [1,2,3])
+	numero1 := FILTER( _>5 OR _<10, [1,2,3])
 	
 END

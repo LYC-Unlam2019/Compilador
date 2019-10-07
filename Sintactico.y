@@ -117,6 +117,7 @@
 			compFilterPtr,   	//Puntero de comparador de filter	
 			listaExpComaPtr,	//Puntero de lista expresion coma
 			elseBloquePtr,		//Puntero para el bloque del else
+			auxAritPtr,
 			auxPtr;		
 %}
 
@@ -342,12 +343,22 @@ expresion_aritmetica:
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															terminoPtr = crearNodo("*", terminoPtr, factorPtr);
-															
+															if(auxAritPtr != NULL){
+																terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
+																auxAritPtr = NULL;
+															} else {
+																terminoPtr = crearNodo("*", terminoPtr, factorPtr);
 
+															}
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															terminoPtr = crearNodo("/",terminoPtr, factorPtr);
+															if(auxAritPtr != NULL){
+																terminoPtr = crearNodo("/",auxAritPtr, factorPtr);
+																auxAritPtr = NULL;
+															} else {
+																terminoPtr = crearNodo("/",terminoPtr, factorPtr);
+
+															}
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -356,6 +367,9 @@ termino:
 factor:
 	PA expresion_aritmetica PC	                        {	printf("R 33: factor => PA expresion_aritmetica PC\n");
 															factorPtr = exprAritPtr;
+															if(auxAritPtr == NULL){
+																auxAritPtr = exprAritPtr;
+															}
 														}
 	| filter 											{	printf("R 34: factor => FILTER\n");
 														    factorPtr = filterPtr;
@@ -427,7 +441,9 @@ termino_filter:
 															};
 
 comparacion_filter:
-    termino_filter AND termino_filter		  			{printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");}
+    termino_filter AND termino_filter		  			{
+															printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");
+														}
     | termino_filter OR termino_filter   				{printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
     | termino_filter		  							{
 															printf("R 48: comparacion_filter => termino_filter\n");

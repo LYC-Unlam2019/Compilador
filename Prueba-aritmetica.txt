@@ -1,0 +1,8 @@
+START
+	VAR
+		[INTEGER, INTEGER, INTEGER, INTEGER]:[x, a, b, c]
+	ENDVAR
+
+	x := (a+b*c)/(a-b*c)
+	
+END
