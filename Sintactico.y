@@ -380,8 +380,6 @@ factor:
 															rellenarInfo(CteInt,&infoArbol);	
 															agregarCteATabla(CteInt);
 															factorPtr = crearHoja(&infoArbol);
-															printf("entro al cte int");
-
 														};
 /* Expresiones logicas */
 
