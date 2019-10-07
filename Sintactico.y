@@ -386,19 +386,35 @@ factor:
 
 expresion_logica:
     termino_logico AND termino_logico                 {  
-    												   printf("R 38: expresion_logica => termino_logico AND termino_logico\n");}
+    												   		printf("R 38: expresion_logica => termino_logico AND termino_logico\n");
+															expreLogPtr = crearNodo("AND", termLogPtr, compBoolPtr);
+															programaPtr = bloquePtr;
+															bloquePtr = NULL;
+															termLogPtr = NULL;
+													  }
     | termino_logico OR termino_logico                {
-    												   printf("R 39: expresion_logica => termino_logico OR termino_logico\n");}
-    | termino_logico                                  { expreLogPtr = termLogPtr;
-														programaPtr = bloquePtr;
-														bloquePtr = NULL;
-    												   printf("R 40: expresion_logica => termino_logico\n");}
+    												  	 	printf("R 39: expresion_logica => termino_logico OR termino_logico\n");
+															expreLogPtr = crearNodo("OR", termLogPtr, compBoolPtr);
+															programaPtr = bloquePtr;
+															bloquePtr = NULL;
+															termLogPtr = NULL;
+													  }
+    | termino_logico                                  { 
+															printf("R 40: expresion_logica => termino_logico\n");
+															expreLogPtr = termLogPtr;
+															programaPtr = bloquePtr;
+															bloquePtr = NULL;
+													  };
 
 termino_logico:
     NOT termino_logico                              		{printf("R 41: NOT termino_logico\n");}
-    | expresion_aritmetica comp_bool expresion_aritmetica 	{printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");
-															compBoolPtr->der = exprAritPtr;
-															termLogPtr = compBoolPtr;}
+    | expresion_aritmetica comp_bool expresion_aritmetica 	{
+																printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");
+																compBoolPtr->der = exprAritPtr;
+																if(termLogPtr == NULL){
+																	termLogPtr = compBoolPtr;
+																}
+															};
 
 termino_filter:
     GUION_BAJO comp_bool PA expresion_aritmetica PC         {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
