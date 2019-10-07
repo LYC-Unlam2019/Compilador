@@ -1,0 +1,8 @@
+START
+	VAR
+		[INTEGER, INTEGER, INTEGER, INTEGER, INTEGER]:[x, a, b, c, d]
+	ENDVAR
+
+	x := (a+b*c)+(a MOD d)-(b DIV c+a)+8*a
+	
+END

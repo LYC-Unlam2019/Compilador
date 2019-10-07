@@ -88,6 +88,7 @@
 	int indiceDatoADeclarar = 0;
     TS_Reg tabla_simbolo[TAMANIO_TABLA];
 	int indice_tabla = -1;
+	int joinExpressions = 0;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -117,6 +118,7 @@
 			compFilterPtr,   	//Puntero de comparador de filter	
 			listaExpComaPtr,	//Puntero de lista expresion coma
 			elseBloquePtr,		//Puntero para el bloque del else
+			auxAritPtr,
 			auxPtr;		
 %}
 
@@ -324,11 +326,27 @@ expresion_cadena:
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
+															if(auxAritPtr != NULL && joinExpressions){
+																exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
+																auxAritPtr = exprAritPtr;
+																joinExpressions = 0;
+															} else {
+																exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
+
+															}
+															
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
+															if(auxAritPtr != NULL && joinExpressions){
+																exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
+																auxAritPtr = exprAritPtr;
+																joinExpressions = 0;
+															} else {
+																exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
+
+															}
+															
 														}
 	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
 															exprAritPtr = crearNodo("-", exprAritPtr, crearNodo("*", crearNodo("/", exprAritPtr, terminoPtr), terminoPtr));
@@ -337,17 +355,35 @@ expresion_aritmetica:
 															exprAritPtr = crearNodo("/", exprAritPtr, terminoPtr);
 														}
 	| termino								            {	printf("R 29: expresion_aritmetica => termino\n");
-															exprAritPtr = terminoPtr;
+															if(auxAritPtr == NULL && exprAritPtr != NULL){
+																exprAritPtr = terminoPtr;
+																auxAritPtr = exprAritPtr;
+															} else {
+																exprAritPtr = terminoPtr;
+															}
+															
 														};
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															terminoPtr = crearNodo("*", terminoPtr, factorPtr);
-															
+															if(auxAritPtr != NULL && joinExpressions){
+																terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
+																auxAritPtr = terminoPtr;
+																joinExpressions = 0;
+															} else {
+																terminoPtr = crearNodo("*", terminoPtr, factorPtr);
 
+															}
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															terminoPtr = crearNodo("/",terminoPtr, factorPtr);
+															if(auxAritPtr != NULL && joinExpressions){
+																terminoPtr = crearNodo("/",auxAritPtr, factorPtr);
+																auxAritPtr = terminoPtr;
+																joinExpressions = 0;
+															} else {
+																terminoPtr = crearNodo("/",terminoPtr, factorPtr);
+
+															}
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -356,6 +392,11 @@ termino:
 factor:
 	PA expresion_aritmetica PC	                        {	printf("R 33: factor => PA expresion_aritmetica PC\n");
 															factorPtr = exprAritPtr;
+															if(auxAritPtr == NULL){
+																auxAritPtr = exprAritPtr;
+															} else {
+																joinExpressions = 1;
+															}
 														}
 	| filter 											{	printf("R 34: factor => FILTER\n");
 														    factorPtr = filterPtr;
@@ -385,25 +426,36 @@ factor:
 /* Expresiones logicas */
 
 expresion_logica:
-    termino_logico AND termino_logico                 
-    												  {  
-    												   printf("R 38: expresion_logica => termino_logico AND termino_logico\n");
-    												   expreLogPtr = crearNodo("AND",expreLogPtr,termLogPtr);	
-    												  }
+    termino_logico AND termino_logico                 {  
+    												   		printf("R 38: expresion_logica => termino_logico AND termino_logico\n");
+															expreLogPtr = crearNodo("AND", termLogPtr, compBoolPtr);
+															programaPtr = bloquePtr;
+															bloquePtr = NULL;
+															termLogPtr = NULL;
+													  }
     | termino_logico OR termino_logico                {
-    												   printf("R 39: expresion_logica => termino_logico OR termino_logico\n");
-    												   expreLogPtr = crearNodo("OR",expreLogPtr,termLogPtr);
-    												  }
-    | termino_logico                                  { expreLogPtr = termLogPtr;
-														programaPtr = bloquePtr;
-														bloquePtr = NULL;
-    												   printf("R 40: expresion_logica => termino_logico\n");}
+    												  	 	printf("R 39: expresion_logica => termino_logico OR termino_logico\n");
+															expreLogPtr = crearNodo("OR", termLogPtr, compBoolPtr);
+															programaPtr = bloquePtr;
+															bloquePtr = NULL;
+															termLogPtr = NULL;
+													  }
+    | termino_logico                                  { 
+															printf("R 40: expresion_logica => termino_logico\n");
+															expreLogPtr = termLogPtr;
+															programaPtr = bloquePtr;
+															bloquePtr = NULL;
+													  };
 
 termino_logico:
     NOT termino_logico                              		{printf("R 41: NOT termino_logico\n");}
-    | expresion_aritmetica comp_bool expresion_aritmetica 	{printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");
-															compBoolPtr->der = exprAritPtr;
-															termLogPtr = compBoolPtr;}
+    | expresion_aritmetica comp_bool expresion_aritmetica 	{
+																printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");
+																compBoolPtr->der = exprAritPtr;
+																if(termLogPtr == NULL){
+																	termLogPtr = compBoolPtr;
+																}
+															};
 
 termino_filter:
     GUION_BAJO comp_bool PA expresion_aritmetica PC         {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
@@ -416,7 +468,9 @@ termino_filter:
 															};
 
 comparacion_filter:
-    termino_filter AND termino_filter		  			{printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");}
+    termino_filter AND termino_filter		  			{
+															printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");
+														}
     | termino_filter OR termino_filter   				{printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
     | termino_filter		  							{
 															printf("R 48: comparacion_filter => termino_filter\n");
