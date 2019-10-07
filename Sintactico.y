@@ -265,8 +265,15 @@ sentencia:
 
 bloque_if:
     IF expresion_logica THEN bloque ENDIF               {
-    													 bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr);
-    													 printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");
+															printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");
+															if(expreLogPtr != NULL){
+																	bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr);
+																	expreLogPtr = NULL;
+																 } else {
+																	 bloqueIfPtr = crearNodo("IF",expreLogAuxPtr,bloquePtr);
+																	 expreLogAuxPtr = NULL;
+																 }
+															 bloquePtr = NULL;
     													};
 
 bloque_if:
@@ -277,9 +284,16 @@ bloque_if:
 											elseBloquePtr = crearNodo("ELSE",thenBloquePtr, NULL);
 			
 										} else_bloque ENDIF   {
-    													 
-    													 		bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
-    															printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
+    													 		printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
+														 		if(expreLogPtr != NULL){
+																	bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
+																	expreLogPtr = NULL;
+																 } else {
+																	 bloqueIfPtr = crearNodo("IF",expreLogAuxPtr,elseBloquePtr);
+																	 expreLogAuxPtr = NULL;
+																 }
+    													 		
+    															
 															};
 
 else_bloque: 												
@@ -294,7 +308,14 @@ else_bloque:
 bloque_while:
     REPEAT expresion_logica bloque ENDREPEAT            {
 															printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");
-															bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);	
+															if(expreLogPtr != NULL){
+																	bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);
+																	expreLogPtr = NULL;
+																 } else {
+																	 bloqueWhPtr = crearNodo("REPEAT", expreLogAuxPtr, bloquePtr);
+																	 expreLogAuxPtr = NULL;
+																 }
+																
 															bloquePtr = NULL;
 														};
 
@@ -475,8 +496,17 @@ termino_logico:
 															};
 
 termino_filter:
-    GUION_BAJO comp_bool PA expresion_aritmetica PC         {printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");}
-    | GUION_BAJO comp_bool CTE_FLOAT			  			{printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");}
+    GUION_BAJO comp_bool PA expresion_aritmetica PC         {
+																printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");
+																compBoolPtr->der = exprAritPtr;
+																compFilterPtr = compBoolPtr;
+															}
+    | GUION_BAJO comp_bool CTE_FLOAT			  			{
+																printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");
+																rellenarInfo(CteFloat,&infoArbol);
+																compBoolPtr->der = crearHoja(&infoArbol);
+																compFilterPtr = compBoolPtr;
+															}
     | GUION_BAJO comp_bool CTE_INT			  				{
 																printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");
 																rellenarInfo(CteInt,&infoArbol);
@@ -539,7 +569,8 @@ filter:
 lista_exp_coma:
     lista_exp_coma COMA expresion_aritmetica            {
 															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
-															auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, crearHoja(&(terminoFilterPtr->der)->info)));
+															auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der));
+															//auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, crearHoja(&(terminoFilterPtr->der)->info)));
 															bloquePtr = auxPtr;
 														}
     | expresion_aritmetica                              {

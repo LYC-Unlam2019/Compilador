@@ -1,0 +1,312 @@
+
+	
+		R 8: t_dato => INTEGER
+1
+R 6: t_datos => t_dato 
+ R 7: t_dato => FLOAT
+R 5: t_datos => t_datos COMA t_dato
+ R 9: t_dato => STRING
+R 5: t_datos => t_datos COMA t_dato
+R 9: lista_id => ID
+ R 8: lista_id => lista_id COMA ID
+ R 8: lista_id => lista_id COMA ID
+R 4: declaracion => t_dato DOS_PUNTOS lista_id
+3
+R 3: bloque_dec => declaracion
+
+		R 8: t_dato => INTEGER
+1
+R 6: t_datos => t_dato 
+ R 7: t_dato => FLOAT
+R 5: t_datos => t_datos COMA t_dato
+ R 7: t_dato => FLOAT
+R 5: t_datos => t_datos COMA t_dato
+R 9: lista_id => ID
+ R 8: lista_id => lista_id COMA ID
+ R 8: lista_id => lista_id COMA ID
+R 4: declaracion => t_dato DOS_PUNTOS lista_id
+3
+R 2: bloque_dec => bloque_dec declaracion
+
+		R 8: t_dato => INTEGER
+1
+R 6: t_datos => t_dato 
+ R 8: t_dato => INTEGER
+1
+R 5: t_datos => t_datos COMA t_dato
+R 9: lista_id => ID
+ R 8: lista_id => lista_id COMA ID
+R 4: declaracion => t_dato DOS_PUNTOS lista_id
+2
+R 2: bloque_dec => bloque_dec declaracion
+
+	R 1: Seccion declaracion => VAR bloque_dec ENDVAR
+
+
+		
+	
+	R 37: factor => CTE_INT
+LELER 32: termino => factor
+
+
+	R 29: expresion_aritmetica => termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 11: bloque => sentencia
+.99
+R 36: factor => CTE_FLOAT
+R 32: termino => factor
+
+	R 29: expresion_aritmetica => termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 10: bloque => bloque sentencia
+.
+R 36: factor => CTE_FLOAT
+R 32: termino => factor
+
+	R 29: expresion_aritmetica => termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 10: bloque => bloque sentencia
+.R 37: factor => CTE_INT
+LELER 32: termino => factor
+
+
+	
+	R 29: expresion_aritmetica => termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 10: bloque => bloque sentencia
+  R 35: factor => ID
+R 32: termino => factor
+ R 29: expresion_aritmetica => termino
+ R 35: factor => ID
+R 32: termino => factor
+ 
+
+	
+	R 28: expresion_aritmetica => expresion_aritmetica DIV termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 10: bloque => bloque sentencia
+  R 37: factor => CTE_INT
+LELER 32: termino => factor
+ R 29: expresion_aritmetica => termino
+ R 35: factor => ID
+R 32: termino => factor
+
+
+	R 27: expresion_aritmetica => expresion_aritmetica MOD termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 10: bloque => bloque sentencia
+ R 35: factor => ID
+R 32: termino => factor
+ R 29: expresion_aritmetica => termino
+R 49: comp_bool => MENOR
+ R 35: factor => ID
+R 32: termino => factor
+ 
+		R 29: expresion_aritmetica => termino
+R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica
+R 40: expresion_logica => termino_logico
+  R 37: factor => CTE_INT
+LELER 32: termino => factor
+
+	R 29: expresion_aritmetica => termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 11: bloque => sentencia
+R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT
+R 14: sentencia => bloque_while
+R 10: bloque => bloque sentencia
+
+
+	 R 35: factor => ID
+R 32: termino => factor
+ R 29: expresion_aritmetica => termino
+R 54: comp_bool => DISTINTO
+ R 35: factor => ID
+R 32: termino => factor
+ R 29: expresion_aritmetica => termino
+R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica
+ R 35: factor => ID
+R 32: termino => factor
+ R 29: expresion_aritmetica => termino
+R 53: comp_bool => IGUAL
+ R 35: factor => ID
+R 32: termino => factor
+ R 29: expresion_aritmetica => termino
+R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica
+R 38: expresion_logica => termino_logico AND termino_logico
+
+		R 35: factor => ID
+R 32: termino => factor
+ R 29: expresion_aritmetica => termino
+ R 37: factor => CTE_INT
+LELER 32: termino => factor
+
+	R 25: expresion_aritmetica => expresion_aritmetica SUMA termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 11: bloque => sentencia
+R 19.1: bloque_if  => ELSE condition
+
+		 R 59: escritura => PRINT ID
+R 16: sentencia => escritura
+R 11: bloque => sentencia
+
+	R 19 ELSE: else_bloque => ELSE bloque
+R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF
+R 13: sentencia => bloque_if
+R 10: bloque => bloque sentencia
+
+
+	  R 37: factor => CTE_INT
+LELER 32: termino => factor
+ R 29: expresion_aritmetica => termino
+ R 37: factor => CTE_INT
+LELER 32: termino => factor
+
+
+	
+	R 25: expresion_aritmetica => expresion_aritmetica SUMA termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 10: bloque => bloque sentencia
+  R 50: comp_bool => MAYOR
+R 37: factor => CTE_INT
+LELER 32: termino => factor
+ R 29: expresion_aritmetica => termino
+ R 35: factor => ID
+R 32: termino => factor
+R 25: expresion_aritmetica => expresion_aritmetica SUMA termino
+R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  
+R 48: comparacion_filter => termino_filter
+ R 37: factor => CTE_INT
+LELER 32: termino => factor
+R 29: expresion_aritmetica => termino
+R 57: lista_exp_coma => expresion_aritmetica
+R 37: factor => CTE_INT
+LELER 32: termino => factor
+R 29: expresion_aritmetica => termino
+R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica
+R 37: factor => CTE_INT
+LELER 32: termino => factor
+R 29: expresion_aritmetica => termino
+R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica
+R 37: factor => CTE_INT
+LELER 32: termino => factor
+R 29: expresion_aritmetica => termino
+R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica
+R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC
+R 34: factor => FILTER
+R 32: termino => factor
+
+
+R 29: expresion_aritmetica => termino
+R 23: expresion => expresion_aritmetica
+R 21: asignacion => ID ASIG expresion
+R 12: sentencia => asignacion
+R 10: bloque => bloque sentencia
+
+COMPILACION EXITOSA
+                      FILTER 
+                                  numero1 
+                               + 
+                                  4  
+                            > 
+                               6  
+                         CUERPO 
+                                     numero1 
+                                  + 
+                                     4  
+                               > 
+                                  4  
+                            CUERPO 
+                                        numero1 
+                                     + 
+                                        4  
+                                  > 
+                                     2  
+                               CUERPO 
+                                        numero1 
+                                     + 
+                                        4  
+                                  > 
+                                     1  
+                   := 
+                      numero4 
+                CUERPO 
+                            3  
+                         + 
+                            2  
+                      := 
+                         numero3 
+                   CUERPO 
+                                  numero2 
+                               PRINT 
+                            ELSE 
+                                     1  
+                                  + 
+                                     numero1 
+                               := 
+                                  numero1 
+                         IF 
+                                  numero3 
+                               == 
+                                  numero1 
+                            AND 
+                                  numero2 
+                               < 
+                                  numero1 
+                      CUERPO 
+                                  2  
+                               := 
+                                  numero1 
+                            REPEAT 
+                                  numero2 
+                               < 
+                                  numero1 
+                         CUERPO 
+                                        numero1 
+                                     * 
+                                           numero1 
+                                        / 
+                                           1  
+                                  - 
+                                     1  
+                               := 
+                                  numero2 
+                            CUERPO 
+                                        numero4 
+                                     / 
+                                        numero3 
+                                  := 
+                                     numero1 
+                               CUERPO 
+                                        9999  
+                                     := 
+                                        real3 
+                                  CUERPO 
+                                           99.000000 
+                                        := 
+                                           real2 
+                                     CUERPO 
+                                              99999.992188 
+                                           := 
+                                              real1 
+                                        CUERPO 
+                                              2  
+                                           := 
+                                              numero1 
