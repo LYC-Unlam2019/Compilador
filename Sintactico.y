@@ -88,6 +88,7 @@
 	int indiceDatoADeclarar = 0;
     TS_Reg tabla_simbolo[TAMANIO_TABLA];
 	int indice_tabla = -1;
+	int joinExpressions = 0;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -325,11 +326,27 @@ expresion_cadena:
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
+															if(auxAritPtr != NULL && joinExpressions){
+																exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
+																auxAritPtr = exprAritPtr;
+																joinExpressions = 0;
+															} else {
+																exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
+
+															}
+															
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
+															if(auxAritPtr != NULL && joinExpressions){
+																exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
+																auxAritPtr = exprAritPtr;
+																joinExpressions = 0;
+															} else {
+																exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
+
+															}
+															
 														}
 	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
 															exprAritPtr = crearNodo("MOD", exprAritPtr, terminoPtr);
@@ -338,23 +355,31 @@ expresion_aritmetica:
 															exprAritPtr = crearNodo("/", exprAritPtr, terminoPtr);
 														}
 	| termino								            {	printf("R 29: expresion_aritmetica => termino\n");
-															exprAritPtr = terminoPtr;
+															if(auxAritPtr == NULL && exprAritPtr != NULL){
+																exprAritPtr = terminoPtr;
+																auxAritPtr = exprAritPtr;
+															} else {
+																exprAritPtr = terminoPtr;
+															}
+															
 														};
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															if(auxAritPtr != NULL){
+															if(auxAritPtr != NULL && joinExpressions){
 																terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
-																auxAritPtr = NULL;
+																auxAritPtr = terminoPtr;
+																joinExpressions = 0;
 															} else {
 																terminoPtr = crearNodo("*", terminoPtr, factorPtr);
 
 															}
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															if(auxAritPtr != NULL){
+															if(auxAritPtr != NULL && joinExpressions){
 																terminoPtr = crearNodo("/",auxAritPtr, factorPtr);
-																auxAritPtr = NULL;
+																auxAritPtr = terminoPtr;
+																joinExpressions = 0;
 															} else {
 																terminoPtr = crearNodo("/",terminoPtr, factorPtr);
 
@@ -369,6 +394,8 @@ factor:
 															factorPtr = exprAritPtr;
 															if(auxAritPtr == NULL){
 																auxAritPtr = exprAritPtr;
+															} else {
+																joinExpressions = 1;
 															}
 														}
 	| filter 											{	printf("R 34: factor => FILTER\n");

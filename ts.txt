@@ -4,3 +4,5 @@ x                             |INTEGER                       |--                
 a                             |INTEGER                       |--                            |--                            
 b                             |INTEGER                       |--                            |--                            
 c                             |INTEGER                       |--                            |--                            
+d                             |INTEGER                       |--                            |--                            
+_8                            |CTE_INT                       |8                             |--                            
