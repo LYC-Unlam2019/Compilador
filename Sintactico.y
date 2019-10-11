@@ -89,6 +89,7 @@
     TS_Reg tabla_simbolo[TAMANIO_TABLA];
 	int indice_tabla = -1;
 	int joinExpressions = 0;
+	char* aux;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -175,7 +176,7 @@ programa:
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
 														
-															mostrar_grafico(&bloquePtr,5);
+															mostrar_grafico(&bloquePtr,10);
 														};
 
  /* Declaracion de variables */
@@ -291,13 +292,15 @@ bloque_while:
 														};
 
 asignacion:
-	ID ASIG expresion	                                {
+	ID 													{	aux = (char *) malloc(sizeof(char) * (strlen(yylval.valor_string) + 1));
+															strcpy(aux, yylval.valor_string);}
+	ASIG expresion	                             	   {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
 															/*Aca no uso rellenar porque tomo el valor $1)*/
 															infoArbol.tipoDato = String;
 															infoArbol.entero = 0 ;
-															strcpy(infoArbol.cadena,$1);
+															strcpy(infoArbol.cadena,aux);
 															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr);
 														
 														};
