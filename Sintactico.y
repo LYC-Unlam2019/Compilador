@@ -30,6 +30,8 @@
 	#define NODO_OK -3
 	#define TAMANIO_TABLA 300
 	#define TAM_NOMBRE 32
+	#define TAM_PILA 50
+	#define TOPE_PILA_VACIA -1
 
 	/* Defino estructura de informacion para el arbol*/
 	typedef struct {
@@ -48,6 +50,13 @@
 	/* Defino estructura de arbol*/
 	typedef tNodo* tArbol;
     tInfo infoArbol;
+
+	/* Defino estructura de informacion para la pila*/
+	typedef struct {
+		tNodo *vec[TAM_PILA];
+		int tope;
+	}t_pila;
+
 	/* Funciones necesarias */
 	int yylex();
 	int yyerror(char* mensaje);
@@ -65,6 +74,15 @@
 	void rellenarInfo(int tipoDato, tInfo* info);
 	void mostrar_grafico(tArbol *pa, int n);
 
+	void crear_pila(t_pila *pp);
+	int pila_vacia(const t_pila *pp);
+	int pila_llena(const t_pila *pp);
+	void vaciar_pila(t_pila *pp);
+	int poner_en_pila(t_pila *pp, tNodo *pi);
+	tNodo* sacar_de_pila(t_pila *pp);
+	tNodo* ver_tope_pila(t_pila *pp);
+	void imprimir_tope_de_pila(t_pila *pp);
+
 	int yystopparser=0;
 	FILE  *yyin;
 
@@ -79,8 +97,6 @@
 	} TS_Reg;
 
 
-	
-
 	/* Cosas para la declaracion de variables y la tabla de simbolos */
 	int varADeclarar1 = 1;
 	int cantVarsADeclarar = 0;
@@ -89,6 +105,7 @@
     TS_Reg tabla_simbolo[TAMANIO_TABLA];
 	int indice_tabla = -1;
 	int joinExpressions = 0;
+	char* aux;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -97,7 +114,6 @@
 			exprAritPtr,		//Puntero de expresiones aritmeticas
 			terminoPtr,			//Puntero de terminos
 			factorPtr,			//Puntero de factores
-			programaPtr,		//Puntero de programa	
 			secDecPtr,			//Puntero de seccion declaracion
 			bloqueDecPtr,		//Puntero de bloque declaracion	
 			declaPtr,			//Puntero de declaracion
@@ -119,9 +135,12 @@
 			listaExpComaPtr,	//Puntero de lista expresion coma
 			elseBloquePtr,		//Puntero para el bloque del else
 			thenBloquePtr,		//Puntero para el bloque del then
-			expreLogAuxPtr,
-			auxAritPtr,
-			auxPtr;		
+			auxAritPtr;
+				
+
+	t_pila	progPilaPtr;
+	t_pila	expLogPilaPtr;
+	t_pila  exprAritPilaPtr;
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -174,6 +193,7 @@
 
 programa:
 	START seccion_declaracion bloque END 	            {
+															
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
 														
@@ -237,22 +257,27 @@ bloque:                                                 /* No existen bloques si
 	bloque sentencia	                                {   
 															printf("R 10: bloque => bloque sentencia\n");
 															if(bloquePtr != NULL){
-																auxPtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
-																bloquePtr = auxPtr;
+																bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
 															} else {
-																auxPtr = crearNodo("CUERPO", programaPtr, sentenciaPtr);
-																bloquePtr = auxPtr;
+																if(!pila_vacia(&progPilaPtr)){
+																	bloquePtr = sacar_de_pila(&progPilaPtr);
+																	bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																	
+																}
 															}
+															exprAritPtr = NULL;
 														}
 	
 	| sentencia			                                {
 															printf("R 11: bloque => sentencia\n"); 
 															if(bloquePtr != NULL) {
-																auxPtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
-																bloquePtr = auxPtr;
+																bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																
 															} else {
 																bloquePtr = sentenciaPtr;
 															}
+															exprAritPtr = NULL;
+															
 														};
 
 sentencia:
@@ -266,13 +291,17 @@ sentencia:
 bloque_if:
     IF expresion_logica THEN bloque ENDIF               {
 															printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");
+														
 															if(expreLogPtr != NULL){
+																bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr);
+																expreLogPtr = NULL;
+															} else {
+																if(!pila_vacia(&expLogPilaPtr)){
+																	expreLogPtr = sacar_de_pila(&expLogPilaPtr);
 																	bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr);
 																	expreLogPtr = NULL;
-																 } else {
-																	 bloqueIfPtr = crearNodo("IF",expreLogAuxPtr,bloquePtr);
-																	 expreLogAuxPtr = NULL;
-																 }
+																}
+															}
 															 bloquePtr = NULL;
     													};
 
@@ -288,10 +317,13 @@ bloque_if:
 														 		if(expreLogPtr != NULL){
 																	bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
 																	expreLogPtr = NULL;
-																 } else {
-																	 bloqueIfPtr = crearNodo("IF",expreLogAuxPtr,elseBloquePtr);
-																	 expreLogAuxPtr = NULL;
-																 }
+																} else {
+																	 if(!pila_vacia(&expLogPilaPtr)){
+																		expreLogPtr = sacar_de_pila(&expLogPilaPtr);
+																		bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
+																		expreLogPtr = NULL;
+																	}
+																}
     													 		
     															
 															};
@@ -312,21 +344,28 @@ bloque_while:
 																	bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);
 																	expreLogPtr = NULL;
 																 } else {
-																	 bloqueWhPtr = crearNodo("REPEAT", expreLogAuxPtr, bloquePtr);
-																	 expreLogAuxPtr = NULL;
+																	if(!pila_vacia(&expLogPilaPtr)){
+																		expreLogPtr = sacar_de_pila(&expLogPilaPtr);
+																		bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);
+																		expreLogPtr = NULL;
+																	}
 																 }
 																
 															bloquePtr = NULL;
 														};
 
 asignacion:
-	ID ASIG expresion	                                {
+	ID {
+			aux = (char *) malloc(sizeof(char) * (strlen(yylval.valor_string) + 1));
+			strcpy(aux, yylval.valor_string);
+		}	
+			ASIG expresion	                                {
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
 															/*Aca no uso rellenar porque tomo el valor $1)*/
 															infoArbol.tipoDato = String;
 															infoArbol.entero = 0 ;
-															strcpy(infoArbol.cadena,$1);
+															strcpy(infoArbol.cadena, aux);
 															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr);
 														
 														};
@@ -355,54 +394,101 @@ expresion_cadena:
 expresion_aritmetica:
 	expresion_aritmetica SUMA termino 		            {
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															if(auxAritPtr != NULL && joinExpressions){
+															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
+																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
 																exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
-																auxAritPtr = exprAritPtr;
 																joinExpressions = 0;
 															} else {
 																exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
 
 															}
+																
+															
+															//if(auxAritPtr != NULL && joinExpressions){
+															//	exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
+															//	auxAritPtr = exprAritPtr;
+															//	joinExpressions = 0;
+															//} else {
+															//	exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
+
+															//}
 															
 														}
 	| expresion_aritmetica RESTA termino 	            {
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															if(auxAritPtr != NULL && joinExpressions){
+															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
+																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
 																exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
-																auxAritPtr = exprAritPtr;
 																joinExpressions = 0;
 															} else {
 																exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
 
 															}
 															
+															//if(auxAritPtr != NULL && joinExpressions){
+															//	exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
+															//	auxAritPtr = exprAritPtr;
+															//	joinExpressions = 0;
+															//} else {
+															//	exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
+
+															
+															//}
+															
 														}
 	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
-															exprAritPtr = crearNodo("-", exprAritPtr, crearNodo("*", crearNodo("/", exprAritPtr, terminoPtr), terminoPtr));
+															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
+																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+																exprAritPtr = crearNodo("-", auxAritPtr, crearNodo("*", crearNodo("/", auxAritPtr, terminoPtr), terminoPtr));
+																joinExpressions = 0;
+															} else {
+																exprAritPtr = crearNodo("-", exprAritPtr, crearNodo("*", crearNodo("/", exprAritPtr, terminoPtr), terminoPtr));
+
+															}
 														}
  	| expresion_aritmetica DIV termino                  {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
-															exprAritPtr = crearNodo("/", exprAritPtr, terminoPtr);
+															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
+																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+																exprAritPtr = crearNodo("/", auxAritPtr, terminoPtr);
+																joinExpressions = 0;
+															} else {
+																exprAritPtr = crearNodo("/", exprAritPtr, terminoPtr);
+															}
+															
 														}
 	| termino								            {	printf("R 29: expresion_aritmetica => termino\n");
-															if(auxAritPtr == NULL && exprAritPtr != NULL){
-																exprAritPtr = terminoPtr;
-																auxAritPtr = exprAritPtr;
-															} else {
-																exprAritPtr = terminoPtr;
+															if(exprAritPtr != NULL){
+																poner_en_pila(&exprAritPilaPtr, exprAritPtr);
+												
 															}
+															exprAritPtr = terminoPtr;
+															//if(auxAritPtr == NULL && exprAritPtr != NULL){
+															//	exprAritPtr = terminoPtr;
+															//	auxAritPtr = exprAritPtr;
+															//} else {
+															//	exprAritPtr = terminoPtr;
+															//}
 															
 														};
 
 termino:
 	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
-															if(auxAritPtr != NULL && joinExpressions){
+															
+															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
+																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
 																terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
-																auxAritPtr = terminoPtr;
 																joinExpressions = 0;
 															} else {
 																terminoPtr = crearNodo("*", terminoPtr, factorPtr);
-
 															}
+															//if(auxAritPtr != NULL && joinExpressions){
+															//	terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
+															//	auxAritPtr = terminoPtr;
+															//	joinExpressions = 0;
+															//} else {
+															//	terminoPtr = crearNodo("*", terminoPtr, factorPtr);
+
+															//}
 														}
 	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
 															if(auxAritPtr != NULL && joinExpressions){
@@ -421,11 +507,14 @@ termino:
 factor:
 	PA expresion_aritmetica PC	                        {	printf("R 33: factor => PA expresion_aritmetica PC\n");
 															factorPtr = exprAritPtr;
-															if(auxAritPtr == NULL){
-																auxAritPtr = exprAritPtr;
-															} else {
+															if(ver_tope_pila(&exprAritPilaPtr) != NULL){
 																joinExpressions = 1;
 															}
+															//if(auxAritPtr == NULL){
+															//	auxAritPtr = exprAritPtr;
+															//} else {
+															//	joinExpressions = 1;
+															//}
 														}
 	| filter 											{	printf("R 34: factor => FILTER\n");
 														    factorPtr = filterPtr;
@@ -457,32 +546,40 @@ factor:
 expresion_logica:
     termino_logico AND termino_logico                 {  
     												   		printf("R 38: expresion_logica => termino_logico AND termino_logico\n");
-															   if(expreLogPtr != NULL && expreLogAuxPtr == NULL){
-																   expreLogAuxPtr = expreLogPtr;
-															   }
+															if(expreLogPtr != NULL){
+																poner_en_pila(&expLogPilaPtr, expreLogPtr);
+															}
 															expreLogPtr = crearNodo("AND", termLogPtr, compBoolPtr);
-															programaPtr = bloquePtr;
+															if(bloquePtr != NULL){
+																poner_en_pila(&progPilaPtr, bloquePtr);
+															}
 															bloquePtr = NULL;
 															termLogPtr = NULL;
 													  }
     | termino_logico OR termino_logico                {
     												  	 	printf("R 39: expresion_logica => termino_logico OR termino_logico\n");
-															   if(expreLogPtr != NULL && expreLogAuxPtr == NULL){
-																   expreLogAuxPtr = expreLogPtr;
-															   }
+															if(expreLogPtr != NULL){
+																poner_en_pila(&expLogPilaPtr, expreLogPtr);
+															}
 															expreLogPtr = crearNodo("OR", termLogPtr, compBoolPtr);
-															programaPtr = bloquePtr;
+															if(bloquePtr != NULL){
+																poner_en_pila(&progPilaPtr, bloquePtr);
+															}
 															bloquePtr = NULL;
 															termLogPtr = NULL;
 													  }
     | termino_logico                                  { 
 															printf("R 40: expresion_logica => termino_logico\n");
-															if(expreLogPtr != NULL && expreLogAuxPtr == NULL){
-																   expreLogAuxPtr = expreLogPtr;
-															   }
+															
+															if(expreLogPtr != NULL){
+																poner_en_pila(&expLogPilaPtr, expreLogPtr);
+															}
 															expreLogPtr = termLogPtr;
-															programaPtr = bloquePtr;
+															if(bloquePtr != NULL){
+																poner_en_pila(&progPilaPtr, bloquePtr);
+															}
 															bloquePtr = NULL;
+															termLogPtr = NULL;
 													  };
 
 termino_logico:
@@ -569,15 +666,14 @@ filter:
 lista_exp_coma:
     lista_exp_coma COMA expresion_aritmetica            {
 															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
-															auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der));
-															//auxPtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, crearHoja(&(terminoFilterPtr->der)->info)));
-															bloquePtr = auxPtr;
+															bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der));
+															
 														}
     | expresion_aritmetica                              {
 															printf("R 57: lista_exp_coma => expresion_aritmetica\n");
 															compBoolPtr->izq = exprAritPtr;
 															if(bloquePtr != NULL){
-																programaPtr = bloquePtr;
+																poner_en_pila(&progPilaPtr, bloquePtr);
 															}
 															bloquePtr = terminoFilterPtr;
 														};
@@ -617,6 +713,9 @@ int main(int argc,char *argv[]){
   }
   else
   {
+	crear_pila(&progPilaPtr);
+	crear_pila(&expLogPilaPtr);
+	crear_pila(&exprAritPilaPtr);															
 	yyparse();
   	fclose(yyin);
   }
@@ -807,6 +906,7 @@ void chequearPrintId(char * nombre){
 	}
 }
 
+/***************ARBOL*****************/
 tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
     
     tNodo* nodo = malloc(sizeof(tNodo));   
@@ -891,7 +991,8 @@ void mostrar_grafico(tArbol *pa,int n)
 
      for(i; i<n; i++)
      {
-       printf("   ");
+       //printf("   ");
+	   printf("----");
      }
 
 
@@ -910,5 +1011,67 @@ void mostrar_grafico(tArbol *pa,int n)
 
 }
 
+/*************** FIN ARBOL*****************/
 
+/*************** PILA *****************/
+void crear_pila(t_pila *pp){
+	printf("Creando pila... \n");
+	pp->tope = TOPE_PILA_VACIA;
+}
 
+int pila_vacia(const t_pila *pp){
+	return pp->tope == TOPE_PILA_VACIA;
+}
+
+int pila_llena(const t_pila *pp){
+	return pp->tope == TAM_PILA - 1;
+}
+
+void vaciar_pila(t_pila *pp){
+	printf("Vaciando pila...\n");
+	pp->tope = - 1;
+}
+
+int poner_en_pila(t_pila *pp, tNodo *pi){
+	if(pp->tope == TAM_PILA - 1){
+		printf("Pila llena\n");
+		return -1;
+	}
+	pp->tope++;
+	pp->vec[pp->tope]=pi;
+	return 1;
+}
+
+tNodo* sacar_de_pila(t_pila *pp){
+	if( pp->tope == -1){
+		printf("Pila vacia\n");
+		return NULL;
+	}
+	tNodo *result;
+	result = pp->vec[pp->tope];
+	pp->tope--;
+	return result;
+}
+
+tNodo* ver_tope_pila(t_pila *pp){
+	if( pp->tope == -1){
+		printf("Pila vacia\n");
+		return NULL;
+	} 
+	return pp->vec[pp->tope];
+}
+
+void imprimir_tope_de_pila(t_pila *pp){
+	printf("Pila: %p\n", pp);
+	if( pp->tope == -1){
+		printf("Pila vacia\n");
+		printf("Elemento 0 de vec: %d\n", pp->vec[0]);
+		printf("Elementos de vec: %d\n", sizeof(pp->vec) / sizeof(tNodo*));
+	} else {
+		printf("Tope: %d \n", pp->tope);
+		printf("Tope de pila: %p \n", pp->vec[pp->tope]);
+		
+	}
+}
+
+/*************** FIN PILA *****************/

@@ -1,0 +1,21 @@
+START
+	VAR
+		[INTEGER, FLOAT, STRING]:[numero1, real1, cadena1]
+		[INTEGER, FLOAT, FLOAT]:[numero2, real2, real3]
+		[INTEGER, INTEGER]:[numero3, numero4]
+		[STRING]:[cadena2]
+	ENDVAR
+
+	numero1:=2
+	numero2:=6
+
+    	--/Ejemplo MOD/DIV/--
+	--/(4+3) DIV (3*2)/--
+	--/numero1 := (4 + 2 * 4) + (5 + 6 * 2)/--
+	--/numero1 := (4 + 2 * 4) - (5 + 6 * 2)/--
+	--/(4+3) MOD (3*2)/--
+	numero1 := (4 + 2 * 4) * (5 + 6 * 2) * ( 9 + 5 * 8)
+
+	READ numero3
+
+END
