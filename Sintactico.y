@@ -71,6 +71,8 @@
 	/**FUNCIONES PARA LA ENTREGA 2 **/
 	tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer);
 	tNodo* crearHoja(const tInfo* info);
+	int esHoja(tNodo *nodo);
+	void invertir_comparador(char* cadena);
 	void rellenarInfo(int tipoDato, tInfo* info);
 	void mostrar_grafico(tArbol *pa, int n);
 
@@ -104,7 +106,7 @@
 	int indiceDatoADeclarar = 0;
     TS_Reg tabla_simbolo[TAMANIO_TABLA];
 	int indice_tabla = -1;
-	int joinExpressions = 0;
+	int processingFilter = 0;
 	char* aux;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
@@ -129,6 +131,7 @@
 			expreLogPtr,		//Puntero de expresion logica	
 			filterPtr,			//Puntero de filter
 			termLogPtr,			//Puntero de termino logico
+			termLogFilterPtr,	//Puntero de termino logico del filter
 			compBoolPtr,		//Puntero de comparador Booleano	
 			terminoFilterPtr,	//Puntero de termino de filter		
 			compFilterPtr,   	//Puntero de comparador de filter	
@@ -392,113 +395,75 @@ expresion_cadena:
 														};
 
 expresion_aritmetica:
-	expresion_aritmetica SUMA termino 		            {
+	expresion_aritmetica { 
+			poner_en_pila(&exprAritPilaPtr, exprAritPtr); 
+			printf("R 25.1: apilo por SUMA\n");
+		} SUMA termino 		           
+														{
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
-																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-																exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
-																joinExpressions = 0;
-															} else {
-																exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
-
-															}
-																
 															
-															//if(auxAritPtr != NULL && joinExpressions){
-															//	exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
-															//	auxAritPtr = exprAritPtr;
-															//	joinExpressions = 0;
-															//} else {
-															//	exprAritPtr = crearNodo("+", exprAritPtr, terminoPtr);
-
-															//}
-															
+															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+															exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
+														
+													
 														}
-	| expresion_aritmetica RESTA termino 	            {
+	| expresion_aritmetica { 
+			poner_en_pila(&exprAritPilaPtr, exprAritPtr);
+			printf("R 26.1: apilo por RESTA\n");
+		} RESTA termino 	            
+														{
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
-																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-																exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
-																joinExpressions = 0;
-															} else {
-																exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
-
-															}
 															
-															//if(auxAritPtr != NULL && joinExpressions){
-															//	exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
-															//	auxAritPtr = exprAritPtr;
-															//	joinExpressions = 0;
-															//} else {
-															//	exprAritPtr = crearNodo("-", exprAritPtr, terminoPtr);
-
-															
-															//}
+															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+															exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
 															
 														}
-	| expresion_aritmetica MOD termino                  {	printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
-															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
-																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-																exprAritPtr = crearNodo("-", auxAritPtr, crearNodo("*", crearNodo("/", auxAritPtr, terminoPtr), terminoPtr));
-																joinExpressions = 0;
-															} else {
-																exprAritPtr = crearNodo("-", exprAritPtr, crearNodo("*", crearNodo("/", exprAritPtr, terminoPtr), terminoPtr));
-
-															}
-														}
- 	| expresion_aritmetica DIV termino                  {	printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
-															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
-																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-																exprAritPtr = crearNodo("/", auxAritPtr, terminoPtr);
-																joinExpressions = 0;
-															} else {
-																exprAritPtr = crearNodo("/", exprAritPtr, terminoPtr);
-															}
+	| expresion_aritmetica { 
+			poner_en_pila(&exprAritPilaPtr, exprAritPtr); 
+			printf("R 27.1: apilo por MOD\n");
+		} MOD termino                 
+														{	
+															printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
 															
+															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+															exprAritPtr = crearNodo("-", auxAritPtr, crearNodo("*", crearNodo("/", auxAritPtr, terminoPtr), terminoPtr));
+																
 														}
-	| termino								            {	printf("R 29: expresion_aritmetica => termino\n");
-															if(exprAritPtr != NULL){
-																poner_en_pila(&exprAritPilaPtr, exprAritPtr);
-												
-															}
+ 	| expresion_aritmetica { 
+		 	poner_en_pila(&exprAritPilaPtr, exprAritPtr); 
+		 	printf("R 28.1: apilo por DIV\n");
+		 } DIV termino                  
+	 													{	
+															printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
+															
+															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+															exprAritPtr = crearNodo("/", auxAritPtr, terminoPtr);
+																
+														}
+	| termino								            {	
+															printf("R 29: expresion_aritmetica => termino\n");
 															exprAritPtr = terminoPtr;
-															//if(auxAritPtr == NULL && exprAritPtr != NULL){
-															//	exprAritPtr = terminoPtr;
-															//	auxAritPtr = exprAritPtr;
-															//} else {
-															//	exprAritPtr = terminoPtr;
-															//}
-															
 														};
 
 termino:
-	termino POR factor 			                        {	printf("R 30: termino => termino POR factor\n");
+	termino { 
+			poner_en_pila(&exprAritPilaPtr, terminoPtr); 
+			printf("R 30.1: apilo por POR\n");
+		} POR factor 			
+														{	
+															printf("R 30: termino => termino POR factor\n");
+															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+															terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
 															
-															if(ver_tope_pila(&exprAritPilaPtr) != NULL && joinExpressions){
-																auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-																terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
-																joinExpressions = 0;
-															} else {
-																terminoPtr = crearNodo("*", terminoPtr, factorPtr);
-															}
-															//if(auxAritPtr != NULL && joinExpressions){
-															//	terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
-															//	auxAritPtr = terminoPtr;
-															//	joinExpressions = 0;
-															//} else {
-															//	terminoPtr = crearNodo("*", terminoPtr, factorPtr);
-
-															//}
 														}
-	| termino DIVIDIDO factor 	                        {	printf("R 31: termino => termino DIVIDIDO factor\n");
-															if(auxAritPtr != NULL && joinExpressions){
-																terminoPtr = crearNodo("/",auxAritPtr, factorPtr);
-																auxAritPtr = terminoPtr;
-																joinExpressions = 0;
-															} else {
-																terminoPtr = crearNodo("/",terminoPtr, factorPtr);
-
-															}
+	| termino { 
+			poner_en_pila(&exprAritPilaPtr, terminoPtr); 
+			printf("R 31.1: apilo por DIVIDIDO\n");
+		} DIVIDIDO factor 	                        
+														{	
+															printf("R 31: termino => termino DIVIDIDO factor\n");
+															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
+															terminoPtr = crearNodo("/", auxAritPtr, factorPtr);
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -507,14 +472,6 @@ termino:
 factor:
 	PA expresion_aritmetica PC	                        {	printf("R 33: factor => PA expresion_aritmetica PC\n");
 															factorPtr = exprAritPtr;
-															if(ver_tope_pila(&exprAritPilaPtr) != NULL){
-																joinExpressions = 1;
-															}
-															//if(auxAritPtr == NULL){
-															//	auxAritPtr = exprAritPtr;
-															//} else {
-															//	joinExpressions = 1;
-															//}
 														}
 	| filter 											{	printf("R 34: factor => FILTER\n");
 														    factorPtr = filterPtr;
@@ -528,10 +485,11 @@ factor:
 															factorPtr = crearHoja(&infoArbol);
 														}
 	| CTE_FLOAT	                                        {
+															printf("R 36: factor => CTE_FLOAT\n");
 															rellenarInfo(CteFloat,&infoArbol);
 															agregarCteATabla(CteFloat);
 															factorPtr = crearHoja(&infoArbol);
-															printf("R 36: factor => CTE_FLOAT\n");
+															
 														}
 	| CTE_INT	                                        {
 															printf("R 37: factor => CTE_INT\n");
@@ -583,7 +541,11 @@ expresion_logica:
 													  };
 
 termino_logico:
-    NOT termino_logico                              		{printf("R 41: NOT termino_logico\n");}
+    NOT termino_logico                              		{
+																printf("R 41: NOT termino_logico\n");
+																invertir_comparador(compBoolPtr->info.cadena);
+
+															}
     | expresion_aritmetica comp_bool expresion_aritmetica 	{
 																printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");
 																compBoolPtr->der = exprAritPtr;
@@ -596,26 +558,40 @@ termino_filter:
     GUION_BAJO comp_bool PA expresion_aritmetica PC         {
 																printf("R 43: termino_filter => GUION_BAJO comp_bool PA expresion_aritmetica PC  \n");
 																compBoolPtr->der = exprAritPtr;
-																compFilterPtr = compBoolPtr;
+																if(compFilterPtr == NULL){
+																	compFilterPtr = compBoolPtr;
+																	termLogFilterPtr = compFilterPtr;
+																}
+																
 															}
     | GUION_BAJO comp_bool CTE_FLOAT			  			{
 																printf("R 44: termino_filter => GUION_BAJO comp_bool CTE_FLOAT\n");
 																rellenarInfo(CteFloat,&infoArbol);
 																compBoolPtr->der = crearHoja(&infoArbol);
-																compFilterPtr = compBoolPtr;
+																if(compFilterPtr == NULL){
+																	compFilterPtr = compBoolPtr;
+																	termLogFilterPtr = compFilterPtr;
+																}
 															}
     | GUION_BAJO comp_bool CTE_INT			  				{
 																printf("R 45: termino_filter => GUION_BAJO comp_bool CTE_INT\n");
 																rellenarInfo(CteInt,&infoArbol);
 																compBoolPtr->der = crearHoja(&infoArbol);
-																compFilterPtr = compBoolPtr;
+																if(compFilterPtr == NULL){
+																	compFilterPtr = compBoolPtr;
+																	termLogFilterPtr = compFilterPtr;
+																}
 															};
 
 comparacion_filter:
     termino_filter AND termino_filter		  			{
 															printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");
+															terminoFilterPtr = crearNodo("AND", termLogFilterPtr, compBoolPtr);
 														}
-    | termino_filter OR termino_filter   				{printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");}
+    | termino_filter OR termino_filter   				{
+															printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");
+															terminoFilterPtr = crearNodo("AND", termLogFilterPtr, compBoolPtr);
+														}
     | termino_filter		  							{
 															printf("R 48: comparacion_filter => termino_filter\n");
 															terminoFilterPtr = compFilterPtr;
@@ -644,34 +620,44 @@ comp_bool:
 
     													}
     |IGUAL                                              {
-    													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearNodo("==", exprAritPtr, crearHoja(&infoArbol));
-    													 printf("R 53: comp_bool => IGUAL\n");
+															printf("R 53: comp_bool => IGUAL\n");
+    														rellenarInfo(String, &infoArbol);
+    													 	compBoolPtr = crearNodo("==", exprAritPtr, crearHoja(&infoArbol));
+    													 
     													}
     |DISTINTO                                           {
     													 rellenarInfo(String, &infoArbol);
-    													 //compBoolPtr = crearHoja(&infoArbol);
 														 compBoolPtr = crearNodo("!=", exprAritPtr, crearHoja(&infoArbol));
     													 printf("R 54: comp_bool => DISTINTO\n");
     													};
 	
 
 filter:
-	FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC {
+	FILTER {processingFilter = 1;} PA comparacion_filter COMA CA lista_exp_coma CC PC {
 																printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");
 																filterPtr = crearNodo("FILTER", bloquePtr, NULL);
+																processingFilter = 0;
 																bloquePtr = NULL;
 																};
 
 lista_exp_coma:
     lista_exp_coma COMA expresion_aritmetica            {
 															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
-															bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der));
-															
+															if(esHoja(terminoFilterPtr->izq)){
+																bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der));
+															} else {
+																bloquePtr = crearNodo("CUERPO", bloquePtr,
+																	crearNodo(compBoolPtr->info.cadena, //AND u OR
+																		crearNodo(terminoFilterPtr->izq->info.cadena, exprAritPtr, terminoFilterPtr->izq->der),
+																		crearNodo(terminoFilterPtr->der->info.cadena, exprAritPtr, terminoFilterPtr->der->der)));
+															}	
 														}
     | expresion_aritmetica                              {
 															printf("R 57: lista_exp_coma => expresion_aritmetica\n");
 															compBoolPtr->izq = exprAritPtr;
+															if(compFilterPtr != NULL){
+																compFilterPtr->izq = exprAritPtr;
+															}
 															if(bloquePtr != NULL){
 																poner_en_pila(&progPilaPtr, bloquePtr);
 															}
@@ -930,54 +916,80 @@ tNodo* crearHoja(const tInfo* info){
     return nodoNuevo;
 }
 
-void rellenarInfo(int tipoDato, tInfo* info){
+int esHoja(tNodo *nodo){
+	return nodo->izq == NULL && nodo->der == NULL;
+}
 
+void invertir_comparador(char *cadena){
+	char result[40];
+	if(strcmp(cadena, "==") == 0){
+		strcpy(result, "!=");
+	} else if(strcmp(cadena, "!=") == 0){
+		strcpy(result, "==");
+	} else if(strcmp(cadena, ">") == 0){
+		strcpy(result, "<=");
+	} else if(strcmp(cadena, "<") == 0){
+		strcpy(result, ">=");
+	} else if(strcmp(cadena, "<=") == 0){
+		strcpy(result, ">");
+	} else {
+		strcpy(result, "<");
+	}
+	strcpy(cadena, result);
+}
+
+void rellenarInfo(int tipoDato, tInfo* info){
 	switch(tipoDato){
 		case CteInt:
-			printf("LELE");
+			printf("Rellenar info CteInt");
 		    info->tipoDato = CteInt;
 			info->entero = yylval.valor_int;
 			strcpy(info->cadena,"");
 			info->flotante = 0.0;
-		break;
+			break;
 
 		case CteFloat:
+			printf("Rellenar info CteFloat");
 			info->tipoDato = CteFloat;
 			info->flotante = yylval.valor_float;
 			strcpy(info->cadena,"");
 			info->entero = 0;
-		break;
+			break;
 
 		case CteString:
+			printf("Rellenar info CteString");
 			info->tipoDato = CteString;
 			info->flotante = 0.0;
 			strcpy(info->cadena,yylval.valor_string);
 			info->entero = 0;
-		break;
+			break;
 
-		case  Integer :
+		case Integer :
+			printf("Rellenar info Integer");
 		    info->tipoDato = CteInt;
 			info->entero = yylval.valor_int;
 			strcpy(info->cadena,"");
 			info->flotante = 0.0;
 			
-		break;
+			break;
 
 		case Float:	
+			printf("Rellenar info Float");
 			info->tipoDato = CteFloat;
 			info->flotante = yylval.valor_float;
 			strcpy(info->cadena,"");
 			info->entero = 0;
-		break;
+			break;
 
 		case String:
+			printf("Rellenar info String");
 			info->tipoDato = String;
 			info->flotante = 0.0;
-			strcpy(info->cadena,yylval.valor_string);
+			if(!processingFilter){
+				strcpy(info->cadena,yylval.valor_string);
+			}
 			info->entero = 0;		
-		break;
-
-
+			break;
 	}
 }
 void mostrar_grafico(tArbol *pa,int n)
