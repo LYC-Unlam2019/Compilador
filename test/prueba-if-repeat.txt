@@ -34,26 +34,4 @@ START
 	--/Ejemplo FILTER/--
 	numero4 := FILTER(_>(4 + numero1), [1,2,4,6])
 
-		REPEAT numero1 < numero2 AND numero2 == numero1
-		numero1 := numero1
-		numero1 := numero2
-	    ENDREPEAT
-
-	    	IF numero1 != numero2 OR numero2 != numero3 THEN
-				IF numero1 != numero2 OR numero2 != numero3 THEN
-						numero1 := numero3
-						numero2 := numero3
-				ELSE
-	   					numero2 := numero3
-				ENDIF
-
-			ELSE
-	   				REPEAT numero1 < numero2 AND numero2 == numero1
-							numero1 := numero1
-							numero1 := numero2
-				    ENDREPEAT
-			ENDIF
-
-			numero2 := (25 DIV 4) MOD 4
-
 END

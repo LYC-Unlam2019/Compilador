@@ -22,7 +22,7 @@
 #include "y.tab.h"
 
 void cota_error(char* mensaje);
-
+float formateoNumero(char* num);
 %}
 
 %option noyywrap
@@ -33,7 +33,7 @@ CHAR 			[a-zA-Z]
 
 ENTERO 			{DIGITO}+
 CONSTANTE_ENTERA 	-?{ENTERO}
-CONSTANTE_REAL 	-?[0-9]{1,10}\.[0-9]*
+CONSTANTE_REAL 	-?{DIGITO}*"."{DIGITO}*
 
 ID 	{CHAR}({CHAR}|{DIGITO}|_)*
 
@@ -152,12 +152,11 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
                         
 {CONSTANTE_REAL}  		  {
 							char* p = strchr(yytext,'.');
-		                    printf("%s\n", p?p:"No" );
 		                    //LO ACOTE A SEIS DIGITOS 
 		                    if(atof(yytext)<=-3.40282347e+38F || atof(yytext)>=3.40282347e+38F || (p && strlen(p) > 6 )){
 									cota_error("El valor de un flotante excede el limite permitido.");
 		                 	}
-		                    	yylval.valor_float = atof(yytext);
+		                    	yylval.valor_float = formateoNumero(yytext);
 		                    	return CTE_FLOAT;                    
 		        
 		                  }  
@@ -179,10 +178,14 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 						  }
 {COMENTARIO}			  {	
 							char *comentarios;
-							comentarios = (strstr(yytext,"/--"));											
-							if (strlen(comentarios) > 7){
-								cota_error("Solo se permite un nivel de comentarios anidados.");								
-							}
+							char *segundoNivelDeComentarios;
+							comentarios = (strstr(yytext,"/--"));
+							segundoNivelDeComentarios = strstr(comentarios+3,"/--");
+							if(segundoNivelDeComentarios != NULL){
+								if ( strstr(segundoNivelDeComentarios+3,"/--") != NULL){
+									cota_error("Solo se permite un nivel de comentarios anidados.");								
+								}
+							}	
 						  }							
 %%
 
@@ -191,4 +194,45 @@ void cota_error(char* mensaje)
 	printf("Error lexico: %s\n", mensaje);
 	system ("Pause");
 	exit (1);
+}
+
+/**PARA FORMATEAR EL NUMERO**/
+float formateoNumero(char* num){
+char format [100];
+char aux [100];
+int i = 0, j = 0, decimales = 0;
+
+strcpy(aux,num);
+printf("\n\n\nREAL: %s ", aux);
+
+  if(aux[i] == '.'){
+	format[j] = '0';
+	j ++;
+   }else{
+	  while((format[j] = aux[i] ) != '.'){
+		i ++ ; 
+		j ++;
+	  }
+   }								      
+		  format[j] = aux[i]; /*pego el punto*/ 
+		  i++;
+		  j++;
+		  if( aux[i] == '\0'){/*Despues del punto */
+			format[j] = '0';
+			 j ++;
+			format[j] = '\0';  
+		  }else{
+			while((format[j] = aux[i]  ) != '\0'){
+				i++;
+				j++;
+				decimales ++;
+			}
+			while (decimales ++ < 6){
+				format[j] = '0';
+				j++;
+			}
+	   		 format[j] = '\0';  
+		  }
+
+	  return atof(format);
 }
