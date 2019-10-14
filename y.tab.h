@@ -143,7 +143,7 @@ typedef union YYSTYPE
 
 
 	int valor_int;
-	float valor_float;
+	double valor_float;
 	char *valor_string;
 
 

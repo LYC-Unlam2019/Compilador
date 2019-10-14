@@ -23,6 +23,7 @@
 
 void cota_error(char* mensaje);
 float formateoNumero(char* num);
+float my_atof(const char *s);
 %}
 
 %option noyywrap
@@ -157,6 +158,7 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 									cota_error("El valor de un flotante excede el limite permitido.");
 		                 	}
 		                    	yylval.valor_float = formateoNumero(yytext);
+								printf("\n\n EN LEXICO: %f", yylval.valor_float);
 		                    	return CTE_FLOAT;                    
 		        
 		                  }  
@@ -203,7 +205,6 @@ char aux [100];
 int i = 0, j = 0, decimales = 0;
 
 strcpy(aux,num);
-printf("\n\n\nREAL: %s ", aux);
 
   if(aux[i] == '.'){
 	format[j] = '0';
@@ -214,7 +215,7 @@ printf("\n\n\nREAL: %s ", aux);
 		j ++;
 	  }
    }								      
-		  format[j] = aux[i]; /*pego el punto*/ 
+		  format[j] = '.'; /*pego el punto*/ 
 		  i++;
 		  j++;
 		  if( aux[i] == '\0'){/*Despues del punto */
@@ -228,11 +229,41 @@ printf("\n\n\nREAL: %s ", aux);
 				decimales ++;
 			}
 			while (decimales ++ < 6){
-				format[j] = '0';
+				format[j] = '\0';
 				j++;
 			}
 	   		 format[j] = '\0';  
 		  }
 
-	  return atof(format);
+	  return my_atof(format) ;
+}
+
+float my_atof(const char *s)
+{
+	int n1=0,n2=0,i,t,c=1;
+	float f1,f2;
+	for(i=0;s[i]!='.';++i)
+	{
+		if((s[i]>=48)&&(s[i]<=57))
+		{
+			n1=n1*10 +(s[i]-48);
+		}
+	}
+	for(i=i+1;s[i];++i)
+	{
+		if((s[i]>=48)&&(s[i]<=57))
+		{
+			n2=n2*10 +(s[i]-48);
+		}
+	}
+	t=n2;
+	f1=n1;
+	f2=n2;
+	while(t)
+	{
+		t=t/10;
+		c=c*10;
+	}
+	f2=f2/c;
+	return (f1+f2);
 }

@@ -37,7 +37,7 @@
 	typedef struct {
 		int tipoDato;
 		int entero;
-		float flotante;
+		double flotante;
 		char cadena[40];
 	}tInfo;
 
@@ -91,7 +91,7 @@
 		char nombre[TAM_NOMBRE];
 		int tipo_dato;
 		char valor_s[TAM_NOMBRE];
-		float valor_f;
+		double valor_f;
 		int valor_i;
 		int longitud;
 	} TS_Reg;
@@ -147,7 +147,7 @@
 %union {
 
 	int valor_int;
-	float valor_float;
+	double valor_float;
 	char *valor_string;
 }
 
@@ -213,7 +213,6 @@ declaracion:
 	CA t_datos CC DOS_PUNTOS CA lista_id CC				{
 															printf("R 4: declaracion => t_dato DOS_PUNTOS lista_id\n");
 															 agregarTiposDatosATabla();
-															 printf("%d\n",indiceDatoADeclarar );
 															 indiceDatoADeclarar = 0;
 														};
 
@@ -229,7 +228,6 @@ t_dato:
 	| INTEGER		                                    {
 															printf("R 8: t_dato => INTEGER\n");
 															tipoDatoADeclarar[indiceDatoADeclarar++] = Integer;
-															printf("%d\n",tipoDatoADeclarar[indiceDatoADeclarar-1] );
 														}
 	| STRING	                                        {
 															printf("R 9: t_dato => STRING\n");
@@ -852,6 +850,7 @@ void agregarCteATabla(int num){
 			//Agregar tipo de dato
 				tabla_simbolo[indice_tabla].tipo_dato = CteFloat;
 			//Agregar valor a la tabla
+			     printf ("EN FUNCION: %f", yylval.valor_float);
 				tabla_simbolo[indice_tabla].valor_f = yylval.valor_float;
 			}
 		break;
@@ -932,7 +931,6 @@ void rellenarInfo(int tipoDato, tInfo* info){
 
 	switch(tipoDato){
 		case CteInt:
-			printf("LELE");
 		    info->tipoDato = CteInt;
 			info->entero = yylval.valor_int;
 			strcpy(info->cadena,"");
@@ -978,10 +976,10 @@ void rellenarInfo(int tipoDato, tInfo* info){
 
 	}
 }
-void mostrar_grafico(tArbol *pa,int n)
-{
+
+void mostrar_grafico(tArbol *pa,int n){
     int numNodos = 0;
-    float aux = 0.0;
+    double aux = 0.0;
     int i=0;
      if(!*pa){ return; }
           
