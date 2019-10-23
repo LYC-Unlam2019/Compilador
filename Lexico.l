@@ -22,6 +22,8 @@
 #include "y.tab.h"
 
 void cota_error(char* mensaje);
+float formateoNumero(char* num);
+float my_atof(const char *s);
 
 %}
 
@@ -33,7 +35,7 @@ CHAR 			[a-zA-Z]
 
 ENTERO 			{DIGITO}+
 CONSTANTE_ENTERA 	-?{ENTERO}
-CONSTANTE_REAL 	-?[0-9]{1,10}\.[0-9]*
+CONSTANTE_REAL 	-?{DIGITO}*"."{DIGITO}*
 
 ID 	{CHAR}({CHAR}|{DIGITO}|_)*
 
@@ -157,7 +159,7 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
 		                    if(atof(yytext)<=-3.40282347e+38F || atof(yytext)>=3.40282347e+38F || (p && strlen(p) > 6 )){
 									cota_error("El valor de un flotante excede el limite permitido.");
 		                 	}
-		                    	yylval.valor_float = atof(yytext);
+		                    	yylval.valor_float = formateoNumero(yytext);
 		                    	return CTE_FLOAT;                    
 		        
 		                  }  
@@ -195,4 +197,71 @@ void cota_error(char* mensaje)
 	printf("Error lexico: %s\n", mensaje);
 	system ("Pause");
 	exit (1);
+}
+
+/**PARA FORMATEAR EL NUMERO**/
+float formateoNumero(char* num){
+char format [100];
+char aux [100];
+int i = 0, j = 0, decimales = 0;
+strcpy(aux,num);
+  if(aux[i] == '.'){
+	format[j] = '0';
+	j ++;
+   }else{
+	  while((format[j] = aux[i] ) != '.'){
+		i ++ ; 
+		j ++;
+	  }
+   }								      
+		  format[j] = '.'; /*pego el punto*/ 
+		  i++;
+		  j++;
+		  if( aux[i] == '\0'){/*Despues del punto */
+			format[j] = '0';
+			 j ++;
+			format[j] = '\0';  
+		  }else{
+			while((format[j] = aux[i]  ) != '\0'){
+				i++;
+				j++;
+				decimales ++;
+			}
+			while (decimales ++ < 6){
+				format[j] = '\0';
+				j++;
+			}
+	   		 format[j] = '\0';  
+		  }
+
+	  return my_atof(format) ;
+}
+
+float my_atof(const char *s){
+	int n1=0,n2=0,i,t,c=1;
+	float f1,f2;
+	for(i=0;s[i]!='.';++i)
+	{
+		if((s[i]>=48)&&(s[i]<=57))
+		{
+			n1=n1*10 +(s[i]-48);
+		}
+	}
+	for(i=i+1;s[i];++i)
+	{
+		if((s[i]>=48)&&(s[i]<=57))
+		{
+			n2=n2*10 +(s[i]-48);
+		}
+	}
+	t=n2;
+	f1=n1;
+	f2=n2;
+	while(t)
+	{
+		t=t/10;
+		c=c*10;
+	}
+	f2=f2/c;
+	return (f1+f2);
 }
