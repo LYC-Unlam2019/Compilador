@@ -64,12 +64,16 @@
 	void agregarTiposDatosATabla(void);
 	void agregarCteATabla(int num);
 	void chequearVarEnTabla(char* nombre);
+	void compararTiposDeDatoASIG(int tdIzq, int tdDer, char* nombre);
+	void compararTiposDeDatoTL(int tdIzq, int tdDer, char* nombre);
+	int obtenerTipoDeDatoDesdeTS(char* nombre);
+	int calcularTipoDatoResultante(char* operacion, int tdIzq, int tdDer);
 	int buscarEnTabla(char * nombre);
 	void grabarTabla(void);
 	void chequearPrintId(char *nombre);
 
 	/**FUNCIONES PARA LA ENTREGA 2 **/
-	tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer);
+	tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer, int tipoDato);
 	tNodo* crearHoja(const tInfo* info);
 	int esHoja(tNodo *nodo);
 	void invertir_comparador(char* cadena);
@@ -98,6 +102,18 @@
 		int longitud;
 	} TS_Reg;
 
+	/*TABLA DE TIPOS DE DATOS RESULTANTES*/
+
+	/* formato 
+			int | float
+	int		00		01
+	float	10		01
+	*/
+
+	int matrizTD[2][2] = {
+		{1,2},
+		{2,2}
+	};
 
 	/* Cosas para la declaracion de variables y la tabla de simbolos */
 	int varADeclarar1 = 1;
@@ -108,6 +124,7 @@
 	int indice_tabla = -1;
 	int processingFilter = 0;
 	char* aux;
+	int tipoDatoCalculado;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -258,11 +275,11 @@ bloque:                                                 /* No existen bloques si
 	bloque sentencia	                                {   
 															printf("R 10: bloque => bloque sentencia\n");
 															if(bloquePtr != NULL){
-																bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr, -1);
 															} else {
 																if(!pila_vacia(&progPilaPtr)){
 																	bloquePtr = sacar_de_pila(&progPilaPtr);
-																	bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																	bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr, -1);
 																	
 																}
 															}
@@ -272,7 +289,7 @@ bloque:                                                 /* No existen bloques si
 	| sentencia			                                {
 															printf("R 11: bloque => sentencia\n"); 
 															if(bloquePtr != NULL) {
-																bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr);
+																bloquePtr = crearNodo("CUERPO", bloquePtr, sentenciaPtr, -1);
 																
 															} else {
 																bloquePtr = sentenciaPtr;
@@ -294,12 +311,12 @@ bloque_if:
 															printf("R 18: bloque_if => IF expresion_logica THEN bloque ENDIF\n");
 														
 															if(expreLogPtr != NULL){
-																bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr);
+																bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr, -1);
 																expreLogPtr = NULL;
 															} else {
 																if(!pila_vacia(&expLogPilaPtr)){
 																	expreLogPtr = sacar_de_pila(&expLogPilaPtr);
-																	bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr);
+																	bloqueIfPtr = crearNodo("IF",expreLogPtr,bloquePtr, -1);
 																	expreLogPtr = NULL;
 																}
 															}
@@ -311,17 +328,17 @@ bloque_if:
 											printf("R 19.1: bloque_if  => ELSE condition\n"); 
 											thenBloquePtr = bloquePtr;
 											bloquePtr = NULL;
-											elseBloquePtr = crearNodo("ELSE",thenBloquePtr, NULL);
+											elseBloquePtr = crearNodo("ELSE",thenBloquePtr, NULL, -1);
 			
 										} else_bloque ENDIF   {
     													 		printf("R 19: bloque_if => IF expresion_logica THEN bloque ELSE bloque ENDIF\n");
 														 		if(expreLogPtr != NULL){
-																	bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
+																	bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr, -1);
 																	expreLogPtr = NULL;
 																} else {
 																	 if(!pila_vacia(&expLogPilaPtr)){
 																		expreLogPtr = sacar_de_pila(&expLogPilaPtr);
-																		bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr);
+																		bloqueIfPtr = crearNodo("IF",expreLogPtr,elseBloquePtr, -1);
 																		expreLogPtr = NULL;
 																	}
 																}
@@ -342,12 +359,12 @@ bloque_while:
     REPEAT expresion_logica bloque ENDREPEAT            {
 															printf("R 20: bloque_while => REPEAT expresion_logica bloque ENDREPEAT\n");
 															if(expreLogPtr != NULL){
-																	bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);
+																	bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr, -1);
 																	expreLogPtr = NULL;
 																 } else {
 																	if(!pila_vacia(&expLogPilaPtr)){
 																		expreLogPtr = sacar_de_pila(&expLogPilaPtr);
-																		bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr);
+																		bloqueWhPtr = crearNodo("REPEAT", expreLogPtr, bloquePtr, -1);
 																		expreLogPtr = NULL;
 																	}
 																 }
@@ -364,10 +381,10 @@ asignacion:
 															chequearVarEnTabla($1);
 															printf("R 21: asignacion => ID ASIG expresion\n");
 															/*Aca no uso rellenar porque tomo el valor $1)*/
-															infoArbol.tipoDato = String;
-															infoArbol.entero = 0 ;
+															infoArbol.tipoDato = obtenerTipoDeDatoDesdeTS(aux); 															infoArbol.entero = 0 ;
 															strcpy(infoArbol.cadena, aux);
-															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr);
+															compararTiposDeDatoASIG(infoArbol.tipoDato, exprPtr->info.tipoDato, infoArbol.cadena);
+															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr, -1);
 														
 														};
 
@@ -385,9 +402,9 @@ expresion:
 
 expresion_cadena:
 	CTE_STRING						                    {
+															printf("R 24: expresion_cadena => CTE_STRING\n");
 															rellenarInfo(CteString,&infoArbol);
 														 	exprCadPtr = crearHoja(&infoArbol);
-															printf("R 24: expresion_cadena => CTE_STRING\n");
 															agregarCteATabla(CteString);
 						
 														};
@@ -399,9 +416,9 @@ expresion_aritmetica:
 		} SUMA termino 		           
 														{
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
-															
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr);
+															tipoDatoCalculado = calcularTipoDatoResultante("SUMA", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
+															exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr, tipoDatoCalculado);
 														
 													
 														}
@@ -413,7 +430,8 @@ expresion_aritmetica:
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
 															
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr);
+															tipoDatoCalculado = calcularTipoDatoResultante("RESTA", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
+															exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr, tipoDatoCalculado);
 															
 														}
 	| expresion_aritmetica { 
@@ -424,7 +442,8 @@ expresion_aritmetica:
 															printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
 															
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															exprAritPtr = crearNodo("-", auxAritPtr, crearNodo("*", crearNodo("/", auxAritPtr, terminoPtr), terminoPtr));
+															tipoDatoCalculado = calcularTipoDatoResultante("MOD", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
+															exprAritPtr = crearNodo("-", auxAritPtr, crearNodo("*", crearNodo("/", auxAritPtr, terminoPtr, tipoDatoCalculado), terminoPtr, tipoDatoCalculado), tipoDatoCalculado);
 																
 														}
  	| expresion_aritmetica { 
@@ -435,7 +454,8 @@ expresion_aritmetica:
 															printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
 															
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															exprAritPtr = crearNodo("/", auxAritPtr, terminoPtr);
+															tipoDatoCalculado = calcularTipoDatoResultante("DIV", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
+															exprAritPtr = crearNodo("/", auxAritPtr, terminoPtr, tipoDatoCalculado);
 																
 														}
 	| termino								            {	
@@ -451,7 +471,8 @@ termino:
 														{	
 															printf("R 30: termino => termino POR factor\n");
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															terminoPtr = crearNodo("*", auxAritPtr, factorPtr);
+															tipoDatoCalculado = calcularTipoDatoResultante("POR", auxAritPtr->info.tipoDato, factorPtr->info.tipoDato);
+															terminoPtr = crearNodo("*", auxAritPtr, factorPtr, tipoDatoCalculado);
 															
 														}
 	| termino { 
@@ -461,7 +482,8 @@ termino:
 														{	
 															printf("R 31: termino => termino DIVIDIDO factor\n");
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															terminoPtr = crearNodo("/", auxAritPtr, factorPtr);
+															tipoDatoCalculado = calcularTipoDatoResultante("DIVIDIDO", auxAritPtr->info.tipoDato, factorPtr->info.tipoDato);
+															terminoPtr = crearNodo("/", auxAritPtr, factorPtr, tipoDatoCalculado);
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -477,9 +499,12 @@ factor:
 
 factor:
 	ID			                                        {
+															/*No uso rellenar info al igual que en la asignacion*/
 															chequearVarEnTabla(yylval.valor_string);
 															printf("R 35: factor => ID\n");
-															rellenarInfo(String,&infoArbol);
+															infoArbol.tipoDato = obtenerTipoDeDatoDesdeTS(yylval.valor_string); 															infoArbol.entero = 0 ;
+															strcpy(infoArbol.cadena, yylval.valor_string);
+															//rellenarInfo(tipoD,&infoArbol);
 															factorPtr = crearHoja(&infoArbol);
 														}
 	| CTE_FLOAT	                                        {
@@ -491,7 +516,6 @@ factor:
 														}
 	| CTE_INT	                                        {
 															printf("R 37: factor => CTE_INT\n");
-															
 															rellenarInfo(CteInt,&infoArbol);	
 															agregarCteATabla(CteInt);
 															factorPtr = crearHoja(&infoArbol);
@@ -505,7 +529,7 @@ expresion_logica:
 															if(expreLogPtr != NULL){
 																poner_en_pila(&expLogPilaPtr, expreLogPtr);
 															}
-															expreLogPtr = crearNodo("AND", termLogPtr, compBoolPtr);
+															expreLogPtr = crearNodo("AND", termLogPtr, compBoolPtr, -1);
 															if(bloquePtr != NULL){
 																poner_en_pila(&progPilaPtr, bloquePtr);
 															}
@@ -517,7 +541,7 @@ expresion_logica:
 															if(expreLogPtr != NULL){
 																poner_en_pila(&expLogPilaPtr, expreLogPtr);
 															}
-															expreLogPtr = crearNodo("OR", termLogPtr, compBoolPtr);
+															expreLogPtr = crearNodo("OR", termLogPtr, compBoolPtr, -1);
 															if(bloquePtr != NULL){
 																poner_en_pila(&progPilaPtr, bloquePtr);
 															}
@@ -546,6 +570,7 @@ termino_logico:
 															}
     | expresion_aritmetica comp_bool expresion_aritmetica 	{
 																printf("R 42: termino_logico => expresion_aritmetica comp_bool expresion_aritmetica\n");
+																compararTiposDeDatoTL(compBoolPtr->izq->info.tipoDato, exprAritPtr->info.tipoDato, compBoolPtr->info.cadena);
 																compBoolPtr->der = exprAritPtr;
 																if(termLogPtr == NULL){
 																	termLogPtr = compBoolPtr;
@@ -584,11 +609,11 @@ termino_filter:
 comparacion_filter:
     termino_filter AND termino_filter		  			{
 															printf("R 46: comparacion_filter => termino_filter AND termino_filter\n");
-															terminoFilterPtr = crearNodo("AND", termLogFilterPtr, compBoolPtr);
+															terminoFilterPtr = crearNodo("AND", termLogFilterPtr, compBoolPtr, -1);
 														}
     | termino_filter OR termino_filter   				{
 															printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");
-															terminoFilterPtr = crearNodo("AND", termLogFilterPtr, compBoolPtr);
+															terminoFilterPtr = crearNodo("AND", termLogFilterPtr, compBoolPtr, -1);
 														}
     | termino_filter		  							{
 															printf("R 48: comparacion_filter => termino_filter\n");
@@ -597,43 +622,42 @@ comparacion_filter:
 
 comp_bool:
     MENOR                                               {
-    													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearNodo("<", exprAritPtr, crearHoja(&infoArbol));				
-    												     printf("R 49: comp_bool => MENOR\n");
+															printf("R 49: comp_bool => MENOR\n");
+    														//rellenarInfo(String, &infoArbol);
+    													 	compBoolPtr = crearNodo("<", exprAritPtr, crearHoja(&infoArbol), 0);	
     												 	}
     |MAYOR                                              {
-    													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearNodo(">", exprAritPtr, crearHoja(&infoArbol));
-    													 printf("R 50: comp_bool => MAYOR\n");
+															printf("R 50: comp_bool => MAYOR\n");
+    													 	//rellenarInfo(String, &infoArbol);
+    													 	compBoolPtr = crearNodo(">", exprAritPtr, crearHoja(&infoArbol), -1);
     													}
     |MENOR_IGUAL                                        {
-    													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearNodo("<=", exprAritPtr, crearHoja(&infoArbol));
-    													 printf("R 51: comp_bool => MENOR_IGUAL\n");
+															printf("R 51: comp_bool => MENOR_IGUAL\n");
+    														//rellenarInfo(String, &infoArbol);
+    													 	compBoolPtr = crearNodo("<=", exprAritPtr, crearHoja(&infoArbol), -1);
     													}
     |MAYOR_IGUAL                                        {
-    													 rellenarInfo(String, &infoArbol);
-    													 compBoolPtr = crearNodo(">=", exprAritPtr, crearHoja(&infoArbol));	
-    													 printf("R 52: comp_bool => MAYOR_IGUAL\n");
-
+															printf("R 52: comp_bool => MAYOR_IGUAL\n");
+    													 	//rellenarInfo(String, &infoArbol);
+    													 	compBoolPtr = crearNodo(">=", exprAritPtr, crearHoja(&infoArbol), -1);	
     													}
     |IGUAL                                              {
 															printf("R 53: comp_bool => IGUAL\n");
-    														rellenarInfo(String, &infoArbol);
-    													 	compBoolPtr = crearNodo("==", exprAritPtr, crearHoja(&infoArbol));
+    														//rellenarInfo(String, &infoArbol);
+    													 	compBoolPtr = crearNodo("==", exprAritPtr, crearHoja(&infoArbol), -1);
     													 
     													}
     |DISTINTO                                           {
-    													 rellenarInfo(String, &infoArbol);
-														 compBoolPtr = crearNodo("!=", exprAritPtr, crearHoja(&infoArbol));
-    													 printf("R 54: comp_bool => DISTINTO\n");
+															printf("R 54: comp_bool => DISTINTO\n");
+    													 	//rellenarInfo(String, &infoArbol);
+														 	compBoolPtr = crearNodo("!=", exprAritPtr, crearHoja(&infoArbol), -1);
     													};
 	
 
 filter:
 	FILTER {processingFilter = 1;} PA comparacion_filter COMA CA lista_exp_coma CC PC {
 																printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");
-																filterPtr = crearNodo("FILTER", bloquePtr, NULL);
+																filterPtr = crearNodo("FILTER", bloquePtr, NULL, -1);
 																processingFilter = 0;
 																bloquePtr = NULL;
 																};
@@ -642,12 +666,12 @@ lista_exp_coma:
     lista_exp_coma COMA expresion_aritmetica            {
 															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
 															if(esHoja(terminoFilterPtr->izq)){
-																bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der));
+																bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der, 0), 0);
 															} else {
 																bloquePtr = crearNodo("CUERPO", bloquePtr,
 																	crearNodo(compBoolPtr->info.cadena, //AND u OR
-																		crearNodo(terminoFilterPtr->izq->info.cadena, exprAritPtr, terminoFilterPtr->izq->der),
-																		crearNodo(terminoFilterPtr->der->info.cadena, exprAritPtr, terminoFilterPtr->der->der)));
+																		crearNodo(terminoFilterPtr->izq->info.cadena, exprAritPtr, terminoFilterPtr->izq->der, 0),
+																		crearNodo(terminoFilterPtr->der->info.cadena, exprAritPtr, terminoFilterPtr->der->der, 0), 0), 0);
 															}	
 														}
     | expresion_aritmetica                              {
@@ -667,7 +691,7 @@ lectura:
 															chequearVarEnTabla($2);
 															printf("R 58: lectura => READ ID\n");
 															rellenarInfo(String,&infoArbol);
-															lecturaPtr = crearNodo("READ", NULL, crearHoja(&infoArbol));
+															lecturaPtr = crearNodo("READ", NULL, crearHoja(&infoArbol), -1);
 														};
 
 
@@ -676,14 +700,14 @@ escritura:
 															chequearVarEnTabla($2);
 															chequearPrintId($2);
 															rellenarInfo(String,&infoArbol);
-															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol));
+															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol), -1);
 															printf("R 59: escritura => PRINT ID\n");
 														}
     | PRINT CTE_STRING                                  {
 															printf("R 60: escritura => PRINT CTE_STRING\n");
 															agregarCteATabla(CteString);
 															rellenarInfo(CteString,&infoArbol);
-															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol));
+															escrituraPtr = crearNodo("PRINT", NULL, crearHoja(&infoArbol), -1);
 
 														};
 
@@ -878,6 +902,58 @@ void chequearVarEnTabla(char* nombre){
 	//Si existe en la tabla, dejo que la compilacion siga
 }
 
+void compararTiposDeDatoASIG(int tdIzq, int tdDer, char* nombre){
+	if( tdIzq != tdDer && (tdIzq+3) != tdDer){
+		char msg[100];
+		sprintf(msg,"Asignacion entre tipos de datos incompatibles en la variable '%s' ", nombre);
+		yyerror(msg);
+	}
+}
+
+void compararTiposDeDatoTL(int tdIzq, int tdDer, char* nombre){
+	printf("comparando %d %d\n", tdIzq, tdDer);
+	if( tdIzq != tdDer && (tdIzq+3) != tdDer && (tdIzq-3) != tdDer){
+		char msg[100];
+		sprintf(msg,"Comparacion entre tipos de datos incompatibles en el operador '%s' ", nombre);
+		yyerror(msg);
+	}
+}
+
+int obtenerTipoDeDatoDesdeTS(char* nombre){
+   	int i=0;
+  	while(i<=indice_tabla){
+	   if(strcmp(tabla_simbolo[i].nombre,nombre) == 0){
+		   return tabla_simbolo[i].tipo_dato;
+	   }
+	   i++;
+   	}
+}
+
+int convertirTD(int td){
+	if(td == 1 || td == 4){
+		return 0;
+	} else if(td == 2 || td == 5){
+		return 1;
+	} else if(td == 3 || td == 6){
+		return 500;
+	}
+	return 500;
+}
+
+
+int calcularTipoDatoResultante(char* operacion, int tdIzq, int tdDer){
+	tdIzq = convertirTD(tdIzq);
+	tdDer = convertirTD(tdDer);
+
+	if(tdIzq == 500 || tdDer == 500){
+		char msg[100];
+		sprintf(msg,"Tipo de dato no soportado para la operacion '%s'", operacion);
+		yyerror(msg);
+	}
+
+	return matrizTD[tdIzq][tdDer];
+}
+
 void chequearPrintId(char * nombre){
 	int pos = buscarEnTabla(nombre);
 	if(pos != -1){
@@ -891,13 +967,17 @@ void chequearPrintId(char * nombre){
 }
 
 /***************ARBOL*****************/
-tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer){
+tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer, int tipoDato){
     
     tNodo* nodo = malloc(sizeof(tNodo));   
     tInfo info;  
 
     strcpy(info.cadena, dato);
-    info.tipoDato = String;
+	if(tipoDato == -1){
+		info.tipoDato = String;
+	} else {
+		info.tipoDato = tipoDato;
+	}
     nodo->info = info;
     nodo->izq = pIzq;
     nodo->der = pDer;
@@ -939,7 +1019,7 @@ void invertir_comparador(char *cadena){
 void rellenarInfo(int tipoDato, tInfo* info){
 	switch(tipoDato){
 		case CteInt:
-			printf("Rellenar info CteInt");
+			printf("Rellenar info CteInt\n");
 		    info->tipoDato = CteInt;
 			info->entero = yylval.valor_int;
 			strcpy(info->cadena,"");
@@ -947,7 +1027,7 @@ void rellenarInfo(int tipoDato, tInfo* info){
 			break;
 
 		case CteFloat:
-			printf("Rellenar info CteFloat");
+			printf("Rellenar info CteFloat\n");
 			info->tipoDato = CteFloat;
 			info->flotante = yylval.valor_float;
 			strcpy(info->cadena,"");
@@ -955,7 +1035,7 @@ void rellenarInfo(int tipoDato, tInfo* info){
 			break;
 
 		case CteString:
-			printf("Rellenar info CteString");
+			printf("Rellenar info CteString\n");
 			info->tipoDato = CteString;
 			info->flotante = 0.0;
 			strcpy(info->cadena,yylval.valor_string);
@@ -963,7 +1043,7 @@ void rellenarInfo(int tipoDato, tInfo* info){
 			break;
 
 		case Integer :
-			printf("Rellenar info Integer");
+			printf("Rellenar info Integer\n");
 		    info->tipoDato = CteInt;
 			info->entero = yylval.valor_int;
 			strcpy(info->cadena,"");
@@ -972,7 +1052,7 @@ void rellenarInfo(int tipoDato, tInfo* info){
 			break;
 
 		case Float:	
-			printf("Rellenar info Float");
+			printf("Rellenar info Float\n");
 			info->tipoDato = CteFloat;
 			info->flotante = yylval.valor_float;
 			strcpy(info->cadena,"");
@@ -980,7 +1060,7 @@ void rellenarInfo(int tipoDato, tInfo* info){
 			break;
 
 		case String:
-			printf("Rellenar info String");
+			printf("Rellenar info String\n");
 			info->tipoDato = String;
 			info->flotante = 0.0;
 			if(!processingFilter){
@@ -1009,14 +1089,30 @@ void mostrar_grafico(tArbol *pa,int n)
 
      numNodos++;
 
-     if((*pa)->info.tipoDato == String || (*pa)->info.tipoDato == CteString)
-     printf(" %s \n",(*pa)->info.cadena);
+     if((*pa)->info.tipoDato == String || (*pa)->info.tipoDato == CteString){
+		printf(" %s \n",(*pa)->info.cadena);
+	 }
+     
 	 
-	 if((*pa)->info.tipoDato == Integer || (*pa)->info.tipoDato == CteInt)
- 	 	printf(" %d  \n",(*pa)->info.entero); 
+	 if((*pa)->info.tipoDato == Integer || (*pa)->info.tipoDato == CteInt){
+		if(strcmp((*pa)->info.cadena, "") == 0 ){
+			printf(" %d  \n",(*pa)->info.entero); 
+		} else {
+			printf(" %s \n",(*pa)->info.cadena);
+		}
+		
+	 }
+ 	 	
  	 
- 	 if((*pa)->info.tipoDato == Float || (*pa)->info.tipoDato == CteFloat)
-     	printf(" %f \n",(*pa)->info.flotante);
+ 	 if((*pa)->info.tipoDato == Float || (*pa)->info.tipoDato == CteFloat){
+		  if(strcmp((*pa)->info.cadena, "") == 0 ){
+			printf(" %f \n",(*pa)->info.flotante);
+		} else {
+			printf(" %s \n",(*pa)->info.cadena);
+		}
+		
+	  }
+     	
 
      mostrar_grafico(&(*pa)->izq, n+1);
 
