@@ -30,7 +30,7 @@ START
 	ENDIF
 
 	--/Ejemplo FILTER/--
-	--/FILTER(_>(4 + numero1) AND _<=6.5 , [1,2,4,6])/--
+	FILTER(_>(4 + numero1) AND _<=6.5 , [1,2,4,6])
 
     --/Ejemplo MOD/DIV/--
 	(4+3) DIV (3*2) 
@@ -39,7 +39,7 @@ START
 	1 + ((4+numero1) MOD (3*2))
 
 	--/Ejemplo de operacion compleja/--
-	--/numero4:=1*((numero1+10) MOD (3 DIV 2)) + FILTER(_== (4 + numero2) OR _<=6.5, [1,2,3,4,5,6,7,8,9])/--
+	numero4:=1*((numero1+10) MOD (3 DIV 2)) + FILTER(_== (4 + numero2) OR _<=6.5, [1,2,3,4,5,6,7,8,9])
 
 	cadena1:="@sdADaSjfla%dfg"
 	cadena2:="asldkfhsjf"
