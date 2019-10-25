@@ -89,6 +89,14 @@
 	tNodo* ver_tope_pila(t_pila *pp);
 	void imprimir_tope_de_pila(t_pila *pp);
 
+	/**OPTIMIZACION**/
+	tNodo* optimizarSuma(tNodo* izquierda, tNodo* derecha);
+	tNodo* optimizarResta(tNodo* izquierda, tNodo* derecha);
+	tNodo* optimizarMultiplicacion(tNodo* izquierda, tNodo* derecha);
+	tNodo* optimizarDivision(tNodo* izquierda, tNodo* derecha);
+	tNodo* optimizarDIV(tNodo* izquierda, tNodo* derecha);
+	tNodo* optimizarMOD(tNodo* izquierda, tNodo* derecha);
+
 	int yystopparser=0;
 	FILE  *yyin;
 
@@ -417,10 +425,9 @@ expresion_aritmetica:
 														{
 															printf("R 25: expresion_aritmetica => expresion_aritmetica SUMA termino\n");
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															tipoDatoCalculado = calcularTipoDatoResultante("SUMA", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
-															exprAritPtr = crearNodo("+", auxAritPtr, terminoPtr, tipoDatoCalculado);
-														
-													
+															
+															exprAritPtr = optimizarSuma(auxAritPtr, terminoPtr);
+															
 														}
 	| expresion_aritmetica { 
 			poner_en_pila(&exprAritPilaPtr, exprAritPtr);
@@ -428,10 +435,9 @@ expresion_aritmetica:
 		} RESTA termino 	            
 														{
 															printf("R 26: expresion_aritmetica => expresion_aritmetica RESTA termino\n");
-															
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															tipoDatoCalculado = calcularTipoDatoResultante("RESTA", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
-															exprAritPtr = crearNodo("-", auxAritPtr, terminoPtr, tipoDatoCalculado);
+															
+															exprAritPtr = optimizarResta(auxAritPtr, terminoPtr);
 															
 														}
 	| expresion_aritmetica { 
@@ -440,10 +446,9 @@ expresion_aritmetica:
 		} MOD termino                 
 														{	
 															printf("R 27: expresion_aritmetica => expresion_aritmetica MOD termino\n");
-															
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															tipoDatoCalculado = calcularTipoDatoResultante("MOD", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
-															exprAritPtr = crearNodo("-", auxAritPtr, crearNodo("*", crearNodo("/", auxAritPtr, terminoPtr, tipoDatoCalculado), terminoPtr, tipoDatoCalculado), tipoDatoCalculado);
+															
+															exprAritPtr = optimizarMOD(auxAritPtr, terminoPtr);
 																
 														}
  	| expresion_aritmetica { 
@@ -452,10 +457,9 @@ expresion_aritmetica:
 		 } DIV termino                  
 	 													{	
 															printf("R 28: expresion_aritmetica => expresion_aritmetica DIV termino\n");
-															
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															tipoDatoCalculado = calcularTipoDatoResultante("DIV", auxAritPtr->info.tipoDato, terminoPtr->info.tipoDato);
-															exprAritPtr = crearNodo("/", auxAritPtr, terminoPtr, tipoDatoCalculado);
+															
+															exprAritPtr = optimizarDIV(auxAritPtr, terminoPtr);
 																
 														}
 	| termino								            {	
@@ -471,8 +475,8 @@ termino:
 														{	
 															printf("R 30: termino => termino POR factor\n");
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															tipoDatoCalculado = calcularTipoDatoResultante("POR", auxAritPtr->info.tipoDato, factorPtr->info.tipoDato);
-															terminoPtr = crearNodo("*", auxAritPtr, factorPtr, tipoDatoCalculado);
+
+															terminoPtr = optimizarMultiplicacion(auxAritPtr, factorPtr);
 															
 														}
 	| termino { 
@@ -482,8 +486,8 @@ termino:
 														{	
 															printf("R 31: termino => termino DIVIDIDO factor\n");
 															auxAritPtr = sacar_de_pila(&exprAritPilaPtr);
-															tipoDatoCalculado = calcularTipoDatoResultante("DIVIDIDO", auxAritPtr->info.tipoDato, factorPtr->info.tipoDato);
-															terminoPtr = crearNodo("/", auxAritPtr, factorPtr, tipoDatoCalculado);
+
+															terminoPtr = optimizarDivision(auxAritPtr, factorPtr);
 														}
 	| factor					                        {	printf("R 32: termino => factor\n");
 															terminoPtr = factorPtr;	
@@ -1182,3 +1186,196 @@ void imprimir_tope_de_pila(t_pila *pp){
 }
 
 /*************** FIN PILA *****************/
+
+/*************** OPTIMIZACION *************/
+tNodo* optimizarSuma(tNodo* izquierda, tNodo* derecha){
+	if(esHoja(izquierda) && esHoja(derecha)){
+		if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION SUMA: %d y %d\n", izquierda->info.entero, derecha->info.entero);
+			infoArbol.tipoDato = CteInt;
+			infoArbol.entero = izquierda->info.entero + derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION SUMA: %f y %d\n", izquierda->info.flotante, derecha->info.entero);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante + (double)derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION SUMA: %d y %f\n", izquierda->info.entero, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = (double)izquierda->info.entero + derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION SUMA: %f y %f\n", izquierda->info.flotante, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante + derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else {
+			tipoDatoCalculado = calcularTipoDatoResultante("SUMA", izquierda->info.tipoDato, derecha->info.tipoDato);
+			return crearNodo("+", izquierda, derecha, tipoDatoCalculado);
+		}
+	} else {
+		tipoDatoCalculado = calcularTipoDatoResultante("SUMA", auxAritPtr->info.tipoDato, derecha->info.tipoDato);
+		return crearNodo("+", izquierda, derecha, tipoDatoCalculado);
+	}
+}
+
+tNodo* optimizarResta(tNodo* izquierda, tNodo* derecha){
+	if(esHoja(izquierda) && esHoja(derecha)){
+		if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION RESTA: %d y %d\n", izquierda->info.entero, derecha->info.entero);
+			infoArbol.tipoDato = CteInt;
+			infoArbol.entero = izquierda->info.entero - derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION RESTA: %f y %d\n", izquierda->info.flotante, derecha->info.entero);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante - (double)derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION RESTA: %d y %f\n", izquierda->info.entero, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = (double)izquierda->info.entero - derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION RESTA: %f y %f\n", izquierda->info.flotante, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante - derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else {
+			tipoDatoCalculado = calcularTipoDatoResultante("RESTA", izquierda->info.tipoDato, derecha->info.tipoDato);
+			return crearNodo("-", izquierda, derecha, tipoDatoCalculado);
+		}
+	} else {
+		tipoDatoCalculado = calcularTipoDatoResultante("RESTA", izquierda->info.tipoDato, derecha->info.tipoDato);
+		return crearNodo("-", izquierda, derecha, tipoDatoCalculado);
+	}
+}
+
+tNodo* optimizarMultiplicacion(tNodo* izquierda, tNodo* derecha){
+	if(esHoja(izquierda) && esHoja(derecha)){
+		if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION MULTIPLICACION: %d y %d\n", izquierda->info.entero, derecha->info.entero);
+			infoArbol.tipoDato = CteInt;
+			infoArbol.entero = izquierda->info.entero * derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION MULTIPLICACION: %f y %d\n", izquierda->info.flotante, derecha->info.entero);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante * (double)derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION MULTIPLICACION: %d y %f\n", izquierda->info.entero, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = (double)izquierda->info.entero * derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION MULTIPLICACION: %f y %f\n", izquierda->info.flotante, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante * derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else {
+			tipoDatoCalculado = calcularTipoDatoResultante("POR", izquierda->info.tipoDato, derecha->info.tipoDato);
+			return crearNodo("*", izquierda, derecha, tipoDatoCalculado);
+		}
+	} else {
+		tipoDatoCalculado = calcularTipoDatoResultante("POR", izquierda->info.tipoDato, derecha->info.tipoDato);
+		return crearNodo("*", izquierda, derecha, tipoDatoCalculado);
+	}
+}
+
+tNodo* optimizarDivision(tNodo* izquierda, tNodo* derecha){
+	if(esHoja(izquierda) && esHoja(derecha)){
+		if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION DIVISION: %d y %d\n", izquierda->info.entero, derecha->info.entero);
+			infoArbol.tipoDato = CteInt;
+			infoArbol.entero = izquierda->info.entero / derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION DIVISION: %f y %d\n", izquierda->info.flotante, derecha->info.entero);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante / (double)derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION DIVISION: %d y %f\n", izquierda->info.entero, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = (double)izquierda->info.entero / derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION DIVISION: %f y %f\n", izquierda->info.flotante, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante / derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else {
+			tipoDatoCalculado = calcularTipoDatoResultante("DIVIDIDO", izquierda->info.tipoDato, derecha->info.tipoDato);
+			return crearNodo("/", izquierda, derecha, tipoDatoCalculado);
+		}
+	} else {
+		tipoDatoCalculado = calcularTipoDatoResultante("DIVIDIDO", izquierda->info.tipoDato, derecha->info.tipoDato);
+		return crearNodo("/", izquierda, derecha, tipoDatoCalculado);
+	}
+}
+
+tNodo* optimizarDIV(tNodo* izquierda, tNodo* derecha){
+	if(esHoja(izquierda) && esHoja(derecha)){
+		if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION DIV: %d y %d\n", izquierda->info.entero, derecha->info.entero);
+			infoArbol.tipoDato = CteInt;
+			infoArbol.entero = izquierda->info.entero / derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION DIV: %f y %d\n", izquierda->info.flotante, derecha->info.entero);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante / (double)derecha->info.entero;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION DIV: %d y %f\n", izquierda->info.entero, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = (double)izquierda->info.entero / derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION DIV: %f y %f\n", izquierda->info.flotante, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante / derecha->info.flotante;
+			return crearHoja(&infoArbol);
+		} else {
+			tipoDatoCalculado = calcularTipoDatoResultante("DIV", izquierda->info.tipoDato, derecha->info.tipoDato);
+			return crearNodo("/", izquierda, derecha, tipoDatoCalculado);
+		}
+	} else {
+		tipoDatoCalculado = calcularTipoDatoResultante("DIV", izquierda->info.tipoDato, derecha->info.tipoDato);
+		return crearNodo("/", izquierda, derecha, tipoDatoCalculado);
+	}
+}
+
+tNodo* optimizarMOD(tNodo* izquierda, tNodo* derecha){
+	if(esHoja(izquierda) && esHoja(derecha)){
+		if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION MOD: %d y %d\n", izquierda->info.entero, derecha->info.entero);
+			infoArbol.tipoDato = CteInt;
+			infoArbol.entero = izquierda->info.entero - ((izquierda->info.entero / derecha->info.entero) * derecha->info.entero);
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteInt){
+			printf("OPTIMIZACION MOD: %f y %d\n", izquierda->info.flotante, derecha->info.entero);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante - ((izquierda->info.flotante / (double)derecha->info.entero) * (double)derecha->info.entero);
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteInt && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION MOD: %d y %f\n", izquierda->info.entero, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = (double)izquierda->info.entero - (((double)izquierda->info.entero / derecha->info.flotante) * derecha->info.flotante);
+			return crearHoja(&infoArbol);
+		} else if(izquierda->info.tipoDato == CteFloat && derecha->info.tipoDato == CteFloat){
+			printf("OPTIMIZACION MOD: %f y %f\n", izquierda->info.flotante, derecha->info.flotante);
+			infoArbol.tipoDato = CteFloat;
+			infoArbol.flotante = izquierda->info.flotante - ((izquierda->info.flotante / derecha->info.flotante) * derecha->info.flotante);
+			return crearHoja(&infoArbol);
+		} else {
+			tipoDatoCalculado = calcularTipoDatoResultante("MOD", izquierda->info.tipoDato, derecha->info.tipoDato);
+			return crearNodo("-", izquierda, crearNodo("*", crearNodo("/", izquierda, derecha, tipoDatoCalculado), derecha, tipoDatoCalculado), tipoDatoCalculado);
+		}
+	} else {
+		tipoDatoCalculado = calcularTipoDatoResultante("MOD", izquierda->info.tipoDato, derecha->info.tipoDato);
+		return crearNodo("-", izquierda, crearNodo("*", crearNodo("/", izquierda, derecha, tipoDatoCalculado), derecha, tipoDatoCalculado), tipoDatoCalculado);
+	}
+}

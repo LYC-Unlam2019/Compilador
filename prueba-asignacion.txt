@@ -6,6 +6,6 @@ START
 		[STRING]:[cadena2]
 	ENDVAR
 
-	cadena2 := FILTER(_>(4 + numero1), [1,2,4,6])
+	numero1 := 9 MOD 2
 
 END
