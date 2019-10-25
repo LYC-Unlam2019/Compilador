@@ -89,6 +89,9 @@
 	tNodo* ver_tope_pila(t_pila *pp);
 	void imprimir_tope_de_pila(t_pila *pp);
 
+	void optimizarArbol(tArbol *pa);
+	int esOperable(tArbol *pa);
+
 	int yystopparser=0;
 	FILE  *yyin;
 
@@ -155,7 +158,8 @@
 			listaExpComaPtr,	//Puntero de lista expresion coma
 			elseBloquePtr,		//Puntero para el bloque del else
 			thenBloquePtr,		//Puntero para el bloque del then
-			auxAritPtr;
+			auxAritPtr,
+			auxPrograma;
 				
 
 	t_pila	progPilaPtr;
@@ -216,7 +220,11 @@ programa:
 															
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
-														
+															auxPrograma = bloquePtr;
+															printf("\n\nARBOL SIN OPTIMIZAR\n\n");
+															mostrar_grafico(&bloquePtr,5);
+															optimizarArbol(&auxPrograma);
+															printf("\n\nARBOL OPTIMIZADO\n\n");
 															mostrar_grafico(&bloquePtr,5);
 														};
 
@@ -1182,3 +1190,35 @@ void imprimir_tope_de_pila(t_pila *pp){
 }
 
 /*************** FIN PILA *****************/
+
+void optimizarArbol(tArbol *pa){
+	if(!*pa){return;}
+		//Recorro el arbol PostOrden
+		optimizarArbol(&(*pa)->izq);
+		optimizarArbol(&(*pa)->der);
+		if((*pa)->der != NULL || (*pa)->izq != NULL){
+			if(esOperable(&(*pa))){
+				if(!strcmp((*pa)->info.cadena, "+") ){
+					(*pa)->info.entero = (*pa)->izq->info.entero + (*pa)->der->info.entero;
+					(*pa)->info.tipoDato = (*pa)->izq->info.tipoDato;
+					strcpy((*pa)->info.cadena,"");
+					(*pa)->der = NULL;
+					(*pa)->izq = NULL;
+				}
+			}
+		}
+
+	
+	
+}
+
+int esOperable (tArbol *pa){
+	if((*pa)->info.tipoDato != String ){
+		if(!strcmp((*pa)->info.cadena, "+") ){
+			if((*pa)->izq->info.tipoDato == CteInt && (*pa)->der->info.tipoDato == CteInt){
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
