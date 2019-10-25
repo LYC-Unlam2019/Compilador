@@ -348,7 +348,7 @@ bloque_if:
 
 else_bloque: 												
 	bloque 													{
-															    printf("R 19 ELSE: else_bloque => ELSE bloque\n");
+															    printf("R 19.2 ELSE: else_bloque => ELSE bloque\n");
 																elseBloquePtr->der = bloquePtr;
 																bloquePtr = NULL;
 																
@@ -624,7 +624,7 @@ comp_bool:
     MENOR                                               {
 															printf("R 49: comp_bool => MENOR\n");
     														//rellenarInfo(String, &infoArbol);
-    													 	compBoolPtr = crearNodo("<", exprAritPtr, crearHoja(&infoArbol), 0);	
+    													 	compBoolPtr = crearNodo("<", exprAritPtr, crearHoja(&infoArbol), -1);	
     												 	}
     |MAYOR                                              {
 															printf("R 50: comp_bool => MAYOR\n");
@@ -666,12 +666,12 @@ lista_exp_coma:
     lista_exp_coma COMA expresion_aritmetica            {
 															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
 															if(esHoja(terminoFilterPtr->izq)){
-																bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der, 0), 0);
+																bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der, -1), -1);
 															} else {
 																bloquePtr = crearNodo("CUERPO", bloquePtr,
 																	crearNodo(compBoolPtr->info.cadena, //AND u OR
-																		crearNodo(terminoFilterPtr->izq->info.cadena, exprAritPtr, terminoFilterPtr->izq->der, 0),
-																		crearNodo(terminoFilterPtr->der->info.cadena, exprAritPtr, terminoFilterPtr->der->der, 0), 0), 0);
+																		crearNodo(terminoFilterPtr->izq->info.cadena, exprAritPtr, terminoFilterPtr->izq->der, -1),
+																		crearNodo(terminoFilterPtr->der->info.cadena, exprAritPtr, terminoFilterPtr->der->der, -1), -1), -1);
 															}	
 														}
     | expresion_aritmetica                              {
