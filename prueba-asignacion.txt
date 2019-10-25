@@ -1,0 +1,11 @@
+START
+	VAR
+		[INTEGER, FLOAT, STRING]:[numero1, real1, cadena1]
+		[INTEGER, FLOAT, FLOAT]:[numero2, real2, real3]
+		[INTEGER, INTEGER]:[numero3, numero4]
+		[STRING]:[cadena2]
+	ENDVAR
+
+	cadena2 := FILTER(_>(4 + numero1), [1,2,4,6])
+
+END
