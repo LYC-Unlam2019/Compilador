@@ -97,6 +97,15 @@
 	tNodo* optimizarDIV(tNodo* izquierda, tNodo* derecha);
 	tNodo* optimizarMOD(tNodo* izquierda, tNodo* derecha);
 
+	/* ASSEMBLER */
+	void generarAssembler(tArbol *pa);
+	void sumaAssembler(tArbol *pa);
+	void restAssembler(tArbol *pa);
+	void multiplicacionAssembler(tArbol *pa);
+	void divisionAssembler(tArbol *pa);
+	void asignacionAssembler(tArbol *pa);
+
+
 	int yystopparser=0;
 	FILE  *yyin;
 
@@ -169,6 +178,8 @@
 	t_pila	progPilaPtr;
 	t_pila	expLogPilaPtr;
 	t_pila  exprAritPilaPtr;
+
+	int contAssembler = 0;
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -226,6 +237,7 @@ programa:
 															grabarTabla();
 														
 															mostrar_grafico(&bloquePtr,5);
+															generarAssembler($bloquePtr);
 														};
 
  /* Declaracion de variables */
@@ -1378,4 +1390,50 @@ tNodo* optimizarMOD(tNodo* izquierda, tNodo* derecha){
 		tipoDatoCalculado = calcularTipoDatoResultante("MOD", izquierda->info.tipoDato, derecha->info.tipoDato);
 		return crearNodo("-", izquierda, crearNodo("*", crearNodo("/", izquierda, derecha, tipoDatoCalculado), derecha, tipoDatoCalculado), tipoDatoCalculado);
 	}
+}
+
+void generarAssembler(tArbol *pa){
+
+
+
+	if(!*pa)
+		return;
+	
+	generarAssembler(&(*pa)->izq);
+	generarAssembler(&(*pa)->der);
+
+	if((*pa)->der != NULL || (*pa)->izq != NULL){ 
+		if(!strcmp((*pa)->info.cadena, "+")){
+			sumaAssembler();
+		}
+		if(!strcmp((*pa)->info.cadena, "-")){
+			restaAssembler();
+		}
+		if(!strcmp((*pa)->info.cadena, "*")){
+			multiplicacionAssembler();
+		}
+		if(!strcmp((*pa)->info.cadena, "/")){
+			divisionAssembler();
+		}
+		if(!strcmp((*pa)->info.cadena, "=")){
+			asignacionAssembler();
+		}
+	}
+
+
+}
+
+void sumaAssembler(tArbol *pa){
+	FILE* arch = fopen("assembler.txt", "w+");
+	if(!arch){
+		printf("No se pudo crear el archivo assembler.txt\n");
+		return;
+	}
+
+	fprintf(arch, "MOV R1, ", ,"\n");
+	fprintf(arch, "ADD R1, ", ,"\n");
+	
+
+
+	fclose(arch);
 }
