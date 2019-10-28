@@ -100,10 +100,10 @@
 	/* ASSEMBLER */
 	void generarAssembler(tArbol *pa);
 	void sumaAssembler(tArbol *pa);
-	void restAssembler(tArbol *pa);
+	/* void restAssembler(tArbol *pa);
 	void multiplicacionAssembler(tArbol *pa);
 	void divisionAssembler(tArbol *pa);
-	void asignacionAssembler(tArbol *pa);
+	void asignacionAssembler(tArbol *pa);*/
 
 
 	int yystopparser=0;
@@ -180,6 +180,7 @@
 	t_pila  exprAritPilaPtr;
 
 	int contAssembler = 0;
+	char auxAssembler[10];
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -237,7 +238,8 @@ programa:
 															grabarTabla();
 														
 															mostrar_grafico(&bloquePtr,5);
-															generarAssembler($bloquePtr);
+															generarAssembler(&bloquePtr);
+															mostrar_grafico(&bloquePtr,5);
 														};
 
  /* Declaracion de variables */
@@ -1394,7 +1396,9 @@ tNodo* optimizarMOD(tNodo* izquierda, tNodo* derecha){
 
 void generarAssembler(tArbol *pa){
 
+	printf("entre a generar");
 
+	char aux[10];
 
 	if(!*pa)
 		return;
@@ -1404,19 +1408,23 @@ void generarAssembler(tArbol *pa){
 
 	if((*pa)->der != NULL || (*pa)->izq != NULL){ 
 		if(!strcmp((*pa)->info.cadena, "+")){
-			sumaAssembler();
+			sumaAssembler(&(*pa));
+			(*pa)->der = NULL;
+			(*pa)->izq = NULL;
+			strcpy((*pa)->info.cadena,auxAssembler);
+			(*pa)->info.tipoDato = 3;
 		}
 		if(!strcmp((*pa)->info.cadena, "-")){
-			restaAssembler();
+			//restaAssembler();
 		}
 		if(!strcmp((*pa)->info.cadena, "*")){
-			multiplicacionAssembler();
+			//multiplicacionAssembler();
 		}
 		if(!strcmp((*pa)->info.cadena, "/")){
-			divisionAssembler();
+			//divisionAssembler();
 		}
 		if(!strcmp((*pa)->info.cadena, "=")){
-			asignacionAssembler();
+			//strcpy(aux, asignacionAssembler();
 		}
 	}
 
@@ -1424,16 +1432,32 @@ void generarAssembler(tArbol *pa){
 }
 
 void sumaAssembler(tArbol *pa){
-	FILE* arch = fopen("assembler.txt", "w+");
+	printf("entre a suma");
+	FILE* arch = fopen("assembler.txt", "a+");
 	if(!arch){
 		printf("No se pudo crear el archivo assembler.txt\n");
 		return;
 	}
+	char aux[10];
+	char aux2[10];
 
-	fprintf(arch, "MOV R1, ", ,"\n");
-	fprintf(arch, "ADD R1, ", ,"\n");
 	
+
+	//if ( ((*pa)->izq->info.entero != 0) && (*pa)->der->info.entero != 0)){
+		fprintf(arch, "%s%d\n", "MOV R1, " , (*pa)->izq->info.entero);
+		fprintf(arch, "%s%s\n", "ADD R1, ", (*pa)->der->info.cadena);
+		contAssembler++;
+		strcpy(aux, "@aux");
+		sprintf(aux2, "%d",contAssembler );
+		strcat(aux, aux2);
+		fprintf(arch, "%s%s%s\n", "MOV ", aux, ", R1");
+
+	//}
+	
+	strcpy(auxAssembler, aux);
 
 
 	fclose(arch);
+
+	
 }
