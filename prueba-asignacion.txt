@@ -8,5 +8,9 @@ START
 
 	numero2 := 2 + numero1
 
+	IF numero1 > numero2 THEN
+		numero1 := 1
+	ENDIF
+
 
 END
