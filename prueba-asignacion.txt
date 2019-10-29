@@ -6,6 +6,7 @@ START
 		[STRING]:[cadena2]
 	ENDVAR
 
-	numero1 := 9 MOD 2
+	numero2 := 2 + numero1
+
 
 END

@@ -97,6 +97,20 @@
 	tNodo* optimizarDIV(tNodo* izquierda, tNodo* derecha);
 	tNodo* optimizarMOD(tNodo* izquierda, tNodo* derecha);
 
+	/* ASSEMBLER */
+	void generarAssembler(tArbol *pa, FILE* arch);
+	void operacionAssembler(tArbol *pa, FILE* arch, char* operacion);
+	void asignacionAssembler(tArbol *pa, FILE* arch);
+	void comparacionAssembler(tArbol *pa, FILE* arch, char* comparador);
+	/* void restAssembler(tArbol *pa);
+	void multiplicacionAssembler(tArbol *pa);
+	void divisionAssembler(tArbol *pa);
+	*/
+
+	FILE* abrirArchivoAssembler();
+	void cerrarArchivoAssembler(FILE* archivoAssembler);
+
+
 	int yystopparser=0;
 	FILE  *yyin;
 
@@ -123,6 +137,16 @@
 		{2,2}
 	};
 
+	/*ESTRUCTURA ASSEMBLER*/
+		typedef struct {
+			char operacion[10];
+			char reg1[10];
+			char reg2[10];
+		} ASM;
+
+	ASM vectorASM[200];
+	int vectorASM_IDX = 0;
+
 	/* Cosas para la declaracion de variables y la tabla de simbolos */
 	int varADeclarar1 = 1;
 	int cantVarsADeclarar = 0;
@@ -133,6 +157,7 @@
 	int processingFilter = 0;
 	char* aux;
 	int tipoDatoCalculado;
+	FILE* archivoAssembler;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -169,6 +194,9 @@
 	t_pila	progPilaPtr;
 	t_pila	expLogPilaPtr;
 	t_pila  exprAritPilaPtr;
+
+	int contAssembler = 0;
+	char auxAssembler[10];
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -224,8 +252,12 @@ programa:
 															
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
-														
+															archivoAssembler = abrirArchivoAssembler();
 															mostrar_grafico(&bloquePtr,5);
+															generarAssembler(&bloquePtr, archivoAssembler);
+															puts("\n\n------------------------------\n\n");
+															mostrar_grafico(&bloquePtr,5);
+															cerrarArchivoAssembler(archivoAssembler);
 														};
 
  /* Declaracion de variables */
@@ -1378,4 +1410,178 @@ tNodo* optimizarMOD(tNodo* izquierda, tNodo* derecha){
 		tipoDatoCalculado = calcularTipoDatoResultante("MOD", izquierda->info.tipoDato, derecha->info.tipoDato);
 		return crearNodo("-", izquierda, crearNodo("*", crearNodo("/", izquierda, derecha, tipoDatoCalculado), derecha, tipoDatoCalculado), tipoDatoCalculado);
 	}
+}
+
+FILE* abrirArchivoAssembler(){
+	FILE* arch = fopen("assembler.txt", "w+");
+	if(!arch){
+		printf("No se pudo crear el archivo assembler.txt\n");
+		return NULL;
+	}
+
+	return arch;
+}
+
+void cerrarArchivoAssembler(FILE* arch){
+	fclose(arch);
+}
+
+void generarAssembler(tArbol *pa, FILE* arch){
+
+	char aux[10];
+
+	if(!*pa)
+		return;
+	
+	generarAssembler(&(*pa)->izq, arch);
+	generarAssembler(&(*pa)->der, arch);
+
+	if((*pa)->der != NULL || (*pa)->izq != NULL){ 
+		if(!strcmp((*pa)->info.cadena, "+")){
+			operacionAssembler(&(*pa), arch, "ADD");
+			(*pa)->der = NULL;
+			(*pa)->izq = NULL;
+			strcpy((*pa)->info.cadena,auxAssembler);
+			(*pa)->info.entero = 0;
+			(*pa)->info.flotante = 0;
+		} else if(!strcmp((*pa)->info.cadena, "-")){
+			operacionAssembler(&(*pa), arch, "SUB");
+			(*pa)->der = NULL;
+			(*pa)->izq = NULL;
+			strcpy((*pa)->info.cadena,auxAssembler);
+			(*pa)->info.entero = 0;
+			(*pa)->info.flotante = 0;
+		} else if(!strcmp((*pa)->info.cadena, "*")){
+			operacionAssembler(&(*pa), arch, "MUL");
+			(*pa)->der = NULL;
+			(*pa)->izq = NULL;
+			strcpy((*pa)->info.cadena,auxAssembler);
+			(*pa)->info.entero = 0;
+			(*pa)->info.flotante = 0;
+		} else if(!strcmp((*pa)->info.cadena, "/")){
+			operacionAssembler(&(*pa), arch, "DIV");
+			(*pa)->der = NULL;
+			(*pa)->izq = NULL;
+			strcpy((*pa)->info.cadena,auxAssembler);
+			(*pa)->info.entero = 0;
+			(*pa)->info.flotante = 0;
+		} else if(!strcmp((*pa)->info.cadena, ":=")){
+			//asignacionAssembler(&(*pa), arch);
+		} else if(!strcmp((*pa)->info.cadena, ">")){
+			comparacionAssembler(&(*pa), arch, ">");
+		} else if(!strcmp((*pa)->info.cadena, "IF")){
+			fprintf(arch, "%s\n", "sarasa");
+		} else if(!strcmp((*pa)->info.cadena, "ELSE")){
+			fprintf(arch, "%s\n", "JI");
+			fprintf(arch, "%s\n", "sarasa");
+		}
+	}
+
+	int i = 0;
+	for(i=0; i < vectorASM_IDX; i++){
+		fprintf(arch, "%s %s, %s\n", vectorASM[i].operacion, vectorASM[i].reg1, vectorASM[i].reg2);
+	}
+
+
+}
+
+void operacionAssembler(tArbol *pa, FILE* arch, char* operacion){
+	
+	char aux[10];
+	char aux2[10];
+	ASM instruccion;
+
+	if( ((*pa)->izq->info.entero != 0)){
+		strcpy(instruccion.operacion, "MOV");
+		strcpy(instruccion.reg1, "R1");
+		sprintf(instruccion.reg2,"%d", (*pa)->izq->info.entero);
+		vectorASM[vectorASM_IDX] = instruccion;
+		vectorASM_IDX++;
+	}
+		//fprintf(arch, "%s%d\n", "MOV R1, " , (*pa)->izq->info.entero);
+	else if ( ((*pa)->izq->info.flotante != 0))
+		fprintf(arch, "%s%f\n", "MOV R1, " , (*pa)->izq->info.flotante);
+	else{
+		if((*pa)->izq->info.cadena[0] == '@')
+			fprintf(arch, "%s%s\n", "MOV R1, " , (*pa)->izq->info.cadena);
+		else
+			fprintf(arch, "%s%s\n", "MOV R1, _" , (*pa)->izq->info.cadena);
+	}
+
+	
+	if ( ((*pa)->der->info.entero != 0))
+		fprintf(arch, "%s%s%d\n", operacion, " R1, " , (*pa)->der->info.entero);
+	else if ( ((*pa)->der->info.flotante != 0))
+		fprintf(arch, "%s%s%f\n", operacion, " R1, " , (*pa)->der->info.flotante);
+	else {
+		//TODO acordarse del _
+		strcpy(instruccion.operacion, operacion);
+		strcpy(instruccion.reg1, "R1");
+		strcpy(instruccion.reg2, (*pa)->der->info.cadena);
+		vectorASM[vectorASM_IDX] = instruccion;
+		vectorASM_IDX++;
+	}
+
+		//fprintf(arch, "%s%s%s\n", operacion, " R1, _" , (*pa)->der->info.cadena);
+	
+	contAssembler++;
+	strcpy(aux, "@aux");
+	sprintf(aux2, "%d",contAssembler );
+	strcat(aux, aux2);
+	strcpy(instruccion.operacion, "MOV");
+	strcpy(instruccion.reg1, aux);
+	strcpy(instruccion.reg2, "R1");
+	vectorASM[vectorASM_IDX] = instruccion;
+	vectorASM_IDX++;
+	//fprintf(arch, "%s%s%s\n", "MOV ", aux, ", R1");
+
+	strcpy(auxAssembler, aux);
+	
+}
+
+void comparacionAssembler(tArbol *pa, FILE* arch, char* comparador){
+	
+	if( ((*pa)->izq->info.entero != 0))
+		fprintf(arch, "%s%d\n", "MOV R1, " , (*pa)->izq->info.entero);
+	else if ( ((*pa)->izq->info.flotante != 0))
+		fprintf(arch, "%s%f\n", "MOV R1, " , (*pa)->izq->info.flotante);
+	else{
+		if((*pa)->izq->info.cadena[0] == '@')
+			fprintf(arch, "%s%s\n", "MOV R1, " , (*pa)->izq->info.cadena);
+		else
+			fprintf(arch, "%s%s\n", "MOV R1, _" , (*pa)->izq->info.cadena);
+	}
+
+	
+	if ( ((*pa)->der->info.entero != 0))
+		fprintf(arch, "%s%d\n", "CMP R1, " , (*pa)->der->info.entero);
+	else if ( ((*pa)->der->info.flotante != 0))
+		fprintf(arch, "%s%f\n", "CMP R1, " , (*pa)->der->info.flotante);
+	else 
+		fprintf(arch, "%s%s\n", "CMP R1, _" , (*pa)->der->info.cadena);
+	
+	if(comparador == ">"){
+		fprintf(arch, "%s\n", "JLE sarasa");
+	}
+	
+	
+}
+
+void asignacionAssembler(tArbol *pa, FILE* arch){
+
+	if ( ((*pa)->der->info.entero != 0))
+		fprintf(arch, "%s%d\n", "MOV R1, " , (*pa)->der->info.entero);
+	else if ( ((*pa)->der->info.flotante != 0))
+		fprintf(arch, "%s%f\n", "MOV R1, " , (*pa)->der->info.flotante);
+	else{
+		fprintf(arch, "%s%s\n", "MOV R1, " , (*pa)->der->info.cadena);
+	}
+
+	if ( ((*pa)->izq->info.entero != 0))
+		fprintf(arch, "%s%d%s\n", "MOV _" , (*pa)->izq->info.entero, ", R1");
+	else if ( ((*pa)->izq->info.flotante != 0))
+		fprintf(arch, "%s%f%s\n", "MOV _" , (*pa)->izq->info.flotante, ", R1");
+	else 
+		fprintf(arch, "%s%s%s\n", "MOV _" , (*pa)->izq->info.cadena, ", R1");
+
 }

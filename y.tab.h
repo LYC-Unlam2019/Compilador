@@ -136,7 +136,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 175 "Sintactico.y"
+#line 203 "Sintactico.y"
 {
 
 	int valor_int;
