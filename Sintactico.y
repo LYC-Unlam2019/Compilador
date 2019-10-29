@@ -101,6 +101,7 @@
 	void generarAssembler(tArbol *pa, FILE* arch);
 	void operacionAssembler(tArbol *pa, FILE* arch, char* operacion);
 	void asignacionAssembler(tArbol *pa, FILE* arch);
+	void comparacionAssembler(tArbol *pa, FILE* arch, char* comparador);
 	/* void restAssembler(tArbol *pa);
 	void multiplicacionAssembler(tArbol *pa);
 	void divisionAssembler(tArbol *pa);
@@ -1456,6 +1457,8 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			(*pa)->info.flotante = 0;
 		} else if(!strcmp((*pa)->info.cadena, ":=")){
 			asignacionAssembler(&(*pa), arch);
+		} else if(!strcmp((*pa)->info.cadena, ">")){
+			comparacionAssembler(&(*pa), arch, "CMP");
 		}
 	}
 
@@ -1489,6 +1492,40 @@ void operacionAssembler(tArbol *pa, FILE* arch, char* operacion){
 	contAssembler++;
 	strcpy(aux, "@aux");
 	sprintf(aux2, "%d",contAssembler );
+	strcat(aux, aux2);
+	fprintf(arch, "%s%s%s\n", "MOV ", aux, ", R1");
+
+	strcpy(auxAssembler, aux);
+	
+}
+
+void comparacionAssembler(tArbol *pa, FILE* arch, char* comparador){
+	
+	char aux[10];
+	char aux2[10];
+
+	if ( ((*pa)->izq->info.entero != 0))
+		fprintf(arch, "%s%d\n", "MOV R1, " , (*pa)->izq->info.entero);
+	else if ( ((*pa)->izq->info.flotante != 0))
+		fprintf(arch, "%s%f\n", "MOV R1, " , (*pa)->izq->info.flotante);
+	else{
+		if((*pa)->izq->info.cadena[0] == '@')
+			fprintf(arch, "%s%s\n", "MOV R1, " , (*pa)->izq->info.cadena);
+		else
+			fprintf(arch, "%s%s\n", "MOV R1, _" , (*pa)->izq->info.cadena);
+	}
+
+	
+	if ( ((*pa)->der->info.entero != 0))
+		fprintf(arch, "%s%s%d\n", comparador, " R1, " , (*pa)->der->info.entero);
+	else if ( ((*pa)->der->info.flotante != 0))
+		fprintf(arch, "%s%s%f\n", comparador, " R1, " , (*pa)->der->info.flotante);
+	else 
+		fprintf(arch, "%s%s%s\n", comparador, " R1, _" , (*pa)->der->info.cadena);
+	
+	contAssembler++;
+	strcpy(aux, "@aux");
+	sprintf(aux2, "%d", contAssembler);
 	strcat(aux, aux2);
 	fprintf(arch, "%s%s%s\n", "MOV ", aux, ", R1");
 
