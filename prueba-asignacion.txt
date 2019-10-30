@@ -6,11 +6,12 @@ START
 		[STRING]:[cadena2]
 	ENDVAR
 
-	numero2 := 2 + numero1
-
-	IF numero1 > numero2 THEN
-		numero1 := 1
-	ENDIF
-
+	REPEAT numero1 > numero2 
+		IF numero1 > numero2 AND numero2 == 3 THEN
+			numero2 := 1
+		ELSE
+			numero1 := 2
+		ENDIF
+	ENDREPEAT
 
 END
