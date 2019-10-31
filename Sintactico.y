@@ -213,10 +213,15 @@
 	t_pila  exprAritPilaPtr;
 
 	t_pila_asm pilaAssembler;
-	t_pila_asm pilaCondicionAssembler;
+	t_pila_asm pilaCondicionIFAssembler;
+	t_pila_asm pilaCondicionREPEATAssembler;
+	t_pila_asm pilaElseProcesados;
 
 	int contAssembler = 0;
 	char auxAssembler[10];
+
+	int repeatFlag = 0;
+	int ifFlag = 0;
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -782,7 +787,9 @@ int main(int argc,char *argv[]){
 	crear_pila(&expLogPilaPtr);
 	crear_pila(&exprAritPilaPtr);
 	crear_pila_asm(&pilaAssembler);
-	crear_pila_asm(&pilaCondicionAssembler);														
+	crear_pila_asm(&pilaCondicionIFAssembler);
+	crear_pila_asm(&pilaCondicionREPEATAssembler);
+	crear_pila_asm(&pilaElseProcesados);														
 	yyparse();
   	fclose(yyin);
   }
@@ -1260,7 +1267,7 @@ int poner_en_pila_asm(t_pila_asm *pp, int pi){
 int sacar_de_pila_asm(t_pila_asm *pp){
 	if( pp->tope == -1){
 		printf("Pila vacia\n");
-		return -1000;
+		return -1;
 	}
 	int result;
 	result = pp->vec[pp->tope];
@@ -1509,6 +1516,10 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			poner_en_pila_asm(&pilaAssembler, vectorASM_IDX);
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
+
+			repeatFlag = 1;
+		} else if(!strcmp((*pa)->info.cadena, "IF")){
+			ifFlag = 1;
 		}
 	}
 
@@ -1517,20 +1528,6 @@ void generarAssembler(tArbol *pa, FILE* arch){
 	
 	if((*pa)->der != NULL || (*pa)->izq != NULL){ 
 		if(!strcmp((*pa)->info.cadena, "ELSE")){
-			int pos_condicion;
-			int pos_condicion_2 = -1;
-			int tipo_condicion;
-
-			if(pila_vacia(&pilaCondicionAssembler)){
-				pos_condicion = sacar_de_pila_asm(&pilaAssembler);
-			} else {
-				tipo_condicion = sacar_de_pila_asm(&pilaCondicionAssembler);
-				if(tipo_condicion == AND){
-					pos_condicion = sacar_de_pila_asm(&pilaAssembler);
-					pos_condicion_2 = sacar_de_pila_asm(&pilaAssembler);
-				}
-			}
-
 			strcpy(instruccion.operacion, "JMP");
 			strcpy(instruccion.reg1, "");
 			strcpy(instruccion.reg2, "");
@@ -1539,17 +1536,15 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
-			
-			strcpy(vectorASM[pos_condicion].reg1, "else");
-			if(pos_condicion_2 != -1){
-				strcpy(vectorASM[pos_condicion_2].reg1, "else");
-			}
 
 			strcpy(instruccion.operacion, "else:");
 			strcpy(instruccion.reg1, "");
 			strcpy(instruccion.reg2, "");
+
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
+
+			poner_en_pila_asm(&pilaElseProcesados, 1);
 		}
 	}
 
@@ -1559,32 +1554,12 @@ void generarAssembler(tArbol *pa, FILE* arch){
 	if((*pa)->der != NULL || (*pa)->izq != NULL){ 
 		if(!strcmp((*pa)->info.cadena, "+")){
 			operacionAssembler(&(*pa), "ADD");
-			(*pa)->der = NULL;
-			(*pa)->izq = NULL;
-			strcpy((*pa)->info.cadena,auxAssembler);
-			(*pa)->info.entero = 0;
-			(*pa)->info.flotante = 0;
 		} else if(!strcmp((*pa)->info.cadena, "-")){
 			operacionAssembler(&(*pa), "SUB");
-			(*pa)->der = NULL;
-			(*pa)->izq = NULL;
-			strcpy((*pa)->info.cadena,auxAssembler);
-			(*pa)->info.entero = 0;
-			(*pa)->info.flotante = 0;
 		} else if(!strcmp((*pa)->info.cadena, "*")){
 			operacionAssembler(&(*pa), "MUL");
-			(*pa)->der = NULL;
-			(*pa)->izq = NULL;
-			strcpy((*pa)->info.cadena,auxAssembler);
-			(*pa)->info.entero = 0;
-			(*pa)->info.flotante = 0;
 		} else if(!strcmp((*pa)->info.cadena, "/")){
 			operacionAssembler(&(*pa), "DIV");
-			(*pa)->der = NULL;
-			(*pa)->izq = NULL;
-			strcpy((*pa)->info.cadena,auxAssembler);
-			(*pa)->info.entero = 0;
-			(*pa)->info.flotante = 0;
 		} else if(!strcmp((*pa)->info.cadena, ":=")){
 			asignacionAssembler(&(*pa));
 		} else if(!strcmp((*pa)->info.cadena, ">")){
@@ -1602,6 +1577,7 @@ void generarAssembler(tArbol *pa, FILE* arch){
 		} else if(!strcmp((*pa)->info.cadena, "IF")){
 			int pos_condicion;
 			int tipo_condicion;
+			int jump_else;
 			
 			strcpy(instruccion.operacion, "endif:");
 			strcpy(instruccion.reg1, "");
@@ -1610,23 +1586,60 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
 
-			if(pila_vacia(&pilaCondicionAssembler)){
-				pos_condicion = sacar_de_pila_asm(&pilaAssembler);
-				strcpy(vectorASM[pos_condicion].reg1, "endif");
+			//Si la pila de else procesados está vacía, significa que es un if sin else
+			if(!pila_vacia_asm(&pilaElseProcesados)){
+				if(pila_vacia(&pilaCondicionIFAssembler)){
+					jump_else = sacar_de_pila_asm(&pilaAssembler);
+					strcpy(vectorASM[jump_else].reg1, "endif");
+					pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+					strcpy(vectorASM[pos_condicion].reg1, "else");
+				} else {
+					tipo_condicion = sacar_de_pila_asm(&pilaCondicionIFAssembler);
+					if(tipo_condicion == AND){
+						pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+						strcpy(vectorASM[pos_condicion].reg1, "else");
+						pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+						strcpy(vectorASM[pos_condicion].reg1, "else");
+					}
+				}
+				sacar_de_pila_asm(&pilaElseProcesados);
 			} else {
-				tipo_condicion = sacar_de_pila_asm(&pilaCondicionAssembler);
-				if(tipo_condicion == AND){
+				if(pila_vacia_asm(&pilaCondicionIFAssembler)){
 					pos_condicion = sacar_de_pila_asm(&pilaAssembler);
 					strcpy(vectorASM[pos_condicion].reg1, "endif");
-					pos_condicion = sacar_de_pila_asm(&pilaAssembler);
-					strcpy(vectorASM[pos_condicion].reg1, "endif");
+				} else {
+					tipo_condicion = sacar_de_pila_asm(&pilaCondicionIFAssembler);
+					if(tipo_condicion == AND){
+						pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+						strcpy(vectorASM[pos_condicion].reg1, "endif");
+						pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+						strcpy(vectorASM[pos_condicion].reg1, "endif");
+					}
 				}
 			}
 			
+			
+			
 		} else if(!strcmp((*pa)->info.cadena, "REPEAT")){
-			int pos_end = sacar_de_pila_asm(&pilaAssembler);
-			int pos_ini_repeat = sacar_de_pila_asm(&pilaAssembler);
+			int pos_condicion;
+			int pos_ini_repeat;
+			int tipo_condicion;
+			
+			if(pila_vacia_asm(&pilaCondicionREPEATAssembler)){
+				pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+				strcpy(vectorASM[pos_condicion].reg1, "endrepeat");
+			} else {
+				tipo_condicion = sacar_de_pila_asm(&pilaCondicionREPEATAssembler);
+				if(tipo_condicion == AND){
+					pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+					strcpy(vectorASM[pos_condicion].reg1, "endrepeat");
+					pos_condicion = sacar_de_pila_asm(&pilaAssembler);
+					strcpy(vectorASM[pos_condicion].reg1, "endrepeat");
+				}
+			}
 
+			pos_ini_repeat = sacar_de_pila_asm(&pilaAssembler);
+			
 			strcpy(instruccion.operacion, "JMP");
 			strcpy(instruccion.reg1, vectorASM[pos_ini_repeat].operacion);
 			strcpy(instruccion.reg2, "");
@@ -1641,12 +1654,23 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
 			
-			strcpy(vectorASM[pos_end].reg1, "endrepeat");
 		} else if(!strcmp((*pa)->info.cadena, "AND")){
-			poner_en_pila_asm(&pilaCondicionAssembler, AND);
-
+			if(repeatFlag == 1){
+				poner_en_pila_asm(&pilaCondicionREPEATAssembler, AND);
+				repeatFlag = 0;
+			} else if (ifFlag == 1){
+				poner_en_pila_asm(&pilaCondicionIFAssembler, AND);
+				ifFlag = 0;
+			}
+			
 		} else if(!strcmp((*pa)->info.cadena, "OR")){
-			poner_en_pila_asm(&pilaCondicionAssembler, OR);
+			if(repeatFlag == 1){
+				poner_en_pila_asm(&pilaCondicionREPEATAssembler, OR);
+				repeatFlag = 0;
+			} else if (ifFlag == 1){
+				poner_en_pila_asm(&pilaCondicionIFAssembler, OR);
+				ifFlag = 0;
+			}
 		}
 	}
 }
@@ -1700,7 +1724,13 @@ void operacionAssembler(tArbol *pa, char* operacion){
 	strcpy(auxAssembler, aux);
 
 	vectorASM[vectorASM_IDX] = instruccion;
-	vectorASM_IDX++;	
+	vectorASM_IDX++;
+
+	(*pa)->der = NULL;
+	(*pa)->izq = NULL;
+	strcpy((*pa)->info.cadena,auxAssembler);
+	(*pa)->info.entero = 0;
+	(*pa)->info.flotante = 0;	
 }
 
 void comparacionAssembler(tArbol *pa, char* comparador){
