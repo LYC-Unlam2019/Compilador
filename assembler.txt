@@ -1,0 +1,14 @@
+FLD _numero3
+FLD _numero2
+FMUL
+FSTP @aux1
+FFREE
+MOV R1, @aux1
+MOV _numero1, R1
+FLD _numero3
+FLD _numero2
+FADD
+FSTP @aux2
+FFREE
+MOV R1, @aux2
+MOV _numero1, R1

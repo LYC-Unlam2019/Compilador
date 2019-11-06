@@ -24,6 +24,7 @@
 void cota_error(char* mensaje);
 float formateoNumero(char* num);
 float my_atof(const char *s);
+
 %}
 
 %option noyywrap
@@ -153,12 +154,12 @@ COMENTARIO {INICIO_COMENTARIO}{CADENA}*{FIN_COMENTARIO}
                         
 {CONSTANTE_REAL}  		  {
 							char* p = strchr(yytext,'.');
+		                    printf("%s\n", p?p:"No" );
 		                    //LO ACOTE A SEIS DIGITOS 
 		                    if(atof(yytext)<=-3.40282347e+38F || atof(yytext)>=3.40282347e+38F || (p && strlen(p) > 6 )){
 									cota_error("El valor de un flotante excede el limite permitido.");
 		                 	}
 		                    	yylval.valor_float = formateoNumero(yytext);
-								printf("\n\n EN LEXICO: %f", yylval.valor_float);
 		                    	return CTE_FLOAT;                    
 		        
 		                  }  
@@ -203,9 +204,7 @@ float formateoNumero(char* num){
 char format [100];
 char aux [100];
 int i = 0, j = 0, decimales = 0;
-
 strcpy(aux,num);
-
   if(aux[i] == '.'){
 	format[j] = '0';
 	j ++;
@@ -230,7 +229,7 @@ strcpy(aux,num);
 			}
 			while (decimales ++ < 6){
 				format[j] = '\0';
-				j++;
+				j++;																																																																																																							
 			}
 	   		 format[j] = '\0';  
 		  }
@@ -238,8 +237,7 @@ strcpy(aux,num);
 	  return my_atof(format) ;
 }
 
-float my_atof(const char *s)
-{
+float my_atof(const char *s){
 	int n1=0,n2=0,i,t,c=1;
 	float f1,f2;
 	for(i=0;s[i]!='.';++i)

@@ -1,0 +1,33 @@
+START
+	VAR
+		[INTEGER, FLOAT, STRING]:[numero1, real1, cadena1]
+		[INTEGER, FLOAT, FLOAT]:[numero2, real2, real3]
+		[INTEGER, INTEGER]:[numero3, numero4]
+		[STRING]:[cadena2]
+	ENDVAR
+
+	numero4:=1*((numero1+10) MOD (3 DIV 2)) + FILTER(_== (4 + numero2) OR _<=6.5, [1,2,3,4,5,6,7,8,9])
+
+	--/numero1 := FILTER(_>(4 + numero1) AND _<=6.5 , [1,2,4,6])/--
+
+	--/numero4:=1*((numero1+10) MOD (3 DIV 2))/--
+	
+
+	--/numero1:=2/--
+
+	--/FILTER(_>(4 + numero1) AND _<=6.5 , [1,2,4,6])/--
+
+	--/READ numero3/--
+	--/numero2:=6/--
+
+    	--/Ejemplo MOD/DIV/--
+	--/(4+3) DIV (3*2)/--
+	--/numero1 := (4 + 2 * 4) + (5 + 6 * 2)/--
+	--/numero1 := (4 + 2 * 4) - (5 + 6 * 2)/--
+	--/(4+3) MOD (3*2)/--
+	--/numero1 := (4 + 2 * 4) * (5 + 6 * 2) + ( 9 * 5 * 8)/--
+	--/numero1 := 4 + (2 + 1) + 1/--
+
+	--/READ numero3/--
+
+END

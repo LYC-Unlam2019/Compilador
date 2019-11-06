@@ -3,12 +3,16 @@ START
 		[INTEGER, FLOAT, STRING]:[numero1, real1, cadena1]
 		[INTEGER, FLOAT, FLOAT]:[numero2, real2, real3]
 		[INTEGER, INTEGER]:[numero3, numero4]
+		[STRING]:[cadena2]
 	ENDVAR
 
-	--/Prueba --/doble/-- comentario/--	
-	--/Ejemplo de asignaciones/--
-	numero1:=numero3 * numero2
-	numero1:=numero3 + numero2
+	REPEAT numero1 > numero2 AND numero1 != numero2
+		IF numero1 > numero2 THEN
+			numero2 := 1
+		ELSE
+			numero1 := 2
+		ENDIF
+	ENDREPEAT
 
 
 END
