@@ -73,7 +73,7 @@
 	void agregarVarATabla(char* nombre);
 	void agregarTiposDatosATabla(void);
 	void agregarCteATabla(int num);
-	void insertarEnTabla(int i);
+	void insertarEnTabla(char* nombre,int indice, int tipoDato);
 	void chequearVarEnTabla(char* nombre);
 	void compararTiposDeDatoASIG(int tdIzq, int tdDer, char* nombre);
 	void compararTiposDeDatoTL(int tdIzq, int tdDer, char* nombre);
@@ -850,14 +850,16 @@ void agregarTiposDatosATabla(){
 		tabla_simbolo[varADeclarar1 + i].tipo_dato = tipoDatoADeclarar[i];
 	}
 }
-void insertarEnTabla(int i){
+void insertarEnTabla(char* nombre,int indice, int tipoDato){
 FILE* arch = fopen("ts.txt", "a+");
 	if(!arch){
 		printf("No se pudo crear el archivo ts.txt\n");
 		return;
 	}
-fprintf(arch, "%-30s", &(tabla_simbolo[i].nombre) );
-switch (tabla_simbolo[i].tipo_dato){
+agregarVarATabla(nombre);
+tabla_simbolo[indice].tipo_dato = tipoDato;
+fprintf(arch, "%-30s", &(tabla_simbolo[indice].nombre) );
+switch (tipoDato){
 		case Float:
 			fprintf(arch, "|%-30s|%-30s|%-30s","FLOAT","--","--");
 			break;
@@ -868,13 +870,13 @@ switch (tabla_simbolo[i].tipo_dato){
 			fprintf(arch, "|%-30s|%-30s|%-30s","STRING","--","--");
 			break;
 		case CteFloat:
-			fprintf(arch, "|%-30s|%-30f|%-30s", "CTE_FLOAT",tabla_simbolo[i].valor_f,"--");
+			fprintf(arch, "|%-30s|%-30f|%-30s", "CTE_FLOAT",tabla_simbolo[indice].valor_f,"--");
 			break;
 		case CteInt:
-			fprintf(arch, "|%-30s|%-30d|%-30s", "CTE_INT",tabla_simbolo[i].valor_i,"--");
+			fprintf(arch, "|%-30s|%-30d|%-30s", "CTE_INT",tabla_simbolo[indice].valor_i,"--");
 			break;
 		case CteString:
-			fprintf(arch, "|%-30s|%-30s|%-30d", "CTE_STRING",&(tabla_simbolo[i].valor_s), tabla_simbolo[i].longitud);
+			fprintf(arch, "|%-30s|%-30s|%-30d", "CTE_STRING",&(tabla_simbolo[indice].valor_s), tabla_simbolo[indice].longitud);
 			break;
 		}
 
@@ -1522,6 +1524,28 @@ FILE* abrirArchivoAssembler(){
 
 void escribirArchivoAssembler(FILE* arch){
 	int i = 0;
+    int j = 0;
+	//ARMO LA CABECERA
+	fprintf(arch, "include macros2.asm\n");
+	fprintf(arch, "include number.asm\n");
+	fprintf(arch, ".MODEL	LARGE \n");
+	fprintf(arch, ".386\n");
+	fprintf(arch, ".STACK 200h \n");
+	fprintf(arch, ".DATA \n");
+	for(j=0; j < indice_tabla; j++){
+	   fprintf(arch, "%-30s\t\t\t%d\n",tabla_simbolo[j].nombre, tabla_simbolo[j].tipo_dato);
+	  
+	}
+	fprintf(arch, ".CODE \n");
+	fprintf(arch, "MAIN:\n");
+	fprintf(arch, "\n");
+    fprintf(arch, "\n");
+    fprintf(arch, "mov AX,@DATA 	;inicializa el segmento de datos\n");
+    fprintf(arch, "mov DS,AX \n");
+    fprintf(arch, "mov ES,AX \n");
+    fprintf(arch, "FNINIT \n");;
+    fprintf(arch, "\n");
+
 	for(i=0; i < vectorASM_IDX; i++){
 		if(strcmp(vectorASM[i].reg2, "") != 0){
 			fprintf(arch, "%s %s, %s\n", vectorASM[i].operacion, vectorASM[i].reg1, vectorASM[i].reg2);
@@ -1533,6 +1557,12 @@ void escribirArchivoAssembler(FILE* arch){
 			}
 		}
 	}
+
+
+	fprintf(arch, "\t mov AX, 4C00h \t ; Genera la interrupcion 21h\n");
+	fprintf(arch, "\t int 21h \t ; Genera la interrupcion 21h\n");
+	fprintf(arch, "END MAIN\n");
+	fclose(arch);
 }
 
 void cerrarArchivoAssembler(FILE* arch){
@@ -1722,16 +1752,20 @@ void operacionAssembler(tArbol *pa, char* operacion){
 	char aux2[10];
 	ASM instruccion;
 
-	//strcpy(instruccion.operacion, "MOV");
-	//strcpy(instruccion.reg1, "R1");
-	if( ((*pa)->izq->info.entero != 0)){
+	if( ((*pa)->izq->info.tipoDato == Integer)||((*pa)->izq->info.tipoDato == CteInt)){
 		strcpy(instruccion.operacion,"FILD");
-		sprintf(instruccion.reg1,"%d", (*pa)->izq->info.entero);
-	} else if ( ((*pa)->izq->info.flotante != 0)){
+	} else if (((*pa)->izq->info.tipoDato == Float)||((*pa)->izq->info.tipoDato == CteFloat)){
 		strcpy(instruccion.operacion,"FLD");
+	} else{
+		strcpy(instruccion.operacion,"STRING");
+	}
+	
+	
+	if( ((*pa)->izq->info.entero != 0)){		
+		sprintf(instruccion.reg1,"%d", (*pa)->izq->info.entero);
+	} else if ( ((*pa)->izq->info.flotante != 0)){		
 		sprintf(instruccion.reg1,"%f", (*pa)->izq->info.flotante);
 	} else {
-		strcpy(instruccion.operacion,"FLD");
 		if((*pa)->izq->info.cadena[0] == '@'){
 			strcpy(instruccion.reg1, (*pa)->izq->info.cadena);
 		} else {
@@ -1742,16 +1776,19 @@ void operacionAssembler(tArbol *pa, char* operacion){
 	vectorASM[vectorASM_IDX] = instruccion;
 	vectorASM_IDX++;
 
-	//strcpy(instruccion.operacion, operacion);
-	//strcpy(instruccion.reg1, "R1");
-	if ( ((*pa)->der->info.entero != 0)){
+	if( ((*pa)->der->info.tipoDato == Integer)||((*pa)->der->info.tipoDato == CteInt)){
 		strcpy(instruccion.operacion,"FILD");
+	} else if(((*pa)->der->info.tipoDato == Float)||((*pa)->der->info.tipoDato == CteFloat)){
+		strcpy(instruccion.operacion,"FLD");
+	} else{
+		strcpy(instruccion.operacion,"STRING");
+	}
+
+	if ( ((*pa)->der->info.entero != 0)){
 		sprintf(instruccion.reg1, "%d", (*pa)->der->info.entero);
 	} else if ( ((*pa)->der->info.flotante != 0)) {
-		strcpy(instruccion.operacion,"FLD");
 		sprintf(instruccion.reg1, "%f", (*pa)->der->info.flotante);
 	} else {
-			strcpy(instruccion.operacion,"FLD");
 		if((*pa)->izq->info.cadena[0] == '@'){
 			strcpy(instruccion.reg1, (*pa)->der->info.cadena);
 		} else {
@@ -1772,18 +1809,15 @@ void operacionAssembler(tArbol *pa, char* operacion){
 	strcpy(aux, "@aux");
 	sprintf(aux2, "%d", contAssembler);
 	strcat(aux, aux2);
-	agregarVarATabla(aux);
-	insertarEnTabla(indice_tabla);
+	insertarEnTabla(aux,indice_tabla,(*pa)->info.tipoDato);
 
-	//FALTA GUARDAR EL TIPO
 	strcpy(instruccion.operacion, "FSTP");
+	strcpy(instruccion.reg2,"");
 	strcpy(instruccion.reg1, aux);
-	//strcpy(instruccion.reg2, "R1");
-	
 	strcpy(auxAssembler, aux);
-
 	vectorASM[vectorASM_IDX] = instruccion;
 	vectorASM_IDX++;
+
     strcpy(instruccion.operacion, "FFREE");
     strcpy(instruccion.reg1,"");
 	strcpy(instruccion.reg2,"");
