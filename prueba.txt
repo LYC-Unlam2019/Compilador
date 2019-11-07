@@ -3,35 +3,50 @@ START
 		[INTEGER, FLOAT, STRING]:[numero1, real1, cadena1]
 		[INTEGER, FLOAT, FLOAT]:[numero2, real2, real3]
 		[INTEGER, INTEGER]:[numero3, numero4]
+		[STRING]:[cadena2]
 	ENDVAR
+
 
 	--/Prueba --/doble/-- comentario/--	
 	--/Ejemplo de asignaciones/--
 	numero1:=2
+	numero2:=6
 
 	real1:=99999.99
 	real2:=99.
 	real3:=.9999
 
-	--/Ejemplo MOD/DIV/--
-	numero1 := numero3 DIV numero4 
-
-	--/Ejemplo MOD/DIV/--
-	numero2 := 1 MOD numero1
-
-	REPEAT numero1 < numero2 
-		numero1 := 2
-	ENDREPEAT
-
+	
+	
+	--/Ejemplo de IF con condicion multiple, anidado con REPEAT y otro IF, sin else, de condicion simple/--
 	IF numero1 != numero2 AND numero1 == numero3 THEN
-		numero1:=numero1 + 1
+		REPEAT numero1 < numero2
+			numero1:=numero1 + 1
+		ENDREPEAT
 	ELSE
-		PRINT numero2
+		IF numero1 == 6 THEN
+			PRINT numero2
+		ENDIF
 	ENDIF
 
-	numero3 := 2 + 3
-
 	--/Ejemplo FILTER/--
-	numero4 := FILTER(_>(4 + numero1), [1,2,4,6])
+	FILTER(_>(4 + numero1) AND _<=6.5 , [1,2,4,6])
+
+    --/Ejemplo MOD/DIV/--
+	(4+3) DIV (3*2) 
+
+	--/Ejemplo MOD/DIV/--
+	1 + ((4+numero1) MOD (3*2))
+
+
+
+	cadena1:="@sdADaSjfla%dfg"
+	cadena2:="asldkfhsjf"
+
+	--/Ejemplo de READ y PRINT/--
+	READ numero3
+	PRINT "hola mundo"
+	PRINT numero4
+	--/PRINT cadena2/--
 
 END

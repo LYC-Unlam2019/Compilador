@@ -229,7 +229,7 @@ strcpy(aux,num);
 			}
 			while (decimales ++ < 6){
 				format[j] = '\0';
-				j++;
+				j++;																																																																																																							
 			}
 	   		 format[j] = '\0';  
 		  }
