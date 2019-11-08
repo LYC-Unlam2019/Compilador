@@ -4,32 +4,18 @@ include number.asm
 .386
 .STACK 200h 
 .DATA 
-numero1                       			1
-real1                         			2
-cadena1                       			3
-numero2                       			1
-real2                         			2
-real3                         			2
-numero3                       			1
-numero4                       			1
-cadena2                       			3
-_2                            			4
-_6                            			4
-_99999.990000                 			5
-_99.000000                    			5
-_0.999900                     			5
-_1                            			4
-_4                            			4
-_3                            			4
-"@sdADaSjfla%dfg"             			6
-"asldkfhsjf"                  			6
-"hola mundo"                  			1
-@aux1                         			1
-@aux2                         			1
-@aux3                         			1
-@aux4                         			1
-@aux5                         			1
-@aux6                         			1
+numero1                       	DD	?
+real1                         	DD	?
+cadena1                       	DD	?
+numero2                       	DD	?
+real2                         	DD	?
+real3                         	DD	?
+numero3                       	DD	?
+numero4                       	DD	?
+cadena2                       	DD	?
+_1                            	DD	1.00
+"string"                      	DD	string
+@aux1                         	DD	?
 .CODE 
 MAIN:
 
@@ -39,154 +25,17 @@ mov DS,AX
 mov ES,AX 
 FNINIT 
 
-MOV R1, 2
-MOV _numero1, R1
-MOV R1, 6
-MOV _numero2, R1
-MOV R1, 99999.990000
-MOV 99999.990000, R1
-MOV R1, 99.000000
-MOV 99.000000, R1
-MOV R1, 0.999900
-MOV 0.999900, R1
-FLD 0.999900
-FCOMP 0.999900
-FSTSW AX
-SAHF
-FFREE
-JE
-FLD 0.999900
-FCOMP 0.999900
-FSTSW AX
-SAHF
-FFREE
-JNE endif
-repeat
-FLD 0.999900
-FCOMP 0.999900
-FSTSW AX
-SAHF
-FFREE
-JGE endrepeat
-FILD 0.999900
-FILD 1
+FLD 1
+FLD _numero2
 FADD
 FSTP @aux1
 FFREE
-MOV R1, @aux1
-MOV _numero1, R1
-JMP repeat
-endrepeat:
-JMP else
-else:
-MOV _numero1
-FCOMP 6
-FSTSW AX
-SAHF
+FLD @aux1
+FSTP _numero1
 FFREE
-JNE else
-endif:
-endif:
-FILD 4
-FILD _numero1
-FADD
-FSTP @aux2
+FLD _"string"
+FSTP _cadena2
 FFREE
-FILD 1
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FILD 1
-FCOMP 6.500000
-FSTSW AX
-SAHF
-FFREE
-JG
-FILD 2
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FILD 2
-FCOMP 6.500000
-FSTSW AX
-SAHF
-FFREE
-JG
-FILD 2750032
-FCOMP 2750032
-FSTSW AX
-SAHF
-FFREE
-JG
-FILD 4
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FILD 4
-FCOMP 6.500000
-FSTSW AX
-SAHF
-FFREE
-JG
-FILD 2750032
-FCOMP 2750032
-FSTSW AX
-SAHF
-FFREE
-JG
-FILD 6
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FILD 6
-FCOMP 6.500000
-FSTSW AX
-SAHF
-FFREE
-JG
-FILD 2750032
-FCOMP 2750032
-FSTSW AX
-SAHF
-FFREE
-JG
-FILD 4
-FILD _numero1
-FADD
-FSTP @aux3
-FFREE
-FILD @aux3
-FILD 6
-FDIV
-FSTP @aux4
-FFREE
-FILD @aux4
-FILD 6
-FMUL
-FSTP @aux5
-FFREE
-FILD @aux3
-FILD @aux5
-FSUB
-FSTP @aux6
-FFREE
-FILD 1
-FILD _@aux6
-FADD
-FSTP @aux7
-FFREE
-MOV R1, _"@sdADaSjfla%dfg"
-MOV _cadena1, R1
-MOV R1, _"asldkfhsjf"
-MOV _cadena2, R1
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN
