@@ -1482,6 +1482,8 @@ FILE* abrirArchivoAssembler(){
 		return NULL;
 	}
 
+	fprintf(arch, "%s\n", "include macros2.asm");
+	fprintf(arch, "%s\n", "include number.asm");
 	fprintf(arch, "%s\n", ".MODEL LARGE");
 	fprintf(arch, "%s\n", ".386");
 	fprintf(arch, "%s\n\n\n", ".STACK 200h");
@@ -1498,6 +1500,11 @@ FILE* abrirArchivoAssembler(){
 	}
 
 	fprintf(arch, "\n\n%s\n", ".CODE");
+	fprintf(arch, "%s\n", "MAIN:");
+	fprintf(arch, "%s\n", "MOV AX, @DATA");
+	fprintf(arch, "%s\n", "MOV DS, AX");
+	fprintf(arch, "%s\n", "MOV ES, AX");
+	fprintf(arch, "%s\n", "FINIT");
 
 	return arch;
 }
