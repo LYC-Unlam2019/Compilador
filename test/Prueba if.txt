@@ -10,13 +10,12 @@ START
 	numero2 := 2
 	numero3 := 3
 
-	IF numero1 != numero2 OR numero2 != numero3 THEN
+	IF numero1 > numero2 THEN
 		numero1 := numero3
-		numero2 := numero3
 	ELSE
-	   	numero2 := numero3
-		numero1 := numero3
-		numero2 := numero3
+		IF numero1 < 3 THEN
+			numero2 := numero3
+		ENDIF
 	ENDIF
 
 END

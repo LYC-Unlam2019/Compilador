@@ -1,0 +1,21 @@
+START
+	VAR
+		[INTEGER, FLOAT, STRING]:[numero1, real1, cadena1]
+		[INTEGER, FLOAT, FLOAT]:[numero2, real2, real3]
+		[INTEGER, INTEGER]:[numero3, numero4]
+		[STRING]:[cadena2]
+	ENDVAR
+
+	
+
+	IF  numero1 > 3 THEN
+		real1 := 1.1
+	ELSE
+		IF numero1 < 2 THEN
+			real1 := 2.2
+		ENDIF
+	ENDIF
+	
+
+
+END

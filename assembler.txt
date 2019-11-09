@@ -5,17 +5,11 @@ include number.asm
 .STACK 200h 
 .DATA 
 numero1                       	DD	?
-real1                         	DD	?
-cadena1                       	DD	?
 numero2                       	DD	?
-real2                         	DD	?
-real3                         	DD	?
 numero3                       	DD	?
-numero4                       	DD	?
-cadena2                       	DD	?
 _1                            	DD	1.00
-"string"                      	DD	string
-@aux1                         	DD	?
+_2                            	DD	2.00
+_3                            	DD	3.00
 .CODE 
 MAIN:
 
@@ -26,16 +20,36 @@ mov ES,AX
 FNINIT 
 
 FLD 1
-FLD _numero2
-FADD
-FSTP @aux1
-FFREE
-FLD @aux1
 FSTP _numero1
 FFREE
-FLD _"string"
-FSTP _cadena2
+FLD 2
+FSTP _numero2
 FFREE
+FLD 3
+FSTP _numero3
+FFREE
+FLD _numero1
+FCOMP _numero2
+FSTSW AX
+SAHF
+FFREE
+JLE endif
+FLD _numero3
+FSTP _numero1
+FFREE
+JMP .else1
+.else1
+FLD _numero1
+FCOMP 0.00
+FSTSW AX
+SAHF
+FFREE
+JGE .endif1
+FLD _numero3
+FSTP _numero2
+FFREE
+.endif1
+.endif2
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN
