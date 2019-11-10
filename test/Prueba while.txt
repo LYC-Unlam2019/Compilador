@@ -5,13 +5,11 @@ START
 	ENDVAR
 
 	
-	REPEAT numero1 < numero2
 
-		REPEAT numero1 > numero2
-			numero1 := numero1 +1
+		REPEAT numero1 > numero2 AND numero2 < 5
+			numero1 := numero2
 
 		ENDREPEAT
 
-	ENDREPEAT
 	
 END
