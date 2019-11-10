@@ -6,7 +6,10 @@ include number.asm
 .DATA 
 numero1                       	DD	?
 numero2                       	DD	?
+_6                            	DD	6.00
 _5                            	DD	5.00
+_3                            	DD	3.00
+_4                            	DD	4.00
 .CODE 
 MAIN:
 
@@ -18,7 +21,7 @@ FNINIT
 
 .repeat1
 FLD _numero1
-FCOMP _numero2
+FCOMP 6.00
 FSTSW AX
 SAHF
 FFREE
@@ -29,9 +32,24 @@ FSTSW AX
 SAHF
 FFREE
 JGE .endrepeat1
-FLD _numero2
-FSTP _numero1
+.repeat2
+FLD _numero1
+FCOMP 3.00
+FSTSW AX
+SAHF
 FFREE
+JL 26
+FLD _numero2
+FCOMP 4.00
+FSTSW AX
+SAHF
+FFREE
+JLE .endrepeat2
+FLD 4
+FSTP _numero2
+FFREE
+JMP .repeat2
+.endrepeat2
 JMP .repeat1
 .endrepeat1
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h

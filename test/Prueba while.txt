@@ -4,12 +4,12 @@ START
 		[INTEGER]:[numero2]
 	ENDVAR
 
-	
+	REPEAT numero1 > 6 AND numero2 < 5
 
-		REPEAT numero1 > numero2 AND numero2 < 5
-			numero1 := numero2
+		REPEAT numero1 < 3 OR numero2 > 4
+			numero2 := 4
 
 		ENDREPEAT
-
+	ENDREPEAT
 	
 END
