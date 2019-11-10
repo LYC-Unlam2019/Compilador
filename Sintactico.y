@@ -105,6 +105,7 @@
 	int poner_en_pila_asm(t_pila_asm *pp, int pi);
 	int sacar_de_pila_asm(t_pila_asm *pp);
 	int pila_vacia_asm(const t_pila_asm *pp);
+	int ver_tope_pila_asm(t_pila_asm *pp);
 
 	/**OPTIMIZACION**/
 	tNodo* optimizarSuma(tNodo* izquierda, tNodo* derecha);
@@ -226,7 +227,7 @@
 	int contTagRepeat = 1;
 	int contTagEndRepeat = 1;
 	int contTagElse = 1;
-	int contTagEndif = 1;
+	int contTagEndif = 0;
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -283,8 +284,6 @@ programa:
 															printf("\nCOMPILACION EXITOSA\n");
 															grabarTabla();
 
-														
-															mostrar_grafico(&bloquePtr,10);
 															archivoAssembler = abrirArchivoAssembler();
 															mostrar_grafico(&bloquePtr,5);
 															generarAssembler(&bloquePtr, archivoAssembler);
@@ -1321,6 +1320,14 @@ int pila_vacia_asm(const t_pila_asm *pp){
 	return pp->tope == TOPE_PILA_ASM_VACIA;
 }
 
+int ver_tope_pila_asm(t_pila_asm *pp){
+	if( pp->tope == -1){
+		printf("Pila vacia\n");
+		return -1;
+	} 
+	return pp->vec[pp->tope];
+}
+
 /*********** FIN PILA ASSEMBLER *********/
 
 /*************** OPTIMIZACION *************/
@@ -1607,7 +1614,7 @@ void generarAssembler(tArbol *pa, FILE* arch){
 
 			repeatFlag = 1;
 		} else if(!strcmp((*pa)->info.cadena, "IF")){
-			ifFlag = 1;
+			contTagEndif++;
 		}
 	}
 
@@ -1671,10 +1678,15 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			int pos_condicion;
 			int tipo_condicion;
 			int jump_else;
+			char tagElseAux[50];
+			char tagEndifAux[50];
+			char contTagElseAux[12];
+			int indiceElse;
 
 			sprintf(tagAux, "%d", contTagEndif);
 			strcpy(tag, ".endif");
 			strcat(tag, tagAux);
+
 			strcpy(instruccion.operacion, tag);
 			strcpy(instruccion.reg1, "");
 			strcpy(instruccion.reg2, "");
@@ -1682,30 +1694,24 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
 
-			//Si la pila de else procesados está vacía, significa que es un if sin else
-			if(!pila_vacia_asm(&pilaElseProcesados)){
+			if(!pila_vacia_asm(&pilaElseProcesados) && ver_tope_pila_asm(&pilaElseProcesados) == contTagEndif ){
 
-				int indiceElse = sacar_de_pila_asm(&pilaElseProcesados);
-				printf("indiceElse : %d\n", indiceElse); //sacar
-				char tagElseAux[50];
-				char tagEndifAux[50];
-				char contTagElseAux[12];
+				indiceElse = sacar_de_pila_asm(&pilaElseProcesados);
+				
 				strcpy(tagElseAux, ".else");
 				sprintf(contTagElseAux, "%d", indiceElse);
 				strcat(tagElseAux, contTagElseAux);
-				printf("tagElseAux: %s\n",tagElseAux); //sacar
 
 				sprintf(contTagElseAux, "%d", contTagEndif);
 				strcpy(tagEndifAux, ".endif");
 				strcat(tagEndifAux, contTagElseAux);
+				
 				if(pila_vacia_asm(&pilaCondicionIFAssembler)){
-					puts("pila cond if assembler vacia\n");//sacar
 					jump_else = sacar_de_pila_asm(&pilaAssembler);
 					strcpy(vectorASM[jump_else].reg1, tagEndifAux);
 					pos_condicion = sacar_de_pila_asm(&pilaAssembler);
 					strcpy(vectorASM[pos_condicion].reg1, tagElseAux);
 				} else {
-					puts("pila cond if assembler no vacia\n");//sacar
 
 					tipo_condicion = sacar_de_pila_asm(&pilaCondicionIFAssembler);
 					if(tipo_condicion == AND){
@@ -1731,7 +1737,7 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			}
 			
 			
-			contTagEndif++;
+			contTagEndif--;
 			
 			
 		} else if(!strcmp((*pa)->info.cadena, "REPEAT")){
