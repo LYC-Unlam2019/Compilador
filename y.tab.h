@@ -136,6 +136,10 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
+<<<<<<< HEAD
+=======
+#line 234 "Sintactico.y"
+>>>>>>> origin/max-assembler
 {
 
 /* Line 1676 of yacc.c  */

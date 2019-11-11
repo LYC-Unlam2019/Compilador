@@ -1,0 +1,18 @@
+START
+	VAR
+		[INTEGER]:[numero1]
+		[INTEGER]:[numero2]
+		[INTEGER]:[numero3]
+	ENDVAR
+
+	IF numero1 > numero2 THEN
+		numero1 := numero3
+	ELSE
+		IF numero1 < 3 THEN
+			numero2 := numero3
+		ELSE
+			numero1 := numero3
+		ENDIF
+	ENDIF
+
+END

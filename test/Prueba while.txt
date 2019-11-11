@@ -6,11 +6,12 @@ START
 
 	
 	REPEAT numero1 < numero2
-		numero1 := numero1
-		numero1 := numero2
-		numero1 := numero2
-		numero1 := numero2
-		numero1 := numero2
+
+		REPEAT numero1 > numero2
+			numero1 := numero1 +1
+
+		ENDREPEAT
+
 	ENDREPEAT
 	
 END
