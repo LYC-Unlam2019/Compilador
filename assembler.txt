@@ -15,7 +15,7 @@ numero4                       	DD	?
 cadena2                       	DD	?
 _2                            	DD	2.00
 _6                            	DD	6.00
-_99999.990000                 	DD	99999.99
+_99999.992188                 	DD	99999.99
 _99.000000                    	DD	99.00
 _0.999900                     	DD	1.00
 _1                            	DD	1.00
@@ -44,7 +44,7 @@ FFREE
 FLD 6
 FSTP _numero2
 FFREE
-FLD 99999.990000
+FLD 99999.992188
 FSTP _real1
 FFREE
 FLD 99.000000
@@ -58,7 +58,7 @@ FCOMP _numero2
 FSTSW AX
 SAHF
 FFREE
-JE
+JE .else1
 FLD _numero1
 FCOMP _numero3
 FSTSW AX
@@ -89,7 +89,7 @@ FCOMP 6.00
 FSTSW AX
 SAHF
 FFREE
-JNE endif
+JNE .endif2
 FLD _numero3
 FSTP _numero2
 FFREE
