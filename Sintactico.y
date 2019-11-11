@@ -724,7 +724,7 @@ comp_bool:
 filter:
 	FILTER {processingFilter = 1;} PA comparacion_filter COMA CA lista_exp_coma CC PC {
 																printf("R 55: FILTER => FILTER PA comparacion_filter COMA CA lista_exp_coma CC PC\n");
-																filterPtr = crearNodo("FILTER", bloquePtr, NULL, -1);
+																filterPtr = crearNodo("FILTER-PADRE", bloquePtr, NULL, 1);
 																processingFilter = 0;
 																bloquePtr = NULL;
 																};
@@ -733,9 +733,9 @@ lista_exp_coma:
     lista_exp_coma COMA expresion_aritmetica            {
 															printf("R 56: lista_exp_coma => lista_exp_coma COMA expresion_aritmetica\n");
 															if(esHoja(terminoFilterPtr->izq)){
-																bloquePtr = crearNodo("CUERPO", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der, -1), -1);
+																bloquePtr = crearNodo("FILTER", bloquePtr, crearNodo(compBoolPtr->info.cadena, exprAritPtr, terminoFilterPtr->der, -1), -1);
 															} else {
-																bloquePtr = crearNodo("CUERPO", bloquePtr,
+																bloquePtr = crearNodo("FILTER", bloquePtr,
 																	crearNodo(compBoolPtr->info.cadena, //AND u OR
 																		crearNodo(terminoFilterPtr->izq->info.cadena, exprAritPtr, terminoFilterPtr->izq->der, -1),
 																		crearNodo(terminoFilterPtr->der->info.cadena, exprAritPtr, terminoFilterPtr->der->der, -1), -1), -1);
@@ -1795,6 +1795,21 @@ void generarAssembler(tArbol *pa, FILE* arch){
 				poner_en_pila_asm(&pilaCondicionIFAssembler, OR);
 				ifFlag = 0;
 			}
+		} else if(!strcmp((*pa)->info.cadena, "FILTER")){
+			
+			//invertir comparador y si no es pila vacia desapilar y poner endfilter
+			//contar al principio como los ifs la cantidad de filters
+
+		}
+	} else if((*pa)->der != NULL){
+		//ACA van los print y read
+		if(!strcmp((*pa)->info.cadena, "FILTER-PADRE")){
+			strcpy(instruccion.operacion, ".end-filter");
+			strcpy(instruccion.reg1, "");
+			strcpy(instruccion.reg2, "");
+			
+			vectorASM[vectorASM_IDX] = instruccion;
+			vectorASM_IDX++;
 		}
 	}
 }

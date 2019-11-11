@@ -1,0 +1,43 @@
+include macros2.asm
+include number.asm
+.MODEL	LARGE 
+.386
+.STACK 200h 
+.DATA 
+numero1                       	DD	?
+_1                            	DD	1.00
+_2                            	DD	2.00
+_3                            	DD	3.00
+.CODE 
+MAIN:
+
+
+mov AX,@DATA 	;inicializa el segmento de datos
+mov DS,AX 
+mov ES,AX 
+FNINIT 
+
+FLD 0.00
+FCOMP 0.00
+FSTSW AX
+SAHF
+FFREE
+JLE
+FLD 0.00
+FCOMP 0.00
+FSTSW AX
+SAHF
+FFREE
+JLE
+FLD 0.00
+FCOMP 0.00
+FSTSW AX
+SAHF
+FFREE
+JLE
+FLD 6616640
+FSTP _numero1
+FFREE
+	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
+	 int 21h 	 ; Genera la interrupcion 21h
+END MAIN
