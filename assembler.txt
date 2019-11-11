@@ -8,9 +8,16 @@ numero1                       	DD	?
 <<<<<<< HEAD
 =======
 numero2                       	DD	?
+<<<<<<< HEAD
 >>>>>>> origin/max-assembler
 _1                            	DD	1.00
 @aux1                         	DD	?
+=======
+_6                            	DD	6.00
+_5                            	DD	5.00
+_3                            	DD	3.00
+_4                            	DD	4.00
+>>>>>>> origin/max-assembler
 .CODE 
 MAIN:
 
@@ -38,24 +45,35 @@ FCOMP 0.00
 =======
 .repeat1
 FLD _numero1
-FCOMP _numero2
+FCOMP 6.00
+FSTSW AX
+SAHF
+FFREE
+JLE .endrepeat1
+FLD _numero2
+FCOMP 5.00
 FSTSW AX
 SAHF
 FFREE
 JGE .endrepeat1
 .repeat2
 FLD _numero1
+<<<<<<< HEAD
 FCOMP _numero2
+>>>>>>> origin/max-assembler
+=======
+FCOMP 3.00
+FSTSW AX
+SAHF
+FFREE
+JL 26
+FLD _numero2
+FCOMP 4.00
 >>>>>>> origin/max-assembler
 FSTSW AX
 SAHF
-FFREE .endrepeat2
-JLE
-FLD _numero1
-FLD 1
-FADD
-FSTP @aux1
 FFREE
+<<<<<<< HEAD
 <<<<<<< HEAD
 JLE
 FLD 6616640
@@ -64,6 +82,11 @@ FFREE
 =======
 FLD @aux1
 FSTP _numero1
+=======
+JLE .endrepeat2
+FLD 4
+FSTP _numero2
+>>>>>>> origin/max-assembler
 FFREE
 JMP .repeat2
 .endrepeat2
