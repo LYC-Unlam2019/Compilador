@@ -1,0 +1,40 @@
+START
+	VAR
+		[INTEGER, FLOAT, STRING]:[numero1, real1, cadena1]
+		[INTEGER, FLOAT, FLOAT]:[numero2, real2, real3]
+		[INTEGER, INTEGER]:[numero3, numero4]
+		[STRING]:[cadena2]
+	ENDVAR
+
+
+	numero1:=2
+	numero2:=6
+
+	real1:=99999.99
+	real2:=99.
+	real3:=.9999
+
+	
+	IF numero1 != numero2 AND numero1 == numero3 THEN
+		REPEAT numero1 < numero2
+			numero1:=numero1 + 1
+		ENDREPEAT
+	ELSE
+		IF numero1 == 6 THEN
+			numero2 := numero3
+		ENDIF
+	ENDIF
+
+
+
+	(4+3) DIV (3*2) 
+
+	1 + ((4+numero1) MOD (3*2))
+
+
+
+	cadena1:="@sdADaSjfla%dfg"
+	cadena2:="asldkfhsjf"
+
+
+END

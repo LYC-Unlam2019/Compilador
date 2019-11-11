@@ -231,14 +231,7 @@
 	int contTagRepeat = 1;
 	int contTagEndRepeat = 0;
 	int contTagElse = 1;
-<<<<<<< HEAD
 	int contTagEndif = 0;
-=======
-	int contTagEndif = 1;
-	int auxAND = 0;
-	int auxOR = 0;
-
->>>>>>> origin/max-assembler
 %}
 
 /* Tipo de estructura de datos, toma el valor SUMA grande*/
@@ -464,6 +457,8 @@ asignacion:
 															printf("R 21: asignacion => ID ASIG expresion\n");
 															infoArbol.tipoDato = obtenerTipoDeDatoDesdeTS(aux); 															infoArbol.entero = 0 ;
 															strcpy(infoArbol.cadena, aux);
+															infoArbol.flotante = 0.0;
+															infoArbol.entero = 0;
 															compararTiposDeDatoASIG(infoArbol.tipoDato, exprPtr->info.tipoDato, infoArbol.cadena);
 															asigPtr = crearNodo(":=", crearHoja(&infoArbol), exprPtr, -1);
 
@@ -982,7 +977,6 @@ void agregarCteATabla(int num){
 			//Agregar tipo de dato
 				tabla_simbolo[indice_tabla].tipo_dato = CteFloat;
 			//Agregar valor a la tabla
-			     printf ("EN FUNCION: %f", yylval.valor_float);
 				tabla_simbolo[indice_tabla].valor_f = yylval.valor_float;
 			}
 		break;
@@ -1723,6 +1717,7 @@ void generarAssembler(tArbol *pa, FILE* arch){
 				sprintf(contTagElseAux, "%d", contTagEndif);
 				strcpy(tagEndifAux, ".endif");
 				strcat(tagEndifAux, contTagElseAux);
+
 				
 				if(pila_vacia_asm(&pilaCondicionIFAssembler)){
 					jump_else = sacar_de_pila_asm(&pilaAssembler);
@@ -1850,7 +1845,7 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			//contar al principio como los ifs la cantidad de filters
 
 		}
-	} else if((*pa)->der != NULL){
+	} else if((*pa)->izq != NULL){
 		//ACA van los print y read
 		if(!strcmp((*pa)->info.cadena, "FILTER-PADRE")){
 			strcpy(instruccion.operacion, ".end-filter");
@@ -2046,6 +2041,8 @@ void asignacionAssembler(tArbol *pa){
 	if ( ((*pa)->izq->info.entero != 0)){
 		sprintf(instruccion.reg1,"%d", (*pa)->izq->info.entero);
 	} else if ( ((*pa)->izq->info.flotante != 0)) {
+		printf("a ver que verga hay aca: %f ", (*pa)->izq->info.flotante);
+		printf("a ver que verga hay en la cadena: %s ", (*pa)->izq->info.cadena);
 		sprintf(instruccion.reg1,"%f", (*pa)->izq->info.flotante);
 	} else {
 		sprintf(instruccion.reg1,"_%s", (*pa)->izq->info.cadena);

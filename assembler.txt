@@ -5,19 +5,30 @@ include number.asm
 .STACK 200h 
 .DATA 
 numero1                       	DD	?
-<<<<<<< HEAD
-=======
+real1                         	DD	?
+cadena1                       	DD	?
 numero2                       	DD	?
-<<<<<<< HEAD
->>>>>>> origin/max-assembler
-_1                            	DD	1.00
-@aux1                         	DD	?
-=======
+real2                         	DD	?
+real3                         	DD	?
+numero3                       	DD	?
+numero4                       	DD	?
+cadena2                       	DD	?
+_2                            	DD	2.00
 _6                            	DD	6.00
-_5                            	DD	5.00
-_3                            	DD	3.00
+_99999.990000                 	DD	99999.99
+_99.000000                    	DD	99.00
+_0.999900                     	DD	1.00
+_1                            	DD	1.00
 _4                            	DD	4.00
->>>>>>> origin/max-assembler
+_3                            	DD	3.00
+"@sdADaSjfla%dfg"             	DD	@sdADaSjfla%dfg
+"asldkfhsjf"                  	DD	asldkfhsjf
+@aux1                         	DD	?
+@aux2                         	DD	?
+@aux3                         	DD	?
+@aux4                         	DD	?
+@aux5                         	DD	?
+@aux6                         	DD	?
 .CODE 
 MAIN:
 
@@ -27,72 +38,94 @@ mov DS,AX
 mov ES,AX 
 FNINIT 
 
-<<<<<<< HEAD
-FLD 0.00
-FCOMP 0.00
+FLD 2
+FSTP _numero1
+FFREE
+FLD 6
+FSTP _numero2
+FFREE
+FLD 99999.990000
+FSTP _real1
+FFREE
+FLD 99.000000
+FSTP _real2
+FFREE
+FLD 0.999900
+FSTP _real3
+FFREE
+FLD _numero1
+FCOMP _numero2
 FSTSW AX
 SAHF
 FFREE
-JLE
-FLD 0.00
-FCOMP 0.00
+JE
+FLD _numero1
+FCOMP _numero3
 FSTSW AX
 SAHF
 FFREE
-JLE
-FLD 0.00
-FCOMP 0.00
-=======
+JNE .else1
 .repeat1
+FLD _numero1
+FCOMP _numero2
+FSTSW AX
+SAHF
+FFREE
+JGE .endrepeat1
+FLD _numero1
+FLD 1
+FADD
+FSTP @aux1
+FFREE
+FLD @aux1
+FSTP _numero1
+FFREE
+JMP .repeat1
+.endrepeat1
+JMP .endif1
+.else1
 FLD _numero1
 FCOMP 6.00
 FSTSW AX
 SAHF
 FFREE
-JLE .endrepeat1
-FLD _numero2
-FCOMP 5.00
-FSTSW AX
-SAHF
-FFREE
-JGE .endrepeat1
-.repeat2
-FLD _numero1
-<<<<<<< HEAD
-FCOMP _numero2
->>>>>>> origin/max-assembler
-=======
-FCOMP 3.00
-FSTSW AX
-SAHF
-FFREE
-JL 26
-FLD _numero2
-FCOMP 4.00
->>>>>>> origin/max-assembler
-FSTSW AX
-SAHF
-FFREE
-<<<<<<< HEAD
-<<<<<<< HEAD
-JLE
-FLD 6616640
-FSTP _numero1
-FFREE
-=======
-FLD @aux1
-FSTP _numero1
-=======
-JLE .endrepeat2
-FLD 4
+JNE endif
+FLD _numero3
 FSTP _numero2
->>>>>>> origin/max-assembler
 FFREE
-JMP .repeat2
-.endrepeat2
-JMP .repeat1
-.endrepeat1
->>>>>>> origin/max-assembler
+.endif2
+.endif1
+FLD 4
+FLD _numero1
+FADD
+FSTP @aux2
+FFREE
+FLD @aux2
+FLD 6
+FDIV
+FSTP @aux3
+FFREE
+FLD @aux3
+FLD 6
+FMUL
+FSTP @aux4
+FFREE
+FLD @aux2
+FLD @aux4
+FSUB
+FSTP @aux5
+FFREE
+FLD 1
+FLD _@aux5
+FADD
+FSTP @aux6
+FFREE
+FLD _"@sdADaSjfla%dfg"
+FSTP _cadena1
+FFREE
+FLD _"asldkfhsjf"
+FSTP _cadena2
+FFREE
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

@@ -136,18 +136,10 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-#line 234 "Sintactico.y"
->>>>>>> origin/max-assembler
-=======
-#line 240 "Sintactico.y"
->>>>>>> origin/max-assembler
 {
 
 /* Line 1676 of yacc.c  */
-#line 234 "Sintactico.y"
+#line 238 "Sintactico.y"
 
 
 	int valor_int;
