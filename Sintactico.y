@@ -90,6 +90,7 @@
 	void invertir_comparador(char* cadena);
 	void rellenarInfo(int tipoDato, tInfo* info);
 	void mostrar_grafico(tArbol *pa, int n);
+	void generar_intermedia(tArbol *pa,int n, FILE* arch);
 
 	void crear_pila(t_pila *pp);
 	int pila_vacia(const t_pila *pp);
@@ -178,6 +179,7 @@
 	char* aux;
 	int tipoDatoCalculado;
 	FILE* archivoAssembler;
+	FILE* intermedia;
 	/* Declaraciones globales de punteros de elementos no terminales para el arbol de sentencias basicas*/
 
 	tArbol 	asigPtr,			//Puntero de asignaciones
@@ -291,6 +293,9 @@ programa:
 
 															archivoAssembler = abrirArchivoAssembler();
 															mostrar_grafico(&bloquePtr,5);
+															intermedia = fopen("intermedia.txt", "a+");
+															generar_intermedia(&bloquePtr,5,intermedia);
+															fclose(intermedia);
 															generarAssembler(&bloquePtr, archivoAssembler);
 															puts("\n\n------------------------------\n\n");
 															mostrar_grafico(&bloquePtr,5);
@@ -1190,6 +1195,52 @@ void rellenarInfo(int tipoDato, tInfo* info){
 			info->entero = 0;		
 			break;
 	}
+}
+
+void generar_intermedia(tArbol *pa,int n, FILE* arch){
+    int numNodos = 0;
+    double aux = 0.0;
+    int i=0;
+     if(!*pa){ return; }
+          
+	generar_intermedia(&(*pa)->der, n+1, arch);
+
+     for(i=0; i<n; i++)
+     {
+       //printf("   ");
+	   fprintf(arch, "%s", "----");
+     }
+
+
+     numNodos++;
+
+     if((*pa)->info.tipoDato == String || (*pa)->info.tipoDato == CteString){
+		fprintf(arch," %s \n",(*pa)->info.cadena);
+	 }
+     
+	 
+	 if((*pa)->info.tipoDato == Integer || (*pa)->info.tipoDato == CteInt){
+		if(strcmp((*pa)->info.cadena, "") == 0 ){
+			fprintf(arch," %d  \n",(*pa)->info.entero); 
+		} else {
+			fprintf(arch," %s \n",(*pa)->info.cadena);
+		}
+		
+	 }
+ 	 	
+ 	 
+ 	 if((*pa)->info.tipoDato == Float || (*pa)->info.tipoDato == CteFloat){
+		  if(strcmp((*pa)->info.cadena, "") == 0 ){
+			fprintf(arch," %f \n",(*pa)->info.flotante);
+		} else {
+			fprintf(arch," %s \n",(*pa)->info.cadena);
+		}
+		
+	  }
+     	
+
+     generar_intermedia(&(*pa)->izq, n+1, arch);
+
 }
 
 void mostrar_grafico(tArbol *pa,int n){
