@@ -1548,6 +1548,8 @@ FILE* abrirArchivoAssembler(){
 void escribirArchivoAssembler(FILE* arch){
 	int i = 0;
     int j = 0;
+	char stringAux[20], *ptrAux, stringAux2[20];
+
 	//ARMO LA CABECERA
 	fprintf(arch, "include macros2.asm\n");
 	fprintf(arch, "include number.asm\n");
@@ -1561,9 +1563,9 @@ void escribirArchivoAssembler(FILE* arch){
 		}else if(tabla_simbolo[j].valor_i !=0){
 	  		fprintf(arch, "%-30s\t%s\t%.2f\n",tabla_simbolo[j].nombre,"DD", (float)tabla_simbolo[j].valor_i);
 		}else if( strcmp(tabla_simbolo[j].valor_s, "") != 0){
-	  		fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", tabla_simbolo[j].valor_s);
+  			fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", tabla_simbolo[j].valor_s);
 		}else {
-	    	fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
+	    	fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
 		}
 	  
 	}

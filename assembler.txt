@@ -4,15 +4,15 @@ include number.asm
 .386
 .STACK 200h 
 .DATA 
-numero1                       	DD	?
-real1                         	DD	?
-cadena1                       	DD	?
-numero2                       	DD	?
-real2                         	DD	?
-real3                         	DD	?
-numero3                       	DD	?
-numero4                       	DD	?
-cadena2                       	DD	?
+_numero1                       	DD	?
+_real1                         	DD	?
+_cadena1                       	DD	?
+_numero2                       	DD	?
+_real2                         	DD	?
+_real3                         	DD	?
+_numero3                       	DD	?
+_numero4                       	DD	?
+_cadena2                       	DD	?
 _2                            	DD	2.00
 _6                            	DD	6.00
 _99999.992188                 	DD	99999.99
@@ -21,14 +21,16 @@ _0.999900                     	DD	1.00
 _1                            	DD	1.00
 _4                            	DD	4.00
 _3                            	DD	3.00
-"@sdADaSjfla%dfg"             	DD	@sdADaSjfla%dfg
-"asldkfhsjf"                  	DD	asldkfhsjf
-@aux1                         	DD	?
-@aux2                         	DD	?
-@aux3                         	DD	?
-@aux4                         	DD	?
-@aux5                         	DD	?
-@aux6                         	DD	?
+_"@sdADaSjfla%dfg"             	DD	@sdADaSjfla%dfg
+_"asldkfhsjf"                  	DD	asldkfhsjf
+_"hola mundo"                  	DD	hola mundo
+_@aux1                         	DD	?
+_@aux2                         	DD	?
+_@aux3                         	DD	?
+_@aux4                         	DD	?
+_@aux5                         	DD	?
+_@aux6                         	DD	?
+_@aux7                         	DD	?
 .CODE 
 MAIN:
 
@@ -90,9 +92,6 @@ FSTSW AX
 SAHF
 FFREE
 JNE .endif2
-FLD _numero3
-FSTP _numero2
-FFREE
 .endif2
 .endif1
 FLD 4
@@ -100,25 +99,96 @@ FLD _numero1
 FADD
 FSTP @aux2
 FFREE
-FLD @aux2
-FLD 6
-FDIV
+FLD 1.00
+FCOMP _@aux2
+FSTSW AX
+SAHF
+FFREE
+JLE
+FLD 1.00
+FCOMP 6.50
+FSTSW AX
+SAHF
+FFREE
+JG
+FLD 2.00
+FCOMP _@aux2
+FSTSW AX
+SAHF
+FFREE
+JLE
+FLD 2.00
+FCOMP 6.50
+FSTSW AX
+SAHF
+FFREE
+JG
+FLD 32766.00
+FCOMP 32766.00
+FSTSW AX
+SAHF
+FFREE
+JG
+FLD 4.00
+FCOMP _@aux2
+FSTSW AX
+SAHF
+FFREE
+JLE
+FLD 4.00
+FCOMP 6.50
+FSTSW AX
+SAHF
+FFREE
+JG
+FLD 32766.00
+FCOMP 32766.00
+FSTSW AX
+SAHF
+FFREE
+JG
+FLD 6.00
+FCOMP _@aux2
+FSTSW AX
+SAHF
+FFREE
+JLE
+FLD 6.00
+FCOMP 6.50
+FSTSW AX
+SAHF
+FFREE
+JG
+FLD 32766.00
+FCOMP 32766.00
+FSTSW AX
+SAHF
+FFREE
+JG
+FLD 4
+FLD _numero1
+FADD
 FSTP @aux3
 FFREE
 FLD @aux3
 FLD 6
-FMUL
+FDIV
 FSTP @aux4
 FFREE
-FLD @aux2
 FLD @aux4
-FSUB
+FLD 6
+FMUL
 FSTP @aux5
 FFREE
-FLD 1
-FLD _@aux5
-FADD
+FLD @aux3
+FLD @aux5
+FSUB
 FSTP @aux6
+FFREE
+FLD 1
+FLD _@aux6
+FADD
+FSTP @aux7
 FFREE
 FLD _"@sdADaSjfla%dfg"
 FSTP _cadena1
