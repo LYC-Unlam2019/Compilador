@@ -160,10 +160,10 @@ FADD
 FSTP @aux6
 FFREE
 FLD _@sdADaSjfla%dfg
-FSTP _
+FSTP _cadena1
 FFREE
 FLD _asldkfhsjf
-FSTP _
+FSTP _cadena2
 FFREE
 CALL READ, _numero3
 DISPLAYFLOAT _numero4,2

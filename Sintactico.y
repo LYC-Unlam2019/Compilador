@@ -2206,7 +2206,7 @@ switch((*arbol)->info.tipoDato){
 					break;
 				case String:
 					posicion = buscarEnTabla((*arbol)->info.cadena);
-					strcpy(variable,tabla_simbolo[posicion].valor_s);
+					strcpy(variable,tabla_simbolo[posicion].nombre);
 					reemplazarCarEnString(variable,' ','_');
 
 					if(variable[0] == '@')
