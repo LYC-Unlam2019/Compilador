@@ -6,24 +6,24 @@ include number.asm
 .DATA 
 _numero1                       	DD	?
 _real1                         	DD	?
-_cadena1                       	DD	?
+_cadena1                       	DB	?
 _numero2                       	DD	?
 _real2                         	DD	?
 _real3                         	DD	?
 _numero3                       	DD	?
 _numero4                       	DD	?
-_cadena2                       	DD	?
-_2                            	DD	2.00
-_6                            	DD	6.00
-_99999                         	DD	99999.99
-_99                            	DD	99.00
-_0                             	DD	1.00
-_1                            	DD	1.00
-_4                            	DD	4.00
-_3                            	DD	3.00
-_@sdADaSjfla%dfg               	DD	"@sdADaSjfla%dfg"
-_asldkfhsjf                    	DD	"asldkfhsjf"
-_hola mundo                    	DD	"hola mundo"
+_cadena2                       	DB	?
+_2                            	DD	2.000000
+_6                            	DD	6.000000
+_99999f990000                 	DD	99999.99
+_99f000000                    	DD	99.00
+_0f999900                     	DD	1.00
+_1                            	DD	1.000000
+_4                            	DD	4.000000
+_3                            	DD	3.000000
+_@sdADaSjfla%dfg               	DB	"@sdADaSjfla%dfg"
+_asldkfhsjf                    	DB	"asldkfhsjf"
+_hola_mundo                    	DB	"hola mundo"
 @aux1                         	DD	?
 @aux2                         	DD	?
 @aux3                         	DD	?

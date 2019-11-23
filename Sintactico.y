@@ -18,7 +18,6 @@
 	#include <stdlib.h>
 	#include <string.h>
 	#include "y.tab.h"
-	#include <math.h>
 	/* Tipos de datos para la tabla de simbolos */
   	#define Integer 1
 	#define Float 2
@@ -82,7 +81,7 @@
 	int buscarEnTabla(char * nombre);
 	void grabarTabla(void);
 	void chequearPrintId(char *nombre);
-
+    void reemplazarCarEnString(char* destino , char find, char replace);
 	/**FUNCIONES PARA LA ENTREGA 2 **/
 	tNodo* crearNodo(char* dato, tNodo *pIzq, tNodo *pDer, int tipoDato);
 	tNodo* crearHoja(const tInfo* info);
@@ -1599,8 +1598,7 @@ FILE* abrirArchivoAssembler(){
 void escribirArchivoAssembler(FILE* arch){
 	int i = 0;
     int j = 0;
-	int entero;
-	int posTabla, tipoDato;
+	char variableFloat[TAM_NOMBRE];
 	//ARMO LA CABECERA
 	fprintf(arch, "include macros2.asm\n");
 	fprintf(arch, "include number.asm\n");
@@ -1609,27 +1607,68 @@ void escribirArchivoAssembler(FILE* arch){
 	fprintf(arch, ".STACK 200h \n");
 	fprintf(arch, ".DATA \n");
 	for(j=0; j <= indice_tabla; j++){
-		if(tabla_simbolo[j].valor_f != 0){
-			entero = tabla_simbolo[j].valor_f/1;
-	  		fprintf(arch, "_%-30d\t%s\t%.2f\n",entero,"DD", tabla_simbolo[j].valor_f);
-		}else if(tabla_simbolo[j].valor_i !=0){
-	  		fprintf(arch, "%-30s\t%s\t%.2f\n",tabla_simbolo[j].nombre,"DD", (float)tabla_simbolo[j].valor_i);
-		}else if( strcmp(tabla_simbolo[j].valor_s, "") != 0){
-			if(tabla_simbolo[j].nombre[0] == '@'){
-				fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", tabla_simbolo[j].valor_s);
-			} else {
-				fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].valor_s,"DD", tabla_simbolo[j].nombre);
-			}
+		// if(tabla_simbolo[j].valor_f != 0){
+		// 	strcpy(variableFloat, tabla_simbolo[j].nombre);
+		// 	reemplazarCarEnString(variableFloat,'.','f');
+	  	// 	fprintf(arch, "_%-30s\t%s\t%.2f\n",variableFloat,"DD", tabla_simbolo[j].valor_f);
+		// }else if(tabla_simbolo[j].valor_i !=0){
+	  	// 	fprintf(arch, "%-30s\t%s\t%.2f\n",tabla_simbolo[j].nombre,"DD", (float)tabla_simbolo[j].valor_i);
+		// }else if( strcmp(tabla_simbolo[j].valor_s, "") != 0){
+		// 	if(tabla_simbolo[j].nombre[0] == '@'){
+		// 		fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DB", tabla_simbolo[j].valor_s);
+		// 	} else {
+		// 		fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].valor_s,"DB", tabla_simbolo[j].nombre);
+		// 	}
 	  		
-		}else {
-			if(tabla_simbolo[j].nombre[0] == '@'){
-				fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
-			} else {
-				fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
-			}
+		// }else {
+		// 	if(tabla_simbolo[j].nombre[0] == '@'){
+
+		// 		fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DB", "?");
+		// 	} else {
+		// 		fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DB", "?");
+		// 	}
 
 	    	
-		}
+		// }
+	 
+			switch(tabla_simbolo[j].tipo_dato){
+
+				case Integer:
+						if(tabla_simbolo[j].nombre[0] == '@')
+							fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
+						else
+							fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
+					break;
+				case Float:
+						if(tabla_simbolo[j].nombre[0] == '@')
+							fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
+						else
+							fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
+					break;
+				case String:
+					strcpy(variableFloat, tabla_simbolo[j].nombre);
+					reemplazarCarEnString(variableFloat,' ','_');
+						if(tabla_simbolo[j].nombre[0] == '@')
+							fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DB", "?");
+						else
+							fprintf(arch, "_%-30s\t%s\t%s\n",variableFloat,"DB", "?");
+
+					break;
+				case CteInt:
+					fprintf(arch, "%-30s\t%s\t%f\n",tabla_simbolo[j].nombre,"DD", (float)tabla_simbolo[j].valor_i);
+					break;
+				case CteFloat:
+					
+					strcpy(variableFloat, tabla_simbolo[j].nombre);
+					reemplazarCarEnString(variableFloat,'.','f');
+					fprintf(arch, "%-30s\t%s\t%.2f\n",variableFloat,"DD", tabla_simbolo[j].valor_f);
+					break;
+				case CteString:
+					strcpy(variableFloat, tabla_simbolo[j].valor_s);
+					reemplazarCarEnString(variableFloat,' ','_');
+					fprintf(arch, "_%-30s\t%s\t%s\n",variableFloat,"DB", tabla_simbolo[j].nombre);
+					break;
+			}
 	  
 	}
 	fprintf(arch, ".CODE \n");
@@ -1643,13 +1682,7 @@ void escribirArchivoAssembler(FILE* arch){
     fprintf(arch, "\n");
 
 	for(i=0; i < vectorASM_IDX; i++){
-		if(strcmp(vectorASM[i].reg2, "") != 0){
-			posTabla = buscarEnTabla(vectorASM[i].reg2);
-			tipoDato = tabla_simbolo[posTabla].tipo_dato;
-			if(tipoDato == 1 || tipoDato == 2 || tipoDato ==3){
-				fprintf(arch, "%s %s, %s\n", vectorASM[i].operacion, vectorASM[i].reg1, vectorASM[i].reg2);
-			}
-					
+		if(strcmp(vectorASM[i].reg2, "") != 0){	
 			fprintf(arch, "%s %s, %s\n", vectorASM[i].operacion, vectorASM[i].reg1, vectorASM[i].reg2);
 		} else {
 			if(strcmp(vectorASM[i].reg1, "") != 0){
@@ -2323,4 +2356,14 @@ void invertir_comparador_asm(char *cadena){
 		strcpy(result, "JE");
 	}
 	strcpy(cadena, result);
+}
+
+
+void reemplazarCarEnString(char* destino , char find, char replace){
+
+	char *current_pos = strchr(destino,find);
+    if(current_pos){
+        *current_pos = replace;    
+    }
+
 }
