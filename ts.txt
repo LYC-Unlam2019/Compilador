@@ -19,11 +19,9 @@ _4                            |CTE_INT                       |4                 
 _3                            |CTE_INT                       |3                             |--                            
 "@sdADaSjfla%dfg"             |CTE_STRING                    |@sdADaSjfla%dfg               |15                            
 "asldkfhsjf"                  |CTE_STRING                    |asldkfhsjf                    |10                            
-"hola mundo"                  |CTE_STRING                    |hola mundo                    |10                            
 @aux1                         |INTEGER                       |--                            |--                            
 @aux2                         |INTEGER                       |--                            |--                            
 @aux3                         |INTEGER                       |--                            |--                            
 @aux4                         |INTEGER                       |--                            |--                            
 @aux5                         |INTEGER                       |--                            |--                            
 @aux6                         |INTEGER                       |--                            |--                            
-@aux7                         |INTEGER                       |--                            |--                            

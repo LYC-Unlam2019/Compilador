@@ -23,14 +23,12 @@ _4                            	DD	4.000000
 _3                            	DD	3.000000
 _@sdADaSjfla%dfg               	DB	"@sdADaSjfla%dfg"
 _asldkfhsjf                    	DB	"asldkfhsjf"
-_hola_mundo                    	DB	"hola mundo"
 @aux1                         	DD	?
 @aux2                         	DD	?
 @aux3                         	DD	?
 @aux4                         	DD	?
 @aux5                         	DD	?
 @aux6                         	DD	?
-@aux7                         	DD	?
 .CODE 
 MAIN:
 
@@ -40,19 +38,19 @@ mov DS,AX
 mov ES,AX 
 FNINIT 
 
-FLD 2
+FLD _2
 FSTP _numero1
 FFREE
-FLD 6
+FLD _6
 FSTP _numero2
 FFREE
-FLD 99999.990000
+FLD _99999f990000
 FSTP _real1
 FFREE
-FLD 99.000000
+FLD _99f000000
 FSTP _real2
 FFREE
-FLD 0.999900
+FLD _0f999900
 FSTP _real3
 FFREE
 FLD _numero1
@@ -75,7 +73,7 @@ SAHF
 FFREE
 JGE .endrepeat1
 FLD _numero1
-FLD 1
+FLD _1
 FADD
 FSTP @aux1
 FFREE
@@ -87,136 +85,88 @@ JMP .repeat1
 JMP .endif1
 .else1:
 FLD _numero1
-FCOMP 6.00
+FCOMP _6
 FSTSW AX
 SAHF
 FFREE
 JNE .endif2
-CALL PRINT, _numero2
+DISPLAYFLOAT _numero2,2
 .endif2:
 .endif1:
-FLD 4
+FLD _1
+FCOMP _4
+FSTSW AX
+SAHF
+FFREE
+JLE .continuefilter
+FFREE
+FLD _1
+JMP .finfilter
+.continuefilter:
+FLD _2
+FCOMP _4
+FSTSW AX
+SAHF
+FFREE
+JLE .continuefilter
+FFREE
+FLD _2
+JMP .finfilter
+.continuefilter:
+FLD _4
+FCOMP _4
+FSTSW AX
+SAHF
+FFREE
+JLE .continuefilter
+FFREE
+FLD _4
+JMP .finfilter
+.continuefilter:
+FLD _6
+FCOMP _4
+FSTSW AX
+SAHF
+FFREE
+JLE .continuefilter
+FFREE
+FLD _6
+JMP .finfilter
+.continuefilter:
+.finfilter:
+FLD _4
 FLD _numero1
 FADD
 FSTP @aux2
 FFREE
-FLD 1.00
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FLD 1.00
-FCOMP 6.50
-FSTSW AX
-SAHF
-FFREE
-JG .continue-filter
-FFREE
-FLD 0.000000
-JMP .end-filter
-.continue-filter:
-FLD 2.00
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FLD 2.00
-FCOMP 6.50
-FSTSW AX
-SAHF
-FFREE
-JG
-FLD 6616640.00
-FCOMP 6616640.00
-FSTSW AX
-SAHF
-FFREE
-JG .continue-filter
-FFREE
-FLD 6616640
-JMP .end-filter
-.continue-filter:
-FLD 4.00
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FLD 4.00
-FCOMP 6.50
-FSTSW AX
-SAHF
-FFREE
-JG
-FLD 6616640.00
-FCOMP 6616640.00
-FSTSW AX
-SAHF
-FFREE
-JG .continue-filter
-FFREE
-FLD 6616640
-JMP .end-filter
-.continue-filter:
-FLD 6.00
-FCOMP _@aux2
-FSTSW AX
-SAHF
-FFREE
-JLE
-FLD 6.00
-FCOMP 6.50
-FSTSW AX
-SAHF
-FFREE
-JG
-FLD 6616640.00
-FCOMP 6616640.00
-FSTSW AX
-SAHF
-FFREE
-JG .continue-filter
-FFREE
-FLD 6616640
-JMP .end-filter
-.continue-filter:
-.end-filter:
-FLD 4
-FLD _numero1
-FADD
+FLD @aux2
+FLD _6
+FDIV
 FSTP @aux3
 FFREE
 FLD @aux3
-FLD 6
-FDIV
+FLD _6
+FMUL
 FSTP @aux4
 FFREE
+FLD @aux2
 FLD @aux4
-FLD 6
-FMUL
+FSUB
 FSTP @aux5
 FFREE
-FLD @aux3
+FLD _1
 FLD @aux5
-FSUB
+FADD
 FSTP @aux6
 FFREE
-FLD 1
-FLD _@aux6
-FADD
-FSTP @aux7
+FLD _@sdADaSjfla%dfg
+FSTP _
 FFREE
-FLD _"@sdADaSjfla%dfg"
-FSTP _cadena1
-FFREE
-FLD _"asldkfhsjf"
-FSTP _cadena2
+FLD _asldkfhsjf
+FSTP _
 FFREE
 CALL READ, _numero3
-CALL PRINT, _"hola mundo"
-CALL PRINT, _numero4
+DISPLAYFLOAT _numero4,2
 
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h

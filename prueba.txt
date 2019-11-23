@@ -30,7 +30,7 @@ START
 	ENDIF
 
 	--/Ejemplo FILTER/--
-	FILTER(_>(4 + numero1) AND _<=6.5 , [1,2,4,6])
+	FILTER(_>4, [1,2,4,6])
 
     --/Ejemplo MOD/DIV/--
 	(4+3) DIV (3*2) 
@@ -45,7 +45,7 @@ START
 
 	--/Ejemplo de READ y PRINT/--
 	READ numero3
-	PRINT "hola mundo"
+	--/PRINT "hola mundo"/--
 	PRINT numero4
 	--/PRINT cadena2/--
 
