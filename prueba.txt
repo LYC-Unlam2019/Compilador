@@ -39,9 +39,8 @@ START
 	1 + ((4+numero1) MOD (3*2))
 
 
-
-	cadena1:="@sdADaSjfla%dfg"
-
+	--/Ejemplo de READ y PRINT/--
+	READ real3
 	--/PRINT "hola mundo"/--
 	PRINT numero4
 	--/PRINT cadena1/--

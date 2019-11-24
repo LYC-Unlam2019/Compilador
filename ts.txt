@@ -17,11 +17,9 @@ _0.999900                     |CTE_FLOAT                     |0.999900          
 _1                            |CTE_INT                       |1                             |--                            
 _4                            |CTE_INT                       |4                             |--                            
 _3                            |CTE_INT                       |3                             |--                            
-"@sdADaSjfla%dfg"             |CTE_STRING                    |@sdADaSjfla%dfg               |15                            
-"asldkfhsjf"                  |CTE_STRING                    |asldkfhsjf                    |10                            
-"asldkfhsjf"                  |INTEGER                       |--                            |--                            
 @aux1                         |INTEGER                       |--                            |--                            
 @aux2                         |INTEGER                       |--                            |--                            
 @aux3                         |INTEGER                       |--                            |--                            
 @aux4                         |INTEGER                       |--                            |--                            
 @aux5                         |INTEGER                       |--                            |--                            
+@aux6                         |INTEGER                       |--                            |--                            

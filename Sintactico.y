@@ -170,6 +170,7 @@
 	int vectorASM_IDX = 0;
 	ASM insertar_en_vector_instruccion(tArbol* arbol, char* tipoOperacion);
     ASM insertar_en_vector_instruccion_print(tArbol* arbol);
+	ASM insertar_en_vector_instruccion_read(tArbol* arbol);
 
 	/* Cosas para la declaracion de variables y la tabla de simbolos */
 	int varADeclarar1 = 1;
@@ -776,7 +777,9 @@ lectura:
     READ ID												{
 															chequearVarEnTabla($2);
 															printf("R 58: lectura => READ ID\n");
-															rellenarInfo(String,&infoArbol);
+															//rellenarInfo(String,&infoArbol);
+															infoArbol.tipoDato = obtenerTipoDeDatoDesdeTS($2);
+															strcpy(infoArbol.cadena,$2);
 															lecturaPtr = crearNodo("READ", NULL, crearHoja(&infoArbol), -1);
 														};
 
@@ -885,8 +888,8 @@ FILE* arch = fopen("ts.txt", "a+");
 		return;
 	}
 agregarVarATabla(nombre);
-tabla_simbolo[indice].tipo_dato = tipoDato;
-fprintf(arch, "%-30s", &(tabla_simbolo[indice].nombre) );
+tabla_simbolo[indice_tabla].tipo_dato = tipoDato;
+fprintf(arch, "%-30s", &(tabla_simbolo[indice_tabla].nombre) );
 switch (tipoDato){
 		case Float:
 			fprintf(arch, "|%-30s|%-30s|%-30s","FLOAT","--","--");
@@ -898,13 +901,13 @@ switch (tipoDato){
 			fprintf(arch, "|%-30s|%-30s|%-30s","STRING","--","--");
 			break;
 		case CteFloat:
-			fprintf(arch, "|%-30s|%-30f|%-30s", "CTE_FLOAT",tabla_simbolo[indice].valor_f,"--");
+			fprintf(arch, "|%-30s|%-30f|%-30s", "CTE_FLOAT",tabla_simbolo[indice_tabla].valor_f,"--");
 			break;
 		case CteInt:
-			fprintf(arch, "|%-30s|%-30d|%-30s", "CTE_INT",tabla_simbolo[indice].valor_i,"--");
+			fprintf(arch, "|%-30s|%-30d|%-30s", "CTE_INT",tabla_simbolo[indice_tabla].valor_i,"--");
 			break;
 		case CteString:
-			fprintf(arch, "|%-30s|%-30s|%-30d", "CTE_STRING",&(tabla_simbolo[indice].valor_s), tabla_simbolo[indice].longitud);
+			fprintf(arch, "|%-30s|%-30s|%-30d", "CTE_STRING",&(tabla_simbolo[indice_tabla].valor_s), tabla_simbolo[indice_tabla].longitud);
 			break;
 		}
 
@@ -1616,28 +1619,30 @@ void escribirArchivoAssembler(FILE* arch){
 	fprintf(arch, ".STACK 200h \n");
 	fprintf(arch, ".DATA \n");
 	for(j=0; j <= indice_tabla; j++){
-		
 		switch(tabla_simbolo[j].tipo_dato){
 			case Integer:
-					if(tabla_simbolo[j].nombre[0] == '@')
+					if(tabla_simbolo[j].nombre[0] == '@') {
 						fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
-					else
+					} else {
 						fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
+					}
+						
 				break;
 			case Float:
-					if(tabla_simbolo[j].nombre[0] == '@')
+					if(tabla_simbolo[j].nombre[0] == '@'){
 						fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
-					else
+					} else{
 						fprintf(arch, "_%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DD", "?");
+					}
 				break;
 			case String:
 				strcpy(variableFloat, tabla_simbolo[j].nombre);
 				reemplazarCarEnString(variableFloat,' ','_');
-					if(tabla_simbolo[j].nombre[0] == '@')
+					if(tabla_simbolo[j].nombre[0] == '@'){
 						fprintf(arch, "%-30s\t%s\t%s\n",tabla_simbolo[j].nombre,"DB", "?");
-					else
+					} else{
 						fprintf(arch, "_%-30s\t%s\t%s\n",variableFloat,"DB", "?");
-
+					}
 				break;
 			case CteInt:
 				fprintf(arch, "%-30s\t%s\t%f\n",tabla_simbolo[j].nombre,"DD", (float)tabla_simbolo[j].valor_i);
@@ -2067,7 +2072,6 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			contTagFilter++;
 		}
 	} else if((*pa)->izq != NULL){
-		printf("entre, info cadena: %s", (*pa)->info.cadena);
 		if(!strcmp((*pa)->info.cadena, "FILTER-PADRE")){
 			strcpy(tag, ".finfilter");
 			sprintf(tagAux, "%d", contTagEndFilter);
@@ -2086,7 +2090,7 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			vectorASM[vectorASM_IDX] = insertar_en_vector_instruccion_print(&(*pa)->der);
 			vectorASM_IDX++;
 		} else if(!strcmp((*pa)->info.cadena, "READ")){
-			strcpy(instruccion.operacion, "CALL");
+			/*strcpy(instruccion.operacion, "CALL");
 			strcpy(instruccion.reg1, "READ");
 
 			if( ((*pa)->der->info.entero != 0)){		
@@ -2099,9 +2103,9 @@ void generarAssembler(tArbol *pa, FILE* arch){
 				} else {
 					sprintf(instruccion.reg2,"_%s", (*pa)->der->info.cadena);
 				}	
-			}
-			
-			vectorASM[vectorASM_IDX] = instruccion;
+			}*/
+
+			vectorASM[vectorASM_IDX] = insertar_en_vector_instruccion_read(&(*pa)->der);
 			vectorASM_IDX++;
 		}
 	}
@@ -2141,7 +2145,8 @@ void operacionAssembler(tArbol *pa, char* operacion){
     strcpy(instruccion.operacion, operacion);
 	strcpy(instruccion.reg1,"");
 	strcpy(instruccion.reg2,"");
-    vectorASM[vectorASM_IDX] = instruccion;
+    
+	vectorASM[vectorASM_IDX] = instruccion;
 	vectorASM_IDX++;
 
 	contAssembler++;
@@ -2151,9 +2156,10 @@ void operacionAssembler(tArbol *pa, char* operacion){
 	insertarEnTabla(aux,indice_tabla,(*pa)->info.tipoDato);
 
 	strcpy(instruccion.operacion, "FSTP");
-	strcpy(instruccion.reg2,"");
 	strcpy(instruccion.reg1, aux);
+	strcpy(instruccion.reg2,"");
 	strcpy(auxAssembler, aux);
+	
 	vectorASM[vectorASM_IDX] = instruccion;
 	vectorASM_IDX++;
 
@@ -2262,6 +2268,28 @@ switch((*arbol)->info.tipoDato){
 ASM insertar_en_vector_instruccion_print(tArbol* arbol){
 ASM instruccion;
 strcpy(instruccion.operacion,"DISPLAYFLOAT");
+switch((*arbol)->info.tipoDato){
+				case Integer :
+					sprintf(instruccion.reg1,"_%s,2",(*arbol)->info.cadena);
+					break;
+				case Float:
+					sprintf(instruccion.reg1,"_%s,2",(*arbol)->info.cadena);
+					break;
+				case CteInt:				
+					sprintf(instruccion.reg1,"_%f,2",(float)(*arbol)->info.entero);
+					break;
+				case CteFloat:
+					sprintf(instruccion.reg1,"_%f,2",(*arbol)->info.flotante);
+					break;
+				
+			}
+	strcpy(instruccion.reg2,"");
+	return instruccion;
+}
+
+ASM insertar_en_vector_instruccion_read(tArbol* arbol){
+ASM instruccion;
+strcpy(instruccion.operacion,"GETFLOAT");
 switch((*arbol)->info.tipoDato){
 				case Integer :
 					sprintf(instruccion.reg1,"_%s,2",(*arbol)->info.cadena);
