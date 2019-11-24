@@ -235,6 +235,8 @@
 	int repeatFlag = 0;
 	int ifFlag = 0;
 	int contTagRepeat = 1;
+	int contTagFilter = 1;
+	int contTagEndFilter = 1;
 	int contTagEndRepeat = 0;
 	int contTagElse = 1;
 	int contTagEndif = 0;
@@ -697,7 +699,7 @@ comparacion_filter:
 														}
     | termino_filter OR termino_filter   				{
 															printf("R 47: comparacion_filter => termino_filter OR termino_filter\n");
-															terminoFilterPtr = crearNodo("AND", termLogFilterPtr, compBoolPtr, -1);
+															terminoFilterPtr = crearNodo("OR", termLogFilterPtr, compBoolPtr, -1);
 														}
     | termino_filter		  							{
 															printf("R 48: comparacion_filter => termino_filter\n");
@@ -1761,39 +1763,38 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			vectorASM_IDX++;
 
 			pos_condicion = sacar_de_pila_asm(&pilaAssembler);
-			strcpy(vectorASM[pos_condicion].reg1, ".continuefilter");
 
-			/*strcpy(instruccion.operacion, "FLD");
-			if( ((*pa)->izq->izq->info.entero != 0)){		
-				sprintf(instruccion.reg1,"%d", (*pa)->izq->izq->info.entero);
-			} else if ( ((*pa)->izq->izq->info.flotante != 0)){		
-				sprintf(instruccion.reg1,"%f", (*pa)->izq->izq->info.flotante);
-			} else {
-				if((*pa)->izq->izq->info.cadena[0] == '@'){
-					strcpy(instruccion.reg1, (*pa)->izq->izq->info.cadena);
-				} else {
-					sprintf(instruccion.reg1,"_%s", (*pa)->izq->izq->info.cadena);
-				}	
-			}
-			strcpy(instruccion.reg2, "");*/
+			strcpy(tag, ".continuefilter");
+			sprintf(tagAux, "%d", contTagFilter);
+			strcat(tag, tagAux);
+
+			strcpy(vectorASM[pos_condicion].reg1, tag);
 			
 			vectorASM[vectorASM_IDX] = insertar_en_vector_instruccion(&(*pa)->izq->izq, "FLD");
 			vectorASM_IDX++;
 
 			strcpy(instruccion.operacion, "JMP");
-			strcpy(instruccion.reg1, ".endfilter");
+			strcpy(tag, ".finfilter");
+			sprintf(tagAux, "%d", contTagEndFilter);
+			strcat(tag, tagAux);
+			strcpy(instruccion.reg1, tag);
 			strcpy(instruccion.reg2, "");
 			
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
 
-			strcpy(instruccion.operacion, ".continuefilter:");
+			strcpy(tag, ".continuefilter");
+			sprintf(tagAux, "%d", contTagFilter);
+			strcat(tag, tagAux);
+			strcat(tag, ":");
+			strcpy(instruccion.operacion, tag);
 			strcpy(instruccion.reg1, "");
 			strcpy(instruccion.reg2, "");
 			
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
 
+			contTagFilter++;
 		}
 	}
 
@@ -2034,35 +2035,51 @@ void generarAssembler(tArbol *pa, FILE* arch){
 			vectorASM_IDX++;
 			
 			pos_condicion = sacar_de_pila_asm(&pilaAssembler);
-			strcpy(vectorASM[pos_condicion].reg1, ".continuefilter");
+			strcpy(tag, ".continuefilter");
+			sprintf(tagAux, "%d", contTagFilter);
+			strcat(tag, tagAux);
+			strcpy(vectorASM[pos_condicion].reg1, tag);
 			
 			vectorASM[vectorASM_IDX] = insertar_en_vector_instruccion(&(*pa)->der->izq, "FLD");
 			vectorASM_IDX++;
 
 			strcpy(instruccion.operacion, "JMP");
-			strcpy(instruccion.reg1, ".endfilter");
+			strcpy(tag, ".finfilter");
+			sprintf(tagAux, "%d", contTagEndFilter);
+			strcat(tag, tagAux);
+			strcpy(instruccion.reg1, tag);
 			strcpy(instruccion.reg2, "");
 			
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
 
-			strcpy(instruccion.operacion, ".continuefilter:");
+			strcpy(tag, ".continuefilter");
+			sprintf(tagAux, "%d", contTagFilter);
+			strcat(tag, tagAux);
+			strcat(tag, ":");
+			strcpy(instruccion.operacion, tag);
 			strcpy(instruccion.reg1, "");
 			strcpy(instruccion.reg2, "");
 			
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
 
+			contTagFilter++;
 		}
 	} else if((*pa)->izq != NULL){
 		printf("entre, info cadena: %s", (*pa)->info.cadena);
 		if(!strcmp((*pa)->info.cadena, "FILTER-PADRE")){
-			strcpy(instruccion.operacion, ".endfilter:");
+			strcpy(tag, ".finfilter");
+			sprintf(tagAux, "%d", contTagEndFilter);
+			strcat(tag, tagAux);
+			strcat(tag, ":");
+			strcpy(instruccion.operacion, tag);
 			strcpy(instruccion.reg1, "");
 			strcpy(instruccion.reg2, "");
 			
 			vectorASM[vectorASM_IDX] = instruccion;
 			vectorASM_IDX++;
+			contTagEndFilter++;
 		}
 	} else if((*pa)->der != NULL) {
 		if(!strcmp((*pa)->info.cadena, "PRINT")){
