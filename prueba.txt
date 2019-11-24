@@ -41,12 +41,9 @@ START
 
 
 	cadena1:="@sdADaSjfla%dfg"
-	cadena2:="asldkfhsjf"
 
-	--/Ejemplo de READ y PRINT/--
-	READ numero3
 	--/PRINT "hola mundo"/--
 	PRINT numero4
-	--/PRINT cadena2/--
+	--/PRINT cadena1/--
 
 END
